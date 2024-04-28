@@ -1,7 +1,4 @@
-import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
@@ -73,7 +70,6 @@ fun App() {
                 Row(
                     modifier = Modifier
                         .padding(vertical = 8.dp, horizontal = 32.dp)
-                        .wrapContentHeight()
                 ) {
                     Button(
                         onClick = {
@@ -109,72 +105,72 @@ fun App() {
                 }
 
                 // Parameters
-                var paramtersFolded by remember { mutableStateOf(false) } // Initial state
-                Row(modifier = Modifier.padding(vertical = 8.dp)) {
-                    // Folding button
-                    Button(
-                        onClick = {
-                            paramtersFolded = !paramtersFolded
-                        },
-                        modifier = Modifier.padding(horizontal = 32.dp)
-                    ) {
-                        Text("Parameters")
-                    }
-                }
-                if (!paramtersFolded) {
-                    // TODO: This should be added for every parameter
-                    Row(
+                var parametersFolded by remember { mutableStateOf(false) } // Initial state
+                Row(modifier = Modifier) {
+                    Text(
+                        text = if (parametersFolded) "▲ Parameters" else "▼ Parameters",
                         modifier = Modifier
-                            .padding(horizontal = 16.dp)
-                            .height(50.dp)
-                            .fillMaxWidth()
-                            .border(
-                                width = 1.dp,
-                                Color.Black.copy(alpha = 0.2f),
-                                shape = RoundedCornerShape(
-                                    topStartPercent = 5,
-                                    topEndPercent = 5,
-                                    bottomStartPercent = 5,
-                                    bottomEndPercent = 5
-                                )
+                            .padding(top = 16.dp, start = 32.dp)
+                            .clickable { parametersFolded = !parametersFolded },
+                        style = MaterialTheme.typography.h3
+                    )
+                }
+                Row(
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp)
+                        .defaultMinSize(minHeight = 5.dp)
+                        .fillMaxWidth()
+                        .border(
+                            width = 1.dp,
+                            Color.Black.copy(alpha = 0.2f),
+                            shape = RoundedCornerShape(
+                                topStartPercent = 5,
+                                topEndPercent = 5,
+                                bottomStartPercent = 5,
+                                bottomEndPercent = 5
                             )
-                    ) {
-                        // TODO: Parameter elements
+                        )
+                ) {
+                    if (!parametersFolded) {
+                        Column(modifier = Modifier.fillMaxWidth()) {
+                            // TODO: Add a row for every parameter in the parameters list
+                        }
                     }
                 }
 
-                // Parameters
+                // Advanced
                 var advancedFolded by remember { mutableStateOf(false) } // Initial state
                 Row(modifier = Modifier) {
-                    // Folding button
-                    Button(
-                        onClick = {
-                            advancedFolded = !advancedFolded
-                        },
-                        modifier = Modifier.padding(horizontal = 32.dp)
-                    ) {
-                        Text("Advanced")
-                    }
-                }
-                if (!advancedFolded) {
-                    // TODO: This should be added for every parameter
-                    Row(
+                    Text(
+                        text = if (advancedFolded) "▲ Advanced" else "▼ Advanced",
                         modifier = Modifier
-                            .padding(horizontal = 16.dp)
-                            .height(50.dp)
-                            .fillMaxWidth()
-                            .border(
-                                width = 1.dp,
-                                Color.Black.copy(alpha = 0.2f),
-                                shape = RoundedCornerShape(
-                                    topStartPercent = 5,
-                                    topEndPercent = 5,
-                                    bottomStartPercent = 5,
-                                    bottomEndPercent = 5
-                                )
+                            .padding(top = 16.dp, start = 32.dp)
+                            .clickable { advancedFolded = !advancedFolded },
+                        style = MaterialTheme.typography.h3
+                    )
+                }
+                Row(
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp)
+                        .defaultMinSize(minHeight = 5.dp)
+                        .fillMaxWidth()
+                        .border(
+                            width = 1.dp,
+                            Color.Black.copy(alpha = 0.2f),
+                            shape = RoundedCornerShape(
+                                topStartPercent = 5,
+                                topEndPercent = 5,
+                                bottomStartPercent = 5,
+                                bottomEndPercent = 5
                             )
-                    ) {
-                        // TODO: Advanced elements
+                        )
+                ) {
+                    if (!parametersFolded) {
+                        Column(modifier = Modifier.fillMaxWidth()) {
+                            for (cardElement in cardElements) {
+                                // TODO: Add a row with UI elements specific to that card element
+                            }
+                        }
                     }
                 }
             }
