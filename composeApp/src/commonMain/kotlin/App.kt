@@ -1,3 +1,4 @@
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -10,6 +11,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
@@ -70,7 +72,7 @@ fun App() {
                 // Main button row
                 Row(
                     modifier = Modifier
-                        .padding(vertical = 16.dp, horizontal = 32.dp)
+                        .padding(vertical = 8.dp, horizontal = 32.dp)
                         .wrapContentHeight()
                 ) {
                     Button(
@@ -91,9 +93,24 @@ fun App() {
                     }
                 }
 
+                // Line
+                Row(
+                    modifier = Modifier
+                        .padding(vertical = 0.dp, horizontal = 16.dp)
+                ) {
+                    Canvas(modifier = Modifier.fillMaxWidth()) {
+                        drawLine(
+                            start = Offset(x = 0f, y = 0f),
+                            end = Offset(x = size.width, y = 0f),
+                            color = Color.Black.copy(alpha = 0.8f),
+                            strokeWidth = 1f
+                        )
+                    }
+                }
+
                 // Parameters
                 var paramtersFolded by remember { mutableStateOf(false) } // Initial state
-                Row(modifier = Modifier) {
+                Row(modifier = Modifier.padding(vertical = 8.dp)) {
                     // Folding button
                     Button(
                         onClick = {
@@ -172,6 +189,7 @@ fun App() {
                 Row(
                     modifier = Modifier
                         .align(Alignment.CenterHorizontally)
+                        .weight(0.9f)
                 ) {
                     CardPreview(
                         modifier = Modifier
@@ -181,6 +199,7 @@ fun App() {
                 Row(
                     modifier = Modifier
                         .align(Alignment.CenterHorizontally)
+                        .weight(0.1f)
                 ) {
                     Button(
                         onClick = {
