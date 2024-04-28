@@ -2,12 +2,11 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -28,7 +27,7 @@ fun App() {
     }
 
     Box(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
     ) {
         // Background Image
         Image(
@@ -39,98 +38,157 @@ fun App() {
         )
 
         // Main UI
-        Box(
+        Row(
             modifier = Modifier
-                .fillMaxSize()
                 .padding(48.dp)
-                .clip(
-                    RoundedCornerShape(
-                        topStartPercent = 2,
-                        topEndPercent = 2,
-                        bottomStartPercent = 2,
-                        bottomEndPercent = 2
-                    )
-                )
-                .background(Color.White.copy(alpha = 0.9f))
-                .border(
-                    width = 1.dp,
-                    color = Color.Black,
-                    shape = RoundedCornerShape(
-                        topStartPercent = 2,
-                        topEndPercent = 2,
-                        bottomStartPercent = 2,
-                        bottomEndPercent = 2
-                    )
-                )
         ) {
-            // Main button row
-            Row(
+            // Config column
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 16.dp, horizontal = 16.dp)
+                    .weight(0.65f)
+                    .fillMaxHeight()
+                    .clip(
+                        RoundedCornerShape(
+                            topStartPercent = 2,
+                            topEndPercent = 2,
+                            bottomStartPercent = 2,
+                            bottomEndPercent = 2
+                        )
+                    )
+                    .background(Color.White.copy(alpha = 0.9f))
+                    .border(
+                        width = 1.dp,
+                        color = Color.Black,
+                        shape = RoundedCornerShape(
+                            topStartPercent = 2,
+                            topEndPercent = 2,
+                            bottomStartPercent = 2,
+                            bottomEndPercent = 2
+                        )
+                    )
             ) {
-                Button(
-                    onClick = {
-                        cardElements.add(TextElement())
-                    },
-                    modifier = Modifier.padding(horizontal = 16.dp)
+                // Main button row
+                Row(
+                    modifier = Modifier
+                        .padding(vertical = 16.dp, horizontal = 32.dp)
+                        .wrapContentHeight()
                 ) {
-                    Text("Add Text")
+                    Button(
+                        onClick = {
+                            cardElements.add(TextElement())
+                        },
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                    ) {
+                        Text("Add Text")
+                    }
+                    Button(
+                        onClick = {
+                            cardElements.add(ImageElement())
+                        },
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                    ) {
+                        Text("Add Image")
+                    }
                 }
-                Button(
-                    onClick = {
-                        cardElements.add(ImageElement())
-                    },
-                    modifier = Modifier.padding(horizontal = 16.dp)
-                ) {
-                    Text("Add Image")
+
+                // Parameters
+                var paramtersFolded by remember { mutableStateOf(false) } // Initial state
+                Row(modifier = Modifier) {
+                    // Folding button
+                    Button(
+                        onClick = {
+                            paramtersFolded = !paramtersFolded
+                        },
+                        modifier = Modifier.padding(horizontal = 32.dp)
+                    ) {
+                        Text("Parameters")
+                    }
+                }
+                if (!paramtersFolded) {
+                    // TODO: This should be added for every parameter
+                    Row(
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp)
+                            .height(50.dp)
+                            .fillMaxWidth()
+                            .border(
+                                width = 1.dp,
+                                Color.Black.copy(alpha = 0.2f),
+                                shape = RoundedCornerShape(
+                                    topStartPercent = 5,
+                                    topEndPercent = 5,
+                                    bottomStartPercent = 5,
+                                    bottomEndPercent = 5
+                                )
+                            )
+                    ) {
+                        // TODO: Parameter elements
+                    }
+                }
+
+                // Parameters
+                var advancedFolded by remember { mutableStateOf(false) } // Initial state
+                Row(modifier = Modifier) {
+                    // Folding button
+                    Button(
+                        onClick = {
+                            advancedFolded = !advancedFolded
+                        },
+                        modifier = Modifier.padding(horizontal = 32.dp)
+                    ) {
+                        Text("Advanced")
+                    }
+                }
+                if (!advancedFolded) {
+                    // TODO: This should be added for every parameter
+                    Row(
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp)
+                            .height(50.dp)
+                            .fillMaxWidth()
+                            .border(
+                                width = 1.dp,
+                                Color.Black.copy(alpha = 0.2f),
+                                shape = RoundedCornerShape(
+                                    topStartPercent = 5,
+                                    topEndPercent = 5,
+                                    bottomStartPercent = 5,
+                                    bottomEndPercent = 5
+                                )
+                            )
+                    ) {
+                        // TODO: Advanced elements
+                    }
                 }
             }
 
-            Row(
-                modifier = Modifier.fillMaxSize()
+            // Card Preview Column
+            Column(
+                modifier = Modifier
+                    .weight(0.35f)
+                    .padding(start = 16.dp)
             ) {
-                // Config column
-                LazyColumn(
+                // Card preview
+                Row(
                     modifier = Modifier
-                        .fillMaxHeight()
-                        .weight(0.65f)
-                        .padding(vertical = 16.dp, horizontal = 16.dp)
+                        .align(Alignment.CenterHorizontally)
                 ) {
-
+                    CardPreview(
+                        modifier = Modifier
+                    )
                 }
-
-                // Card Preview Column
-                Column(
+                // Download buttons
+                Row(
                     modifier = Modifier
-                        .fillMaxSize()
-                        .weight(0.3f)
-                        .padding(vertical = 16.dp, horizontal = 16.dp)
+                        .align(Alignment.CenterHorizontally)
                 ) {
-                    // Card preview
-                    Row(
-                        modifier = Modifier
-                            .weight(0.9f)
-                            .align(Alignment.CenterHorizontally)
+                    Button(
+                        onClick = {
+                            // Render image and download png
+                        },
+                        modifier = Modifier.padding(horizontal = 16.dp)
                     ) {
-                        CardPreview(
-                            modifier = Modifier
-                        )
-                    }
-                    // Download buttons
-                    Row(
-                        modifier = Modifier
-                            .weight(0.1f)
-                            .align(Alignment.CenterHorizontally)
-                    ) {
-                        Button(
-                            onClick = {
-                                // Render image and download png
-                            },
-                            modifier = Modifier.padding(horizontal = 8.dp)
-                        ) {
-                            Text("Export as PNG")
-                        }
+                        Text("Export as PNG")
                     }
                 }
             }
@@ -144,8 +202,6 @@ fun CardPreview(modifier: Modifier = Modifier) {
         modifier = modifier
             //.size(width = 750.dp, height = 1050.dp)
             .aspectRatio(2.5f / 3.5f)
-            .fillMaxSize()
-            .padding(vertical = 16.dp, horizontal = 16.dp)
             .clip(
                 RoundedCornerShape(
                     topStartPercent = 10,
