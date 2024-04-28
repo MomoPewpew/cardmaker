@@ -6,12 +6,17 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
@@ -20,15 +25,20 @@ import org.jetbrains.compose.resources.painterResource
 @OptIn(ExperimentalResourceApi::class)
 @Composable
 fun App() {
-    MaterialTheme {
-        val cardElements: MutableList<CardElement> = mutableListOf()
+    val cardElements: MutableList<CardElement> = mutableListOf()
 
+    MaterialTheme {
+
+    }
+
+    Box(
+        modifier = Modifier.fillMaxSize()
+    ) {
         // Background Image
         Image(
             painterResource(DrawableResource("background.jpg")),
             contentDescription = "backgroundImage",
             modifier = Modifier
-                .fillMaxWidth()
                 .aspectRatio(ratio = 3456f / 2304f)
         )
 
