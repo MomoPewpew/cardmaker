@@ -75,13 +75,13 @@ abstract class CardElement {
 
 /** This class holds all the transformation data of a card element. */
 data class CardElementTransformations(
-    var scaleX: DoubleParameter = DoubleParameter(name = "Scale X", expression = "1.0"),
-    var scaleY: DoubleParameter = DoubleParameter(name = "Scale Y", expression = "1.0"),
-    var offsetX: IntParameter = IntParameter(name = "Offset X", expression = "0"),
-    var offsetY: IntParameter = IntParameter(name = "Offset Y", expression = "0")
+    val scaleX: DoubleParameter = DoubleParameter(name = "Scale X", expression = "1.0"),
+    val scaleY: DoubleParameter = DoubleParameter(name = "Scale Y", expression = "1.0"),
+    val offsetX: IntParameter = IntParameter(name = "Offset X", expression = "0"),
+    val offsetY: IntParameter = IntParameter(name = "Offset Y", expression = "0")
 )
 
-/** Text element. Composes a rich text editor. */
+/** Textbox element to add text to the card. */
 data class TextElement(
     var text: String = ""
 ) : CardElement() {
@@ -109,7 +109,7 @@ data class TextElement(
     }
 }
 
-/** Image element. Composes a text box to input URLs. */
+/** Image element to add images to the card. */
 data class ImageElement(
     var url: String = ""
 ) : CardElement() {
