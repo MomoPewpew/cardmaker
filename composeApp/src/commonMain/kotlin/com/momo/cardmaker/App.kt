@@ -1,3 +1,5 @@
+package com.momo.cardmaker
+
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -24,6 +26,7 @@ fun App() {
     MaterialTheme {
 
     }
+
     Box(
         modifier = Modifier
     ) {

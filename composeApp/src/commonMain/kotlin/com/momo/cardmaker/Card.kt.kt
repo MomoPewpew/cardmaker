@@ -1,3 +1,5 @@
+package com.momo.cardmaker
+
 data class Card(
     val cardElements: MutableList<CardElement> = mutableListOf()
 ) {
