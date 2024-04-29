@@ -11,6 +11,7 @@ import androidx.compose.ui.unit.dp
 import com.mohamedrejeb.richeditor.model.rememberRichTextState
 import com.mohamedrejeb.richeditor.ui.material3.RichTextEditor
 
+/** A card element can be subclassed into all the elements that are added to cards, such as text or images. */
 abstract class CardElement {
     var name: String = ""
     private val transformations: CardElementTransformations = CardElementTransformations()
@@ -57,6 +58,7 @@ abstract class CardElement {
         }
     }
 
+    /** Build specific composables to this card element type. */
     abstract @Composable
     fun buildSpecificElements(modifier: Modifier)
 
@@ -117,6 +119,7 @@ abstract class CardElement {
     }
 }
 
+/** This class holds all the transformation data of a card element. */
 data class CardElementTransformations(
     var scaleX: Float = 1f,
     var scaleY: Float = 1f,
@@ -124,6 +127,7 @@ data class CardElementTransformations(
     var offsetY: Int = 0
 )
 
+/** Text element. Composes a rich text editor. */
 data class TextElement(
     var text: String = ""
 ) : CardElement() {
@@ -143,6 +147,7 @@ data class TextElement(
     }
 }
 
+/** Image element. Composes a text box to input URLs. */
 data class ImageElement(
     var url: String = ""
 ) : CardElement() {

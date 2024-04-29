@@ -218,6 +218,7 @@ fun App() {
     }
 }
 
+/** Build composables for previewing cards. */
 @Composable
 fun CardPreview(modifier: Modifier = Modifier) {
     Box(
