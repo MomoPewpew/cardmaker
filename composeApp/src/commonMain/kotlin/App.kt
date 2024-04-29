@@ -16,11 +16,11 @@ import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 
+var card = Card()
+
 @OptIn(ExperimentalResourceApi::class)
 @Composable
 fun App() {
-    val cardElements: MutableList<CardElement> = mutableListOf()
-
     MaterialTheme {
 
     }
@@ -73,7 +73,7 @@ fun App() {
                 ) {
                     Button(
                         onClick = {
-                            cardElements.add(TextElement())
+                            card.cardElements.add(TextElement())
                         },
                         modifier = Modifier.padding(horizontal = 16.dp)
                     ) {
@@ -81,7 +81,7 @@ fun App() {
                     }
                     Button(
                         onClick = {
-                            cardElements.add(ImageElement())
+                            card.cardElements.add(ImageElement())
                         },
                         modifier = Modifier.padding(horizontal = 16.dp)
                     ) {
@@ -105,7 +105,7 @@ fun App() {
                 }
 
                 // Parameters
-                var parametersFolded by remember { mutableStateOf(false) } // Initial state
+                var parametersFolded by remember { mutableStateOf(false) }
                 Row(modifier = Modifier) {
                     Text(
                         text = if (parametersFolded) "▲ Parameters" else "▼ Parameters",
@@ -139,7 +139,7 @@ fun App() {
                 }
 
                 // Advanced
-                var advancedFolded by remember { mutableStateOf(false) } // Initial state
+                var advancedFolded by remember { mutableStateOf(false) }
                 Row(modifier = Modifier) {
                     Text(
                         text = if (advancedFolded) "▲ Advanced" else "▼ Advanced",
@@ -165,10 +165,12 @@ fun App() {
                             )
                         )
                 ) {
-                    if (!parametersFolded) {
+                    if (!advancedFolded) {
                         Column(modifier = Modifier.fillMaxWidth()) {
-                            for (cardElement in cardElements) {
-                                // TODO: Add a row with UI elements specific to that card element
+                            for (cardElement in card.cardElements) {
+                                cardElement.buildElements(
+                                    modifier = Modifier
+                                )
                             }
                         }
                     }

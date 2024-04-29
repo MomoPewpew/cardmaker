@@ -37,6 +37,7 @@ kotlin {
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
+            implementation("com.mohamedrejeb.richeditor:richeditor-compose:1.0.0-rc04")
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
