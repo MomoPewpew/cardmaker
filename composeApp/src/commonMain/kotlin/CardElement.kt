@@ -14,23 +14,27 @@ import com.mohamedrejeb.richeditor.ui.material3.RichTextEditor
 abstract class CardElement {
     var name: String = ""
     private val transformations: CardElementTransformations = CardElementTransformations()
+    var folded = false
 
     /** Build the expandable segment, and fills it with the elements that are specific to this element type. */
     @Composable
     fun buildElements(modifier: Modifier) {
-        var folded by remember { mutableStateOf(false) }
+        var foldedRemember by remember { mutableStateOf(folded) }
         Row(modifier = Modifier) {
             Text(
                 text = if (folded) "▲ $name" else "▼ $name",
                 modifier = Modifier
                     .padding(top = 16.dp, start = 32.dp)
-                    .clickable { folded = !folded },
+                    .clickable {
+                        folded = !folded
+                        foldedRemember = folded
+                    },
                 style = MaterialTheme.typography.h4
             )
         }
         Row(
             modifier = Modifier
-                .padding(horizontal = 16.dp)
+                .padding(vertical = 8.dp, horizontal = 16.dp)
                 .defaultMinSize(minHeight = 5.dp)
                 .fillMaxWidth()
                 .border(
@@ -44,7 +48,7 @@ abstract class CardElement {
                     )
                 )
         ) {
-            if (!folded) {
+            if (!foldedRemember) {
                 Column(modifier = Modifier.fillMaxWidth()) {
                     buildSpecificElements(modifier)
 
@@ -132,6 +136,7 @@ data class TextElement(
         Row(modifier = Modifier) {
             val state = rememberRichTextState()
             RichTextEditor(
+                modifier = Modifier.fillMaxWidth(),
                 state = state,
             )
         }

@@ -66,6 +66,8 @@ fun App() {
                         )
                     )
             ) {
+                var advancedFolded by remember { mutableStateOf(false) }
+
                 // Main button row
                 Row(
                     modifier = Modifier
@@ -74,6 +76,8 @@ fun App() {
                     Button(
                         onClick = {
                             card.cardElements.add(TextElement())
+                            advancedFolded = true // Fold before unfolding to ensure a recomposition of the advanced segment
+                            advancedFolded = false
                         },
                         modifier = Modifier.padding(horizontal = 16.dp)
                     ) {
@@ -82,6 +86,8 @@ fun App() {
                     Button(
                         onClick = {
                             card.cardElements.add(ImageElement())
+                            advancedFolded = true // Fold before unfolding to ensure a recomposition of the  advanced segment
+                            advancedFolded = false
                         },
                         modifier = Modifier.padding(horizontal = 16.dp)
                     ) {
@@ -139,7 +145,6 @@ fun App() {
                 }
 
                 // Advanced
-                var advancedFolded by remember { mutableStateOf(false) }
                 Row(modifier = Modifier) {
                     Text(
                         text = if (advancedFolded) "▲ Advanced" else "▼ Advanced",
