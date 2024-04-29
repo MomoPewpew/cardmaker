@@ -46,10 +46,10 @@ abstract class CardElement {
                     width = 1.dp,
                     Color.Black.copy(alpha = 0.2f),
                     shape = RoundedCornerShape(
-                        topStartPercent = 5,
-                        topEndPercent = 5,
-                        bottomStartPercent = 5,
-                        bottomEndPercent = 5
+                        topStart = 15.dp,
+                        topEnd = 15.dp,
+                        bottomStart = 15.dp,
+                        bottomEnd = 15.dp
                     )
                 )
         ) {
@@ -83,7 +83,7 @@ data class CardElementTransformations(
 
 /** Textbox element to add text to the card. */
 data class TextElement(
-    var text: String = ""
+    var text: TextParameter = TextParameter(name = "Text", expression = "")
 ) : CardElement() {
     init {
         name = "Text Element"
@@ -92,19 +92,7 @@ data class TextElement(
     @Composable
     override fun buildSpecificElements(modifier: Modifier) {
         Row(modifier = Modifier) {
-            Text(
-                text = "Text",
-                modifier = Modifier
-                    .padding(top = 8.dp, bottom = 8.dp, start = 32.dp),
-                style = MaterialTheme.typography.h5
-            )
-        }
-        Row(modifier = Modifier) {
-            val state = rememberRichTextState()
-            RichTextEditor(
-                modifier = Modifier.fillMaxWidth(),
-                state = state,
-            )
+            text.buildElements(modifier = Modifier)
         }
     }
 }

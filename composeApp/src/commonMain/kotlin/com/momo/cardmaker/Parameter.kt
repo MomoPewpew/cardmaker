@@ -1,7 +1,12 @@
 package com.momo.cardmaker
 
+import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import com.mohamedrejeb.richeditor.model.rememberRichTextState
+import com.mohamedrejeb.richeditor.ui.material.OutlinedRichTextEditor
+import com.momo.cardmaker.components.RichTextStyleRow
 import com.notkamui.keval.Keval
 import kotlin.math.round
 
@@ -116,5 +121,34 @@ class DoubleParameter(name: String, expression: String, isHighlighted: Boolean =
         } catch (e: Exception) {
             0.0
         }
+    }
+}
+
+class TextParameter(name: String, expression: String, isHighlighted: Boolean = false) :
+    Parameter<String>(name, expression, isHighlighted) {
+    @Composable
+    override fun buildElements(modifier: Modifier) {
+        Column(
+            modifier = Modifier
+                .padding(start = 16.dp, end=16.dp, bottom = 16.dp)
+        ) {
+            val richTextState = rememberRichTextState()
+
+            RichTextStyleRow(
+                state = richTextState,
+                modifier = Modifier
+                    .fillMaxWidth()
+            )
+
+            OutlinedRichTextEditor(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                state = richTextState,
+            )
+        }
+    }
+
+    override fun get(): String {
+        return expression
     }
 }

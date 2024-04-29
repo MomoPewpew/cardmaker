@@ -14,6 +14,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import com.momo.cardmaker.components.CardPreview
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
@@ -132,10 +133,10 @@ fun App() {
                             width = 1.dp,
                             Color.Black.copy(alpha = 0.2f),
                             shape = RoundedCornerShape(
-                                topStartPercent = 5,
-                                topEndPercent = 5,
-                                bottomStartPercent = 5,
-                                bottomEndPercent = 5
+                                topStart = 15.dp,
+                                topEnd = 15.dp,
+                                bottomStart = 15.dp,
+                                bottomEnd = 15.dp
                             )
                         )
                 ) {
@@ -165,10 +166,10 @@ fun App() {
                             width = 1.dp,
                             Color.Black.copy(alpha = 0.2f),
                             shape = RoundedCornerShape(
-                                topStartPercent = 5,
-                                topEndPercent = 5,
-                                bottomStartPercent = 5,
-                                bottomEndPercent = 5
+                                topStart = 15.dp,
+                                topEnd = 15.dp,
+                                bottomStart = 15.dp,
+                                bottomEnd = 15.dp
                             )
                         )
                 ) {

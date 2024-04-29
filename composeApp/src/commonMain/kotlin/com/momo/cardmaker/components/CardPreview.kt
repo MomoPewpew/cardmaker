@@ -1,4 +1,4 @@
-package com.momo.cardmaker
+package com.momo.cardmaker.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
