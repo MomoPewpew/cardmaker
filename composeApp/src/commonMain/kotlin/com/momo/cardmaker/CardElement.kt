@@ -12,6 +12,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.mohamedrejeb.richeditor.model.rememberRichTextState
 import com.mohamedrejeb.richeditor.ui.material3.RichTextEditor
+import com.notkamui.keval.Keval
+import kotlin.math.round
 
 /** A card element can be subclassed into all the elements that are added to cards, such as text or images. */
 abstract class CardElement {
@@ -69,70 +71,14 @@ abstract class CardElement {
     fun buildTransformationElements(modifier: Modifier) {
 
     }
-
-    fun setScaleX(value: Float) {
-        transformations.scaleX = value
-    }
-
-    fun getScaleX(): Float {
-        return transformations.scaleX
-    }
-
-    fun incrementScaleX() {
-        transformations.scaleX += 0.05f
-    }
-
-    fun decrementScaleX() {
-        transformations.scaleX -= 0.05f
-    }
-
-    fun setScaleY(value: Float) {
-        transformations.scaleY = value
-    }
-
-    fun getScaleY(): Float {
-        return transformations.scaleY
-    }
-
-    fun incrementScaleY() {
-        transformations.scaleY += 0.05f
-    }
-
-    fun decrementScaleY() {
-        transformations.scaleY -= 0.05f
-    }
-
-    fun setOffsetX(value: Int) {
-        transformations.offsetX = value
-    }
-
-    fun incrementOffsetX() {
-        transformations.offsetX++
-    }
-
-    fun decrementOffsetX() {
-        transformations.offsetX--
-    }
-
-    fun setOffsetY(value: Int) {
-        transformations.offsetY = value
-    }
-
-    fun incrementOffsetY() {
-        transformations.offsetY++
-    }
-
-    fun decrementOffsetY() {
-        transformations.offsetY--
-    }
 }
 
 /** This class holds all the transformation data of a card element. */
 data class CardElementTransformations(
-    var scaleX: Float = 1f,
-    var scaleY: Float = 1f,
-    var offsetX: Int = 0,
-    var offsetY: Int = 0
+    var scaleX: DoubleParameter = DoubleParameter("Scale X", "1.0"),
+    var scaleY: DoubleParameter = DoubleParameter("Scale Y", "1.0"),
+    var offsetX: IntParameter = IntParameter("Offset X", "0"),
+    var offsetY: IntParameter = IntParameter("Offset Y", "0")
 )
 
 /** Text element. Composes a rich text editor. */
