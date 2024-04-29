@@ -24,7 +24,6 @@ fun App() {
     MaterialTheme {
 
     }
-
     Box(
         modifier = Modifier
     ) {
@@ -194,9 +193,7 @@ fun App() {
                         .align(Alignment.CenterHorizontally)
                         .weight(0.9f)
                 ) {
-                    CardPreview(
-                        modifier = Modifier
-                    )
+                    CardPreview()
                 }
                 // Download buttons
                 Row(
@@ -216,33 +213,4 @@ fun App() {
             }
         }
     }
-}
-
-/** Build composables for previewing cards. */
-@Composable
-fun CardPreview(modifier: Modifier = Modifier) {
-    Box(
-        modifier = modifier
-            //.size(width = 750.dp, height = 1050.dp)
-            .aspectRatio(2.5f / 3.5f)
-            .clip(
-                RoundedCornerShape(
-                    topStartPercent = 10,
-                    topEndPercent = 10,
-                    bottomStartPercent = 10,
-                    bottomEndPercent = 10
-                )
-            )
-            .background(Color.White)
-            .border(
-                width = 1.dp,
-                color = Color.Black,
-                shape = RoundedCornerShape(
-                    topStartPercent = 10,
-                    topEndPercent = 10,
-                    bottomStartPercent = 10,
-                    bottomEndPercent = 10
-                )
-            )
-    )
 }

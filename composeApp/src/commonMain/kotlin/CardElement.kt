@@ -51,8 +51,8 @@ abstract class CardElement {
         ) {
             if (!foldedRemember) {
                 Column(modifier = Modifier.fillMaxWidth()) {
-                    buildSpecificElements(modifier)
-
+                    buildSpecificElements(modifier = Modifier)
+                    buildTransformationElements(modifier = Modifier)
                 }
             }
         }
@@ -61,6 +61,12 @@ abstract class CardElement {
     /** Build specific composables to this card element type. */
     abstract @Composable
     fun buildSpecificElements(modifier: Modifier)
+
+    /** Build the transformation segment. */
+    @Composable
+    fun buildTransformationElements(modifier: Modifier) {
+
+    }
 
     fun setScaleX(value: Float) {
         transformations.scaleX = value
@@ -138,6 +144,14 @@ data class TextElement(
     @Composable
     override fun buildSpecificElements(modifier: Modifier) {
         Row(modifier = Modifier) {
+            Text(
+                text = "Text",
+                modifier = Modifier
+                    .padding(top = 8.dp, bottom = 8.dp, start = 32.dp),
+                style = MaterialTheme.typography.h5
+            )
+        }
+        Row(modifier = Modifier) {
             val state = rememberRichTextState()
             RichTextEditor(
                 modifier = Modifier.fillMaxWidth(),
@@ -160,3 +174,4 @@ data class ImageElement(
         TODO("Not yet implemented")
     }
 }
+
