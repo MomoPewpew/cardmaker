@@ -157,7 +157,6 @@ fun App() {
                     Row(
                         modifier = Modifier
                             .padding(horizontal = 16.dp)
-                            .defaultMinSize(minHeight = 5.dp)
                             .fillMaxWidth()
                             .border(
                                 width = 1.dp,
@@ -172,6 +171,7 @@ fun App() {
                     ) {
                         if (!pinnedFolded && (PinningState.state.value || !PinningState.state.value)) { // This seemingly redundant check is made to force a recomposition after a new pin is made
                             Column(modifier = Modifier.fillMaxWidth()) {
+                                Spacer(modifier = Modifier.height(8.dp))
                                 for (cardElement in card.cardElements) {
                                     cardElement.buildPinnedElements(modifier = Modifier)
                                 }
@@ -192,7 +192,7 @@ fun App() {
                     Row(
                         modifier = Modifier
                             .padding(horizontal = 16.dp)
-                            .defaultMinSize(minHeight = 5.dp)
+                            .defaultMinSize(minHeight = 8.dp)
                             .fillMaxWidth()
                             .border(
                                 width = 1.dp,

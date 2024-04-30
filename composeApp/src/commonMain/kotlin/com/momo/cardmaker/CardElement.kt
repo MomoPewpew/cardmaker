@@ -69,21 +69,25 @@ abstract class CardElement {
         transformations.offsetX.let { it ->
             if (it.isPinned) {
                 it.buildElements(modifier = Modifier, label = it.name)
+                Spacer(modifier = Modifier.height(8.dp))
             }
         }
         transformations.offsetY.let { it ->
             if (it.isPinned) {
                 it.buildElements(modifier = Modifier, label = it.name)
+                Spacer(modifier = Modifier.height(8.dp))
             }
         }
         transformations.scaleX.let { it ->
             if (it.isPinned) {
                 it.buildElements(modifier = Modifier, label = it.name)
+                Spacer(modifier = Modifier.height(8.dp))
             }
         }
         transformations.scaleY.let { it ->
             if (it.isPinned) {
                 it.buildElements(modifier = Modifier, label = it.name)
+                Spacer(modifier = Modifier.height(8.dp))
             }
         }
     }
@@ -153,6 +157,7 @@ data class TextElement(
         text.let { it ->
             if (it.isPinned) {
                 it.buildElements(modifier = Modifier, label = it.name)
+                Spacer(modifier = Modifier.height(8.dp))
             }
         }
         super.buildPinnedElements(modifier)
