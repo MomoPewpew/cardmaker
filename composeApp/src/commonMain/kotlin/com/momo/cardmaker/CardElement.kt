@@ -7,13 +7,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.mohamedrejeb.richeditor.model.rememberRichTextState
-import com.mohamedrejeb.richeditor.ui.material3.RichTextEditor
-import com.notkamui.keval.Keval
-import kotlin.math.round
 
 /** A card element can be subclassed into all the elements that are added to cards, such as text or images. */
 abstract class CardElement {
@@ -39,7 +36,7 @@ abstract class CardElement {
         }
         Row(
             modifier = Modifier
-                .padding(vertical = 8.dp, horizontal = 16.dp)
+                .padding(top = 8.dp, bottom = 16.dp, start = 16.dp, end = 16.dp)
                 .defaultMinSize(minHeight = 5.dp)
                 .fillMaxWidth()
                 .border(
@@ -69,7 +66,78 @@ abstract class CardElement {
     /** Build the transformation segment. */
     @Composable
     fun buildTransformationElements(modifier: Modifier) {
-
+        Row(modifier = Modifier) {
+            Column(
+                modifier = Modifier.weight(0.5f)
+                    .align(Alignment.CenterVertically)
+            ) {
+                Text(
+                    text = transformations.offsetX.name,
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally),
+                    style = MaterialTheme.typography.h5
+                )
+            }
+            Column(
+                modifier = Modifier.weight(1f)
+                    .align(Alignment.CenterVertically)
+            ) {
+                transformations.offsetX.buildElements(modifier = Modifier)
+            }
+            Column(
+                modifier = Modifier.weight(0.5f)
+                    .align(Alignment.CenterVertically)
+            ) {
+                Text(
+                    text = transformations.scaleX.name,
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally),
+                    style = MaterialTheme.typography.h5
+                )
+            }
+            Column(
+                modifier = Modifier.weight(1f)
+                    .align(Alignment.CenterVertically)
+            ) {
+                transformations.scaleX.buildElements(modifier = Modifier)
+            }
+        }
+        Row(modifier = Modifier.padding(bottom = 16.dp)) {
+            Column(
+                modifier = Modifier.weight(0.5f)
+                    .align(Alignment.CenterVertically)
+            ) {
+                Text(
+                    text = transformations.offsetY.name,
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally),
+                    style = MaterialTheme.typography.h5
+                )
+            }
+            Column(
+                modifier = Modifier.weight(1f)
+                    .align(Alignment.CenterVertically)
+            ) {
+                transformations.offsetY.buildElements(modifier = Modifier)
+            }
+            Column(
+                modifier = Modifier.weight(0.5f)
+                    .align(Alignment.CenterVertically)
+            ) {
+                Text(
+                    text = transformations.scaleY.name,
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally),
+                    style = MaterialTheme.typography.h5
+                )
+            }
+            Column(
+                modifier = Modifier.weight(1f)
+                    .align(Alignment.CenterVertically)
+            ) {
+                transformations.scaleY.buildElements(modifier = Modifier)
+            }
+        }
     }
 }
 

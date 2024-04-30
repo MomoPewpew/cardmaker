@@ -1,8 +1,16 @@
 package com.momo.cardmaker
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.runtime.Composable
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.Button
+import androidx.compose.material.Icon
+import androidx.compose.material.TextField
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDownward
+import androidx.compose.material.icons.filled.ArrowUpward
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.mohamedrejeb.richeditor.model.rememberRichTextState
 import com.mohamedrejeb.richeditor.ui.material.OutlinedRichTextEditor
@@ -96,7 +104,37 @@ class IntParameter(name: String, expression: String, isHighlighted: Boolean = fa
     Parameter<Int>(name, expression, isHighlighted) {
     @Composable
     override fun buildElements(modifier: Modifier) {
-
+        var numberText by remember { mutableStateOf(expression) }
+        Row(
+            modifier = modifier
+                .padding(
+                    horizontal = 16.dp
+                )
+        ) {
+            Button(modifier = Modifier.height(48.dp),
+                onClick = {
+                    addToConstant(1.0)
+                    numberText = expression
+                }) {
+                Icon(imageVector = Icons.Filled.ArrowUpward, contentDescription = "Increase")
+            }
+            TextField(
+                modifier = Modifier.height(48.dp),
+                maxLines = 1,
+                value = numberText,
+                onValueChange = { newValue ->
+                    numberText = newValue
+                },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+            )
+            Button(modifier = Modifier.height(48.dp),
+                onClick = {
+                    addToConstant(-1.0)
+                    numberText = expression
+                }) {
+                Icon(imageVector = Icons.Filled.ArrowDownward, contentDescription = "Decrease")
+            }
+        }
     }
 
     override fun get(): Int {
@@ -112,7 +150,37 @@ class DoubleParameter(name: String, expression: String, isHighlighted: Boolean =
     Parameter<Double>(name, expression, isHighlighted) {
     @Composable
     override fun buildElements(modifier: Modifier) {
-
+        var numberText by remember { mutableStateOf(expression) }
+        Row(
+            modifier = modifier
+                .padding(
+                    horizontal = 16.dp
+                )
+        ) {
+            Button(modifier = Modifier.height(48.dp),
+                onClick = {
+                    addToConstant(0.05)
+                    numberText = expression
+                }) {
+                Icon(imageVector = Icons.Filled.ArrowUpward, contentDescription = "Increase")
+            }
+            TextField(
+                modifier = Modifier.height(48.dp),
+                maxLines = 1,
+                value = numberText,
+                onValueChange = { newValue ->
+                    numberText = newValue
+                },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+            )
+            Button(modifier = Modifier.height(48.dp),
+                onClick = {
+                    addToConstant(-0.05)
+                    numberText = expression
+                }) {
+                Icon(imageVector = Icons.Filled.ArrowDownward, contentDescription = "Decrease")
+            }
+        }
     }
 
     override fun get(): Double {
@@ -130,7 +198,7 @@ class TextParameter(name: String, expression: String, isHighlighted: Boolean = f
     override fun buildElements(modifier: Modifier) {
         Column(
             modifier = Modifier
-                .padding(start = 16.dp, end=16.dp, bottom = 16.dp)
+                .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
         ) {
             val richTextState = rememberRichTextState()
 
