@@ -44,9 +44,8 @@ abstract class Parameter<T>(
                 constantString = "0"
                 expression = constantString
             } else {
-                val regex = Regex("(?:(?<=[0-9)}])[ ]*[+-][ ]*|^[ ]*)[0-9.]+\$")
+                val regex = Regex("(?:(?<=[0-9)}]) *[+-] *|^ *-? *)[0-9.]+\$")
                 val match = regex.find(expression)
-
                 if (match == null) {
                     // Expression is not empty but doesn't end with a constant addition/substraction
                     constantString = "0"
@@ -75,6 +74,13 @@ abstract class Parameter<T>(
                     if (match2 != null) {
                         newConstantString = "+${newConstantString.replace("-", "")}"
                     }
+
+                    // Handle the -0.0 case
+                    val regex3 = Regex("- *0.0\$")
+                    val match3 = regex3.find(newConstantString)
+                    if (match3 != null) {
+                        newConstantString = newConstantString.replace("-", "+")
+                    }
                 }
             } else {
                 // constantString must be "[+]?[ ]*[0-9.]+$" at this point
@@ -84,7 +90,6 @@ abstract class Parameter<T>(
                 if (match == null) {
                     throw IllegalArgumentException("An error occurred while incrementing or decrementing. This should never happen. Please report this to Momo.")
                 } else {
-                    println(match.value)
                     newConstantString =
                         constantString.replace(match.value, (match.value.toDouble() + add).toString())
 
@@ -97,7 +102,14 @@ abstract class Parameter<T>(
                 }
             }
 
-            expression = expression.replace(constantString, newConstantString)
+            expression = expression.substring(0, (expression.length - constantString.length)) + newConstantString
+
+            // Handle the +0.0 case
+            val regex = Regex("^[+] *0.0\$")
+            val match = regex.find(expression)
+            if (match != null) {
+                expression = "0.0"
+            }
         } catch (e: Exception) {
             when (e) {
                 is KevalInvalidSymbolException, is KevalInvalidExpressionException, is KevalZeroDivisionException -> {
