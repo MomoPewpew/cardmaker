@@ -37,6 +37,13 @@ abstract class Parameter<T>(
             // Confirm that the expression can be parsed
             Keval.eval(expression)
 
+            // Handle redundant + sign on constant value
+            val regex = Regex("^[ +]+[0-9.]+\$")
+            val match = regex.find(expression)
+            if (match != null) {
+                expression = expression.replace("+","")
+            }
+
             // Establish either a constant value, or whether the last segment is a constant addition/substraction
             var constantString = ""
             if (expression.isEmpty()) {
@@ -105,9 +112,9 @@ abstract class Parameter<T>(
             expression = expression.substring(0, (expression.length - constantString.length)) + newConstantString
 
             // Handle the +0.0 case
-            val regex = Regex("^[+] *0.0\$")
-            val match = regex.find(expression)
-            if (match != null) {
+            val regex2 = Regex("^[+] *0.0\$")
+            val match2 = regex2.find(expression)
+            if (match2 != null) {
                 expression = "0.0"
             }
         } catch (e: Exception) {
