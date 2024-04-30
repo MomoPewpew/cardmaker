@@ -23,7 +23,7 @@ import kotlin.math.round
 abstract class Parameter<T>(
     val name: String,
     var expression: String,
-    val isHighlighted: Boolean = false
+    val isPinned: Boolean = false
 ) {
     abstract @Composable
     fun buildElements(modifier: Modifier, label: String)

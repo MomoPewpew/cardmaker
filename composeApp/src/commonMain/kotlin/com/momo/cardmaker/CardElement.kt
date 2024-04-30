@@ -63,6 +63,31 @@ abstract class CardElement {
     abstract @Composable
     fun buildSpecificElements(modifier: Modifier)
 
+    /** Build the composables for all pinned Parameters associated with this CardElement. */
+    @Composable
+    open fun buildPinnedElements(modifier: Modifier) {
+        transformations.offsetX.let { it ->
+            if (it.isPinned) {
+                it.buildElements(modifier = Modifier, label = it.name)
+            }
+        }
+        transformations.offsetY.let { it ->
+            if (it.isPinned) {
+                it.buildElements(modifier = Modifier, label = it.name)
+            }
+        }
+        transformations.scaleX.let { it ->
+            if (it.isPinned) {
+                it.buildElements(modifier = Modifier, label = it.name)
+            }
+        }
+        transformations.scaleY.let { it ->
+            if (it.isPinned) {
+                it.buildElements(modifier = Modifier, label = it.name)
+            }
+        }
+    }
+
     /** Build the transformation segment. */
     @Composable
     fun buildTransformationElements(modifier: Modifier) {
@@ -119,11 +144,21 @@ data class TextElement(
             text.buildElements(modifier = Modifier, "")
         }
     }
+
+    @Composable
+    override fun buildPinnedElements(modifier: Modifier) {
+        text.let { it ->
+            if (it.isPinned) {
+                it.buildElements(modifier = Modifier, label = it.name)
+            }
+        }
+        super.buildPinnedElements(modifier)
+    }
 }
 
 /** Image element to add images to the card. */
 data class ImageElement(
-    var url: String = ""
+    var url: TextParameter = TextParameter(name = "Url", expression = "")
 ) : CardElement() {
     init {
         name = "Image Element"
@@ -132,6 +167,16 @@ data class ImageElement(
     @Composable
     override fun buildSpecificElements(modifier: Modifier) {
         TODO("Not yet implemented")
+    }
+
+    @Composable
+    override fun buildPinnedElements(modifier: Modifier) {
+        url.let { it ->
+            if (it.isPinned) {
+                it.buildElements(modifier = Modifier, label = it.name)
+            }
+        }
+        super.buildPinnedElements(modifier)
     }
 }
 

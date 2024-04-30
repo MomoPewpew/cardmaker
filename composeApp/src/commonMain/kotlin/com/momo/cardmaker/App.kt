@@ -113,14 +113,14 @@ fun App() {
                     }
                 }
 
-                // Parameters
-                var parametersFolded by remember { mutableStateOf(false) }
+                // Pinned
+                var pinnedFolded by remember { mutableStateOf(false) }
                 Row(modifier = Modifier) {
                     Text(
-                        text = if (parametersFolded) "▲ Parameters" else "▼ Parameters",
+                        text = if (pinnedFolded) "▲ Pinned" else "▼ Pinned",
                         modifier = Modifier
                             .padding(top = 16.dp, start = 32.dp)
-                            .clickable { parametersFolded = !parametersFolded },
+                            .clickable { pinnedFolded = !pinnedFolded },
                         style = MaterialTheme.typography.h3
                     )
                 }
@@ -140,9 +140,11 @@ fun App() {
                             )
                         )
                 ) {
-                    if (!parametersFolded) {
+                    if (!pinnedFolded) {
                         Column(modifier = Modifier.fillMaxWidth()) {
-                            // TODO: Add a row for every parameter in the parameters list
+                            for (cardElement in card.cardElements) {
+                                cardElement.buildPinnedElements(modifier = Modifier)
+                            }
                         }
                     }
                 }
