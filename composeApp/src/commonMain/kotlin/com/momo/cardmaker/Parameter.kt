@@ -120,7 +120,8 @@ abstract class Parameter<T>(
                 }
             }
 
-            expression.value = expression.value.substring(0, (expression.value.length - constantString.length)) + newConstantString
+            expression.value =
+                expression.value.substring(0, (expression.value.length - constantString.length)) + newConstantString
 
             // Handle the +0.0 case
             val regex2 = Regex("^[+] *0.0\$")
@@ -179,7 +180,9 @@ class IntParameter(name: String, expression: String, isHighlighted: Boolean = fa
                 }
             }
             Column(
-                modifier = Modifier.weight(4f)
+                modifier = Modifier
+                    .weight(4f)
+                    .padding(start = 10.dp)
             ) {
                 Row() {
                     Column(
@@ -263,11 +266,14 @@ class DoubleParameter(name: String, expression: String, isHighlighted: Boolean =
                 }
             }
             Column(
-                modifier = Modifier.weight(4f)
+                modifier = Modifier
+                    .weight(4f)
+                    .padding(start = 10.dp)
             ) {
                 Row() {
                     Column(
-                        modifier = Modifier.width(48.dp)
+                        modifier = Modifier
+                            .width(48.dp)
                     ) {
                         Button(modifier = Modifier
                             .fillMaxSize(),
@@ -325,7 +331,11 @@ class TextParameter(name: String, expression: String, isHighlighted: Boolean = f
             .clickable(enabled = PinningState.state.value) {
                 isPinned = !isPinned
                 PinningState.togglePinning()
-            }) {
+            }
+            .padding(
+                horizontal = 16.dp
+            )
+        ) {
             if (label.isNotEmpty()) {
                 Column(
                     modifier = Modifier
@@ -343,7 +353,7 @@ class TextParameter(name: String, expression: String, isHighlighted: Boolean = f
 
             Column(
                 modifier = Modifier
-                    .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
+                    .weight(4f)
             ) {
                 val richTextState = rememberRichTextState()
 

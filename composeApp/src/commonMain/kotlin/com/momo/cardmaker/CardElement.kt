@@ -140,7 +140,10 @@ data class TextElement(
 
     @Composable
     override fun buildSpecificElements(modifier: Modifier) {
-        Row(modifier = Modifier) {
+        Row(
+            modifier = Modifier
+                .padding(bottom = 16.dp)
+        ) {
             text.buildElements(modifier = Modifier, "")
         }
     }
