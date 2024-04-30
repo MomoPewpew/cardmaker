@@ -50,7 +50,7 @@ abstract class Parameter<T>(
                     expression += "+$constantString"
                 } else {
                     // Expression already has a constant addition/substraction at the end
-                    constantString = match.toString().trimStart()
+                    constantString = match.value.trimStart()
                 }
             }
 
@@ -64,7 +64,7 @@ abstract class Parameter<T>(
                     throw IllegalArgumentException("An error occurred while incrementing or decrementing. This should never happen. Please report this to Momo.")
                 } else {
                     newConstantString =
-                        constantString.replace(match.toString(), (match.toString().toDouble() - add).toString())
+                        constantString.replace(match.value, (match.value.toDouble() - add).toString())
 
                     // Handle double negatives on a negative to positive flip
                     val regex2 = Regex("- *-")
@@ -81,8 +81,9 @@ abstract class Parameter<T>(
                 if (match == null) {
                     throw IllegalArgumentException("An error occurred while incrementing or decrementing. This should never happen. Please report this to Momo.")
                 } else {
+                    println(match.value)
                     newConstantString =
-                        constantString.replace(match.toString(), (match.toString().toDouble() + add).toString())
+                        constantString.replace(match.value, (match.value.toDouble() + add).toString())
 
                     // Handle redundant plus signs on a positive to negative flip
                     val regex2 = Regex("[+] *-")
