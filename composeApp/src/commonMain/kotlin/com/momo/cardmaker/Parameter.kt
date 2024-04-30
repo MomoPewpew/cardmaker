@@ -2,13 +2,12 @@ package com.momo.cardmaker
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Button
-import androidx.compose.material.Icon
-import androidx.compose.material.TextField
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDownward
 import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -27,7 +26,7 @@ abstract class Parameter<T>(
     val isHighlighted: Boolean = false
 ) {
     abstract @Composable
-    fun buildElements(modifier: Modifier)
+    fun buildElements(modifier: Modifier, label: String)
 
     abstract fun get(): T
 
@@ -41,7 +40,7 @@ abstract class Parameter<T>(
             val regex = Regex("^[ +]+[0-9.]+\$")
             val match = regex.find(expression)
             if (match != null) {
-                expression = expression.replace("+","")
+                expression = expression.replace("+", "")
             }
 
             // Establish either a constant value, or whether the last segment is a constant addition/substraction
@@ -134,37 +133,72 @@ abstract class Parameter<T>(
 class IntParameter(name: String, expression: String, isHighlighted: Boolean = false) :
     Parameter<Int>(name, expression, isHighlighted) {
     @Composable
-    override fun buildElements(modifier: Modifier) {
+    override fun buildElements(modifier: Modifier, label: String) {
         var numberText by remember { mutableStateOf(expression) }
         Row(
-            modifier = modifier
+            modifier = Modifier
+                .height(48.dp)
                 .padding(
                     horizontal = 16.dp
                 )
         ) {
-            Button(modifier = Modifier.height(48.dp),
-                onClick = {
-                    addToConstant(1.0)
-                    numberText = expression
-                }) {
-                Icon(imageVector = Icons.Filled.ArrowUpward, contentDescription = "Increase")
+            if (label.isNotEmpty()) {
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .align(Alignment.CenterVertically)
+                ) {
+                    Text(
+                        text = label,
+                        modifier = Modifier
+                            .align(Alignment.CenterHorizontally),
+                        style = MaterialTheme.typography.h5
+                    )
+                }
             }
-            TextField(
-                modifier = Modifier.height(48.dp),
-                maxLines = 1,
-                value = numberText,
-                onValueChange = { newValue ->
-                    numberText = newValue
-                    expression = newValue
-                },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-            )
-            Button(modifier = Modifier.height(48.dp),
-                onClick = {
-                    addToConstant(-1.0)
-                    numberText = expression
-                }) {
-                Icon(imageVector = Icons.Filled.ArrowDownward, contentDescription = "Decrease")
+            Column(
+                modifier = Modifier.weight(4f)
+            ) {
+                Row() {
+                    Column(
+                        modifier = Modifier.width(48.dp)
+                    ) {
+                        Button(modifier = Modifier
+                            .fillMaxSize(),
+                            onClick = {
+                                addToConstant(1.0)
+                                numberText = expression
+                            }) {
+                            Icon(imageVector = Icons.Filled.ArrowUpward, contentDescription = "Increase")
+                        }
+                    }
+                    Column(
+                        modifier = Modifier
+                    ) {
+                        TextField(
+                            modifier = Modifier.fillMaxWidth(),
+                            maxLines = 1,
+                            value = numberText,
+                            onValueChange = { newValue ->
+                                numberText = newValue
+                                expression = newValue
+                            },
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                        )
+                    }
+                }
+            }
+            Column(
+                modifier = Modifier.width(48.dp)
+            ) {
+                Button(modifier = Modifier
+                    .fillMaxSize(),
+                    onClick = {
+                        addToConstant(-1.0)
+                        numberText = expression
+                    }) {
+                    Icon(imageVector = Icons.Filled.ArrowDownward, contentDescription = "Decrease")
+                }
             }
         }
     }
@@ -181,37 +215,72 @@ class IntParameter(name: String, expression: String, isHighlighted: Boolean = fa
 class DoubleParameter(name: String, expression: String, isHighlighted: Boolean = false) :
     Parameter<Double>(name, expression, isHighlighted) {
     @Composable
-    override fun buildElements(modifier: Modifier) {
+    override fun buildElements(modifier: Modifier, label: String) {
         var numberText by remember { mutableStateOf(expression) }
         Row(
-            modifier = modifier
+            modifier = Modifier
+                .height(48.dp)
                 .padding(
                     horizontal = 16.dp
                 )
         ) {
-            Button(modifier = Modifier.height(48.dp),
-                onClick = {
-                    addToConstant(0.05)
-                    numberText = expression
-                }) {
-                Icon(imageVector = Icons.Filled.ArrowUpward, contentDescription = "Increase")
+            if (label.isNotEmpty()) {
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .align(Alignment.CenterVertically)
+                ) {
+                    Text(
+                        text = label,
+                        modifier = Modifier
+                            .align(Alignment.CenterHorizontally),
+                        style = MaterialTheme.typography.h5
+                    )
+                }
             }
-            TextField(
-                modifier = Modifier.height(48.dp),
-                maxLines = 1,
-                value = numberText,
-                onValueChange = { newValue ->
-                    numberText = newValue
-                    expression = newValue
-                },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-            )
-            Button(modifier = Modifier.height(48.dp),
-                onClick = {
-                    addToConstant(-0.05)
-                    numberText = expression
-                }) {
-                Icon(imageVector = Icons.Filled.ArrowDownward, contentDescription = "Decrease")
+            Column(
+                modifier = Modifier.weight(4f)
+            ) {
+                Row() {
+                    Column(
+                        modifier = Modifier.width(48.dp)
+                    ) {
+                        Button(modifier = Modifier
+                            .fillMaxSize(),
+                            onClick = {
+                                addToConstant(0.05)
+                                numberText = expression
+                            }) {
+                            Icon(imageVector = Icons.Filled.ArrowUpward, contentDescription = "Increase")
+                        }
+                    }
+                    Column(
+                        modifier = Modifier
+                    ) {
+                        TextField(
+                            modifier = Modifier.fillMaxWidth(),
+                            maxLines = 1,
+                            value = numberText,
+                            onValueChange = { newValue ->
+                                numberText = newValue
+                                expression = newValue
+                            },
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                        )
+                    }
+                }
+            }
+            Column(
+                modifier = Modifier.width(48.dp)
+            ) {
+                Button(modifier = Modifier
+                    .fillMaxSize(),
+                    onClick = {
+                        addToConstant(-0.05)
+                        numberText = expression
+                    }) {
+                    Icon(imageVector = Icons.Filled.ArrowDownward, contentDescription = "Decrease")
+                }
             }
         }
     }
@@ -228,7 +297,7 @@ class DoubleParameter(name: String, expression: String, isHighlighted: Boolean =
 class TextParameter(name: String, expression: String, isHighlighted: Boolean = false) :
     Parameter<String>(name, expression, isHighlighted) {
     @Composable
-    override fun buildElements(modifier: Modifier) {
+    override fun buildElements(modifier: Modifier, label: String) {
         Column(
             modifier = Modifier
                 .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)

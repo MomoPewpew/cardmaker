@@ -68,74 +68,30 @@ abstract class CardElement {
     fun buildTransformationElements(modifier: Modifier) {
         Row(modifier = Modifier) {
             Column(
-                modifier = Modifier.weight(0.5f)
+                modifier = Modifier.weight(1f)
                     .align(Alignment.CenterVertically)
             ) {
-                Text(
-                    text = transformations.offsetX.name,
-                    modifier = Modifier
-                        .align(Alignment.CenterHorizontally),
-                    style = MaterialTheme.typography.h5
-                )
+                transformations.offsetX.buildElements(modifier = Modifier, "Offset X")
             }
             Column(
                 modifier = Modifier.weight(1f)
                     .align(Alignment.CenterVertically)
             ) {
-                transformations.offsetX.buildElements(modifier = Modifier)
-            }
-            Column(
-                modifier = Modifier.weight(0.5f)
-                    .align(Alignment.CenterVertically)
-            ) {
-                Text(
-                    text = transformations.scaleX.name,
-                    modifier = Modifier
-                        .align(Alignment.CenterHorizontally),
-                    style = MaterialTheme.typography.h5
-                )
-            }
-            Column(
-                modifier = Modifier.weight(1f)
-                    .align(Alignment.CenterVertically)
-            ) {
-                transformations.scaleX.buildElements(modifier = Modifier)
+                transformations.scaleX.buildElements(modifier = Modifier, "Scale X")
             }
         }
         Row(modifier = Modifier.padding(bottom = 16.dp)) {
             Column(
-                modifier = Modifier.weight(0.5f)
+                modifier = Modifier.weight(1f)
                     .align(Alignment.CenterVertically)
             ) {
-                Text(
-                    text = transformations.offsetY.name,
-                    modifier = Modifier
-                        .align(Alignment.CenterHorizontally),
-                    style = MaterialTheme.typography.h5
-                )
+                transformations.offsetY.buildElements(modifier = Modifier, "Offset Y")
             }
             Column(
                 modifier = Modifier.weight(1f)
                     .align(Alignment.CenterVertically)
             ) {
-                transformations.offsetY.buildElements(modifier = Modifier)
-            }
-            Column(
-                modifier = Modifier.weight(0.5f)
-                    .align(Alignment.CenterVertically)
-            ) {
-                Text(
-                    text = transformations.scaleY.name,
-                    modifier = Modifier
-                        .align(Alignment.CenterHorizontally),
-                    style = MaterialTheme.typography.h5
-                )
-            }
-            Column(
-                modifier = Modifier.weight(1f)
-                    .align(Alignment.CenterVertically)
-            ) {
-                transformations.scaleY.buildElements(modifier = Modifier)
+                transformations.scaleY.buildElements(modifier = Modifier, "Scale Y")
             }
         }
     }
@@ -160,7 +116,7 @@ data class TextElement(
     @Composable
     override fun buildSpecificElements(modifier: Modifier) {
         Row(modifier = Modifier) {
-            text.buildElements(modifier = Modifier)
+            text.buildElements(modifier = Modifier, "")
         }
     }
 }
