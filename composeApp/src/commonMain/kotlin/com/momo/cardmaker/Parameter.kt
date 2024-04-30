@@ -1,5 +1,6 @@
 package com.momo.cardmaker
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
@@ -23,7 +24,7 @@ import kotlin.math.round
 abstract class Parameter<T>(
     val name: String,
     var expression: String,
-    val isPinned: Boolean = false
+    var isPinned: Boolean = false
 ) {
     abstract @Composable
     fun buildElements(modifier: Modifier, label: String)
@@ -135,12 +136,15 @@ class IntParameter(name: String, expression: String, isHighlighted: Boolean = fa
     @Composable
     override fun buildElements(modifier: Modifier, label: String) {
         var numberText by remember { mutableStateOf(expression) }
-        Row(
-            modifier = Modifier
-                .height(48.dp)
-                .padding(
-                    horizontal = 16.dp
-                )
+        Row(modifier = Modifier
+            .clickable(enabled = PinningState.state.value) {
+                isPinned = !isPinned
+                PinningState.togglePinning()
+            }
+            .height(48.dp)
+            .padding(
+                horizontal = 16.dp
+            )
         ) {
             if (label.isNotEmpty()) {
                 Column(
@@ -219,6 +223,10 @@ class DoubleParameter(name: String, expression: String, isHighlighted: Boolean =
         var numberText by remember { mutableStateOf(expression) }
         Row(
             modifier = Modifier
+                .clickable(enabled = PinningState.state.value) {
+                    isPinned = !isPinned
+                    PinningState.togglePinning()
+                }
                 .height(48.dp)
                 .padding(
                     horizontal = 16.dp
@@ -298,23 +306,44 @@ class TextParameter(name: String, expression: String, isHighlighted: Boolean = f
     Parameter<String>(name, expression, isHighlighted) {
     @Composable
     override fun buildElements(modifier: Modifier, label: String) {
-        Column(
-            modifier = Modifier
-                .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
-        ) {
-            val richTextState = rememberRichTextState()
+        Row(modifier = Modifier
+            .clickable(enabled = PinningState.state.value) {
+                isPinned = !isPinned
+                PinningState.togglePinning()
+            }) {
+            if (label.isNotEmpty()) {
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .align(Alignment.CenterVertically)
+                ) {
+                    Text(
+                        text = label,
+                        modifier = Modifier
+                            .align(Alignment.CenterHorizontally),
+                        style = MaterialTheme.typography.h5
+                    )
+                }
+            }
 
-            RichTextStyleRow(
-                state = richTextState,
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-            )
+                    .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
+            ) {
+                val richTextState = rememberRichTextState()
 
-            OutlinedRichTextEditor(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                state = richTextState,
-            )
+                RichTextStyleRow(
+                    state = richTextState,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                )
+
+                OutlinedRichTextEditor(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    state = richTextState,
+                )
+            }
         }
     }
 

@@ -26,7 +26,7 @@ abstract class CardElement {
             Text(
                 text = if (folded) "▲ $name" else "▼ $name",
                 modifier = Modifier
-                    .padding(top = 16.dp, start = 32.dp)
+                    .padding(top = 8.dp, start = 32.dp)
                     .clickable {
                         folded = !folded
                         foldedRemember = folded
@@ -36,7 +36,7 @@ abstract class CardElement {
         }
         Row(
             modifier = Modifier
-                .padding(top = 8.dp, bottom = 16.dp, start = 16.dp, end = 16.dp)
+                .padding(top = 8.dp, bottom = 8.dp, start = 16.dp, end = 16.dp)
                 .defaultMinSize(minHeight = 5.dp)
                 .fillMaxWidth()
                 .border(

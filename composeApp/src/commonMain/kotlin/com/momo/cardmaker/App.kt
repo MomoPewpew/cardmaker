@@ -4,8 +4,11 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
+import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.PushPin
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,6 +23,14 @@ import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 
 var card = Card()
+
+object PinningState {
+    val state = mutableStateOf(false)
+
+    fun togglePinning() {
+        state.value = !state.value
+    }
+}
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
@@ -75,26 +86,43 @@ fun App() {
                 Row(
                     modifier = Modifier
                         .padding(vertical = 8.dp, horizontal = 32.dp)
+                        .height(48.dp)
                 ) {
                     Button(
                         onClick = {
                             card.cardElements.add(TextElement())
-                            advancedFolded = true // Fold before unfolding to ensure a recomposition of the advanced segment
+                            advancedFolded =
+                                true // Fold before unfolding to ensure a recomposition of the advanced segment
                             advancedFolded = false
                         },
-                        modifier = Modifier.padding(horizontal = 16.dp)
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .padding(horizontal = 16.dp)
                     ) {
                         Text("Add Text")
                     }
                     Button(
                         onClick = {
                             card.cardElements.add(ImageElement())
-                            advancedFolded = true // Fold before unfolding to ensure a recomposition of the  advanced segment
+                            advancedFolded =
+                                true // Fold before unfolding to ensure a recomposition of the  advanced segment
                             advancedFolded = false
                         },
-                        modifier = Modifier.padding(horizontal = 16.dp)
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .padding(horizontal = 16.dp)
                     ) {
                         Text("Add Image")
+                    }
+                    Button(
+                        onClick = {
+                            PinningState.togglePinning()
+                        },
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .padding(horizontal = 16.dp)
+                    ) {
+                        Icon(imageVector = Icons.Outlined.PushPin, contentDescription = "Decrease")
                     }
                 }
 
