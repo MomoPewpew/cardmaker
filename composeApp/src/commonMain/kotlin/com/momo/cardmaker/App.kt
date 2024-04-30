@@ -195,7 +195,7 @@ fun App() {
                 Row(
                     modifier = Modifier
                         .align(Alignment.CenterHorizontally)
-                        .weight(0.9f)
+                        .weight(weight = 0.9f, fill = false)
                 ) {
                     CardPreview()
                 }
