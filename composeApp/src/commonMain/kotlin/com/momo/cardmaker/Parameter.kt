@@ -24,9 +24,11 @@ import kotlin.math.round
 
 abstract class Parameter<T>(
     val name: String,
-    var expression: String,
+    var defaultExpression: String,
     var isPinned: Boolean = false
 ) {
+    var expression = mutableStateOf(defaultExpression)
+
     abstract @Composable
     fun buildElements(modifier: Modifier, label: String)
 
@@ -36,28 +38,28 @@ abstract class Parameter<T>(
     fun addToConstant(add: Double) {
         try {
             // Confirm that the expression can be parsed
-            Keval.eval(expression)
+            Keval.eval(expression.value)
 
             // Handle redundant + sign on constant value
             val regex = Regex("^[ +]+[0-9.]+\$")
-            val match = regex.find(expression)
+            val match = regex.find(expression.value)
             if (match != null) {
-                expression = expression.replace("+", "")
+                expression.value = expression.value.replace("+", "")
             }
 
             // Establish either a constant value, or whether the last segment is a constant addition/substraction
             var constantString = ""
-            if (expression.isEmpty()) {
-                // Expression is empty and becomes 0
+            if (expression.value.isEmpty()) {
+                // expression.value is empty and becomes 0
                 constantString = "0"
-                expression = constantString
+                expression.value = constantString
             } else {
                 val regex2 = Regex("(?:(?<=[0-9)}]) *[+-] *|^ *-? *)[0-9.]+\$")
-                val match2 = regex2.find(expression)
+                val match2 = regex2.find(expression.value)
                 if (match2 == null) {
                     // Expression is not empty but doesn't end with a constant addition/substraction
                     constantString = "+0"
-                    expression += constantString
+                    expression.value += constantString
                 } else {
                     // Expression already has a constant addition/substraction at the end
                     constantString = match2.value.trimStart()
@@ -118,13 +120,13 @@ abstract class Parameter<T>(
                 }
             }
 
-            expression = expression.substring(0, (expression.length - constantString.length)) + newConstantString
+            expression.value = expression.value.substring(0, (expression.value.length - constantString.length)) + newConstantString
 
             // Handle the +0.0 case
             val regex2 = Regex("^[+] *0.0\$")
-            val match2 = regex2.find(expression)
+            val match2 = regex2.find(expression.value)
             if (match2 != null) {
-                expression = "0.0"
+                expression.value = "0.0"
             }
         } catch (e: Exception) {
             when (e) {
@@ -152,7 +154,6 @@ class IntParameter(name: String, expression: String, isHighlighted: Boolean = fa
     Parameter<Int>(name, expression, isHighlighted) {
     @Composable
     override fun buildElements(modifier: Modifier, label: String) {
-        var numberText by remember { mutableStateOf(expression) }
         Row(modifier = Modifier
             .clickable(enabled = PinningState.state.value) {
                 isPinned = !isPinned
@@ -188,7 +189,7 @@ class IntParameter(name: String, expression: String, isHighlighted: Boolean = fa
                             .fillMaxSize(),
                             onClick = {
                                 addToConstant(1.0)
-                                numberText = expression
+                                expression.value = expression.value
                             }) {
                             Icon(imageVector = Icons.Filled.ArrowUpward, contentDescription = "Increase")
                         }
@@ -199,10 +200,9 @@ class IntParameter(name: String, expression: String, isHighlighted: Boolean = fa
                         TextField(
                             modifier = Modifier.fillMaxWidth(),
                             maxLines = 1,
-                            value = numberText,
+                            value = expression.value,
                             onValueChange = { newValue ->
-                                numberText = newValue
-                                expression = newValue
+                                expression.value = newValue
                             },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                         )
@@ -216,7 +216,7 @@ class IntParameter(name: String, expression: String, isHighlighted: Boolean = fa
                     .fillMaxSize(),
                     onClick = {
                         addToConstant(-1.0)
-                        numberText = expression
+                        expression.value = expression.value
                     }) {
                     Icon(imageVector = Icons.Filled.ArrowDownward, contentDescription = "Decrease")
                 }
@@ -226,7 +226,7 @@ class IntParameter(name: String, expression: String, isHighlighted: Boolean = fa
 
     override fun get(): Int {
         return try {
-            round(Keval.eval(expression)).toInt()
+            round(Keval.eval(expression.value)).toInt()
         } catch (e: Exception) {
             0
         }
@@ -237,7 +237,6 @@ class DoubleParameter(name: String, expression: String, isHighlighted: Boolean =
     Parameter<Double>(name, expression, isHighlighted) {
     @Composable
     override fun buildElements(modifier: Modifier, label: String) {
-        var numberText by remember { mutableStateOf(expression) }
         Row(
             modifier = Modifier
                 .clickable(enabled = PinningState.state.value) {
@@ -274,7 +273,7 @@ class DoubleParameter(name: String, expression: String, isHighlighted: Boolean =
                             .fillMaxSize(),
                             onClick = {
                                 addToConstant(0.05)
-                                numberText = expression
+                                expression.value = expression.value
                             }) {
                             Icon(imageVector = Icons.Filled.ArrowUpward, contentDescription = "Increase")
                         }
@@ -285,10 +284,9 @@ class DoubleParameter(name: String, expression: String, isHighlighted: Boolean =
                         TextField(
                             modifier = Modifier.fillMaxWidth(),
                             maxLines = 1,
-                            value = numberText,
+                            value = expression.value,
                             onValueChange = { newValue ->
-                                numberText = newValue
-                                expression = newValue
+                                expression.value = newValue
                             },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                         )
@@ -302,7 +300,7 @@ class DoubleParameter(name: String, expression: String, isHighlighted: Boolean =
                     .fillMaxSize(),
                     onClick = {
                         addToConstant(-0.05)
-                        numberText = expression
+                        expression.value = expression.value
                     }) {
                     Icon(imageVector = Icons.Filled.ArrowDownward, contentDescription = "Decrease")
                 }
@@ -312,7 +310,7 @@ class DoubleParameter(name: String, expression: String, isHighlighted: Boolean =
 
     override fun get(): Double {
         return try {
-            Keval.eval(expression)
+            Keval.eval(expression.value)
         } catch (e: Exception) {
             0.0
         }
@@ -365,6 +363,6 @@ class TextParameter(name: String, expression: String, isHighlighted: Boolean = f
     }
 
     override fun get(): String {
-        return expression
+        return expression.value
     }
 }
