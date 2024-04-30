@@ -48,8 +48,8 @@ abstract class Parameter<T>(
                 val match = regex.find(expression)
                 if (match == null) {
                     // Expression is not empty but doesn't end with a constant addition/substraction
-                    constantString = "0"
-                    expression += "+$constantString"
+                    constantString = "+0"
+                    expression += constantString
                 } else {
                     // Expression already has a constant addition/substraction at the end
                     constantString = match.value.trimStart()
@@ -148,6 +148,7 @@ class IntParameter(name: String, expression: String, isHighlighted: Boolean = fa
                 value = numberText,
                 onValueChange = { newValue ->
                     numberText = newValue
+                    expression = newValue
                 },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
             )
@@ -194,6 +195,7 @@ class DoubleParameter(name: String, expression: String, isHighlighted: Boolean =
                 value = numberText,
                 onValueChange = { newValue ->
                     numberText = newValue
+                    expression = newValue
                 },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
             )
