@@ -15,6 +15,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import com.momo.cardmaker.components.CardPreview
+import com.momo.cardmaker.components.Popup
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
@@ -247,6 +248,9 @@ fun App() {
                     }
                 }
             }
+
+            // Popup window
+            Popup()
         }
     }
 }

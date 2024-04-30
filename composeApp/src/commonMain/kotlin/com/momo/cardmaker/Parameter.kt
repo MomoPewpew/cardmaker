@@ -14,6 +14,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.mohamedrejeb.richeditor.model.rememberRichTextState
 import com.mohamedrejeb.richeditor.ui.material.OutlinedRichTextEditor
+import com.momo.cardmaker.components.PopupState
 import com.momo.cardmaker.components.RichTextStyleRow
 import com.notkamui.keval.Keval
 import com.notkamui.keval.KevalInvalidExpressionException
@@ -70,7 +71,11 @@ abstract class Parameter<T>(
                 val match2 = regex2.find(constantString)
 
                 if (match2 == null) {
-                    throw IllegalArgumentException("An error occurred while incrementing or decrementing. This should never happen. Please report this to Momo.")
+                    PopupState.popup(
+                        "Unexpected Error!",
+                        "An error occurred while incrementing or decrementing. This should never happen. Please report this to Momo."
+                    )
+                    return
                 } else {
                     newConstantString =
                         constantString.replace(match2.value, (match2.value.toDouble() - add).toString())
@@ -95,7 +100,11 @@ abstract class Parameter<T>(
                 val match2 = regex2.find(constantString)
 
                 if (match2 == null) {
-                    throw IllegalArgumentException("An error occurred while incrementing or decrementing. This should never happen. Please report this to Momo.")
+                    PopupState.popup(
+                        "Unexpected Error!",
+                        "An error occurred while incrementing or decrementing. This should never happen. Please report this to Momo."
+                    )
+                    return
                 } else {
                     newConstantString =
                         constantString.replace(match2.value, (match2.value.toDouble() + add).toString())
@@ -120,11 +129,19 @@ abstract class Parameter<T>(
         } catch (e: Exception) {
             when (e) {
                 is KevalInvalidSymbolException, is KevalInvalidExpressionException, is KevalZeroDivisionException -> {
-                    throw IllegalArgumentException("Your expression cannot be parsed. Please fix your expression before trying to increment or decrement it.")
+                    PopupState.popup(
+                        "Parse Error",
+                        "Your expression cannot be parsed. Please fix your expression before trying to increment or decrement it."
+                    )
+                    return
                 }
 
                 else -> {
-                    throw IllegalArgumentException("An error occurred while incrementing or decrementing. This should never happen. Please report this to Momo.")
+                    PopupState.popup(
+                        "Unexpected Error!",
+                        "An error occurred while incrementing or decrementing. This should never happen. Please report this to Momo."
+                    )
+                    return
                 }
             }
         }
