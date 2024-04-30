@@ -51,59 +51,59 @@ abstract class Parameter<T>(
                 constantString = "0"
                 expression = constantString
             } else {
-                val regex = Regex("(?:(?<=[0-9)}]) *[+-] *|^ *-? *)[0-9.]+\$")
-                val match = regex.find(expression)
-                if (match == null) {
+                val regex2 = Regex("(?:(?<=[0-9)}]) *[+-] *|^ *-? *)[0-9.]+\$")
+                val match2 = regex2.find(expression)
+                if (match2 == null) {
                     // Expression is not empty but doesn't end with a constant addition/substraction
                     constantString = "+0"
                     expression += constantString
                 } else {
                     // Expression already has a constant addition/substraction at the end
-                    constantString = match.value.trimStart()
+                    constantString = match2.value.trimStart()
                 }
             }
 
             var newConstantString: String
             if (constantString.startsWith("-")) {
                 // constantString must be "-[ ]*[0-9.]+$" at this point
-                val regex = Regex("[0-9.]+\$")
-                val match = regex.find(constantString)
+                val regex2 = Regex("[0-9.]+\$")
+                val match2 = regex2.find(constantString)
 
-                if (match == null) {
+                if (match2 == null) {
                     throw IllegalArgumentException("An error occurred while incrementing or decrementing. This should never happen. Please report this to Momo.")
                 } else {
                     newConstantString =
-                        constantString.replace(match.value, (match.value.toDouble() - add).toString())
+                        constantString.replace(match2.value, (match2.value.toDouble() - add).toString())
 
                     // Handle double negatives on a negative to positive flip
-                    val regex2 = Regex("- *-")
-                    val match2 = regex2.find(newConstantString)
-                    if (match2 != null) {
+                    val regex3 = Regex("- *-")
+                    val match3 = regex3.find(newConstantString)
+                    if (match3 != null) {
                         newConstantString = "+${newConstantString.replace("-", "")}"
                     }
 
                     // Handle the -0.0 case
-                    val regex3 = Regex("- *0.0\$")
-                    val match3 = regex3.find(newConstantString)
-                    if (match3 != null) {
+                    val regex4 = Regex("- *0.0\$")
+                    val match4 = regex4.find(newConstantString)
+                    if (match4 != null) {
                         newConstantString = newConstantString.replace("-", "+")
                     }
                 }
             } else {
                 // constantString must be "[+]?[ ]*[0-9.]+$" at this point
-                val regex = Regex("[0-9.]+\$")
-                val match = regex.find(constantString)
+                val regex2 = Regex("[0-9.]+\$")
+                val match2 = regex2.find(constantString)
 
-                if (match == null) {
+                if (match2 == null) {
                     throw IllegalArgumentException("An error occurred while incrementing or decrementing. This should never happen. Please report this to Momo.")
                 } else {
                     newConstantString =
-                        constantString.replace(match.value, (match.value.toDouble() + add).toString())
+                        constantString.replace(match2.value, (match2.value.toDouble() + add).toString())
 
                     // Handle redundant plus signs on a positive to negative flip
-                    val regex2 = Regex("[+] *-")
-                    val match2 = regex2.find(newConstantString)
-                    if (match2 != null) {
+                    val regex3 = Regex("[+] *-")
+                    val match3 = regex3.find(newConstantString)
+                    if (match3 != null) {
                         newConstantString = "-${newConstantString.replace("-", "").replace("+", "")}"
                     }
                 }
