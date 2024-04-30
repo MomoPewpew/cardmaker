@@ -16,6 +16,9 @@ import com.mohamedrejeb.richeditor.model.rememberRichTextState
 import com.mohamedrejeb.richeditor.ui.material.OutlinedRichTextEditor
 import com.momo.cardmaker.components.RichTextStyleRow
 import com.notkamui.keval.Keval
+import com.notkamui.keval.KevalInvalidExpressionException
+import com.notkamui.keval.KevalInvalidSymbolException
+import com.notkamui.keval.KevalZeroDivisionException
 import kotlin.math.round
 
 abstract class Parameter<T>(
@@ -94,9 +97,17 @@ abstract class Parameter<T>(
                 }
             }
 
-            expression.replace(constantString, newConstantString)
+            expression = expression.replace(constantString, newConstantString)
         } catch (e: Exception) {
-            throw IllegalArgumentException("Your expression cannot be parsed. Please fix your expression before trying to increment or decrement it.")
+            when (e) {
+                is KevalInvalidSymbolException, is KevalInvalidExpressionException, is KevalZeroDivisionException -> {
+                    throw IllegalArgumentException("Your expression cannot be parsed. Please fix your expression before trying to increment or decrement it.")
+                }
+
+                else -> {
+                    throw IllegalArgumentException("An error occurred while incrementing or decrementing. This should never happen. Please report this to Momo.")
+                }
+            }
         }
     }
 }
