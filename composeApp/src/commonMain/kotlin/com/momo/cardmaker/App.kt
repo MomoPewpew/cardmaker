@@ -168,7 +168,7 @@ fun App() {
                             )
                         )
                 ) {
-                    if (!pinnedFolded) {
+                    if (!pinnedFolded && (PinningState.state.value || !PinningState.state.value)) { // This seemingly redundant check is made to force a recomposition after a new pin is made
                         Column(modifier = Modifier.fillMaxWidth()) {
                             for (cardElement in card.cardElements) {
                                 cardElement.buildPinnedElements(modifier = Modifier)
