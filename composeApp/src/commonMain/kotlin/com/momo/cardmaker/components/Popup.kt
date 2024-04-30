@@ -9,15 +9,15 @@ object PopupState {
     var title = mutableStateOf("")
     var text = mutableStateOf("")
 
-    fun popup(title_: String, text_: String) {
-        title.value = title_
-        text.value = text_
+    fun popup(title: String, text: String) {
+        this.title.value = title
+        this.text.value = text
     }
 }
 
 @Composable
 fun Popup() {
-    if (!PopupState.text.value.isEmpty()) {
+    if (PopupState.text.value.isNotEmpty()) {
         AlertDialog(
             onDismissRequest = { PopupState.text.value = "" },
             title = { Text(PopupState.title.value) },

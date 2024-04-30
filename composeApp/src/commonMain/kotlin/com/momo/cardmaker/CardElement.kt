@@ -16,11 +16,11 @@ import androidx.compose.ui.unit.dp
 abstract class CardElement {
     var name: String = ""
     private val transformations: CardElementTransformations = CardElementTransformations()
-    var folded = false
+    private var folded = false
 
     /** Build the expandable segment, and fills it with the elements that are specific to this element type. */
     @Composable
-    fun buildElements(modifier: Modifier) {
+    fun buildElements() {
         var foldedRemember by remember { mutableStateOf(folded) }
         Row(modifier = Modifier) {
             Text(
@@ -53,40 +53,40 @@ abstract class CardElement {
             if (!foldedRemember) {
                 Column(modifier = Modifier.fillMaxWidth()) {
                     buildSpecificElements(modifier = Modifier)
-                    buildTransformationElements(modifier = Modifier)
+                    buildTransformationElements()
                 }
             }
         }
     }
 
     /** Build specific composables to this card element type. */
-    abstract @Composable
-    fun buildSpecificElements(modifier: Modifier)
+    @Composable
+    abstract fun buildSpecificElements(modifier: Modifier)
 
     /** Build the composables for all pinned Parameters associated with this CardElement. */
     @Composable
     open fun buildPinnedElements(modifier: Modifier) {
         transformations.offsetX.let { it ->
             if (it.isPinned) {
-                it.buildElements(modifier = Modifier, label = it.name)
+                it.buildElements(modifier = Modifier, label = it.name.value)
                 Spacer(modifier = Modifier.height(8.dp))
             }
         }
         transformations.offsetY.let { it ->
             if (it.isPinned) {
-                it.buildElements(modifier = Modifier, label = it.name)
+                it.buildElements(modifier = Modifier, label = it.name.value)
                 Spacer(modifier = Modifier.height(8.dp))
             }
         }
         transformations.scaleX.let { it ->
             if (it.isPinned) {
-                it.buildElements(modifier = Modifier, label = it.name)
+                it.buildElements(modifier = Modifier, label = it.name.value)
                 Spacer(modifier = Modifier.height(8.dp))
             }
         }
         transformations.scaleY.let { it ->
             if (it.isPinned) {
-                it.buildElements(modifier = Modifier, label = it.name)
+                it.buildElements(modifier = Modifier, label = it.name.value)
                 Spacer(modifier = Modifier.height(8.dp))
             }
         }
@@ -94,7 +94,7 @@ abstract class CardElement {
 
     /** Build the transformation segment. */
     @Composable
-    fun buildTransformationElements(modifier: Modifier) {
+    fun buildTransformationElements() {
         Row(modifier = Modifier) {
             Column(
                 modifier = Modifier.weight(1f)
@@ -128,15 +128,15 @@ abstract class CardElement {
 
 /** This class holds all the transformation data of a card element. */
 data class CardElementTransformations(
-    val scaleX: DoubleParameter = DoubleParameter(name = "Scale X", expression = "1.0"),
-    val scaleY: DoubleParameter = DoubleParameter(name = "Scale Y", expression = "1.0"),
-    val offsetX: IntParameter = IntParameter(name = "Offset X", expression = "0"),
-    val offsetY: IntParameter = IntParameter(name = "Offset Y", expression = "0")
+    val scaleX: DoubleParameter = DoubleParameter(defaultName = "Scale X", expression = "1.0"),
+    val scaleY: DoubleParameter = DoubleParameter(defaultName = "Scale Y", expression = "1.0"),
+    val offsetX: IntParameter = IntParameter(defaultName = "Offset X", expression = "0"),
+    val offsetY: IntParameter = IntParameter(defaultName = "Offset Y", expression = "0")
 )
 
 /** Textbox element to add text to the card. */
 data class TextElement(
-    var text: TextParameter = TextParameter(name = "Text", expression = "")
+    var text: TextParameter = TextParameter(defaultName = "Text", expression = "")
 ) : CardElement() {
     init {
         name = "Text Element"
@@ -156,7 +156,7 @@ data class TextElement(
     override fun buildPinnedElements(modifier: Modifier) {
         text.let { it ->
             if (it.isPinned) {
-                it.buildElements(modifier = Modifier, label = it.name)
+                it.buildElements(modifier = Modifier, label = it.name.value)
                 Spacer(modifier = Modifier.height(8.dp))
             }
         }
@@ -166,7 +166,7 @@ data class TextElement(
 
 /** Image element to add images to the card. */
 data class ImageElement(
-    var url: TextParameter = TextParameter(name = "Url", expression = "")
+    var url: TextParameter = TextParameter(defaultName = "Url", expression = "")
 ) : CardElement() {
     init {
         name = "Image Element"
@@ -181,7 +181,7 @@ data class ImageElement(
     override fun buildPinnedElements(modifier: Modifier) {
         url.let { it ->
             if (it.isPinned) {
-                it.buildElements(modifier = Modifier, label = it.name)
+                it.buildElements(modifier = Modifier, label = it.name.value)
             }
         }
         super.buildPinnedElements(modifier)

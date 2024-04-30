@@ -16,17 +16,40 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import com.momo.cardmaker.components.CardPreview
 import com.momo.cardmaker.components.Popup
+import com.momo.cardmaker.components.Rename
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 
 var card = Card()
 
-object PinningState {
-    val state = mutableStateOf(false)
+object EditState {
+    enum class States {
+        NONE,
+        PINNING,
+        RENAMING
+    }
+
+    val state = mutableStateOf(States.NONE)
+
+    fun off() {
+        state.value = States.NONE
+    }
 
     fun togglePinning() {
-        state.value = !state.value
+        if (state.value == States.PINNING) {
+            state.value = States.NONE
+        } else {
+            state.value = States.PINNING
+        }
+    }
+
+    fun toggleRenaming() {
+        if (state.value == States.RENAMING) {
+            state.value = States.NONE
+        } else {
+            state.value = States.RENAMING
+        }
     }
 }
 
@@ -84,9 +107,10 @@ fun App() {
                     // Main button row
                     Row(
                         modifier = Modifier
-                            .padding(vertical = 8.dp, horizontal = 32.dp)
+                            .padding(vertical = 16.dp, horizontal = 32.dp)
                             .height(48.dp)
                     ) {
+                        // Add text
                         Button(
                             onClick = {
                                 card.cardElements.add(TextElement())
@@ -100,6 +124,8 @@ fun App() {
                         ) {
                             Text("Add Text")
                         }
+
+                        // Add image
                         Button(
                             onClick = {
                                 card.cardElements.add(ImageElement())
@@ -114,15 +140,44 @@ fun App() {
                             Text("Add Image")
                         }
 
-                        val buttonColor = if (!PinningState.state.value) Color(0xFF013220) else Color.Gray
+                        // Vertical Line
+                        Canvas(
+                            modifier = Modifier
+                                .fillMaxHeight()
+                                .padding(horizontal = 16.dp)
+                        ) {
+                            drawLine(
+                                start = Offset(x = 0f, y = 0f),
+                                end = Offset(x = 0f, y = size.height),
+                                color = Color.Black.copy(alpha = 0.6f),
+                                strokeWidth = 1f
+                            )
+                        }
+
+                        // Rename
+                        val renameColor = if (EditState.state.value == EditState.States.RENAMING) Color.Gray else Color(0xFF013220)
                         Button(
                             onClick = {
-                                PinningState.togglePinning()
+                                EditState.toggleRenaming()
                             },
                             modifier = Modifier
                                 .fillMaxHeight()
                                 .padding(horizontal = 16.dp),
-                            colors = ButtonDefaults.buttonColors(backgroundColor = buttonColor)
+                            colors = ButtonDefaults.buttonColors(backgroundColor = renameColor)
+                        ) {
+                            Text("Rename")
+                        }
+
+                        // Pin parameter
+                        val pinColor = if (EditState.state.value == EditState.States.PINNING) Color.Gray else Color(0xFF013220)
+                        Button(
+                            onClick = {
+                                EditState.togglePinning()
+                            },
+                            modifier = Modifier
+                                .fillMaxHeight()
+                                .padding(horizontal = 16.dp),
+                            colors = ButtonDefaults.buttonColors(backgroundColor = pinColor)
                         ) {
                             Icon(imageVector = Icons.Outlined.PushPin, contentDescription = "Pin")
                         }
@@ -169,7 +224,7 @@ fun App() {
                                 )
                             )
                     ) {
-                        if (!pinnedFolded && (PinningState.state.value || !PinningState.state.value)) { // This seemingly redundant check is made to force a recomposition after a new pin is made
+                        if (!pinnedFolded && (EditState.state.value == EditState.States.PINNING || EditState.state.value != EditState.States.PINNING)) { // This seemingly redundant check is made to force a recomposition after a new pin is made
                             Column(modifier = Modifier.fillMaxWidth()) {
                                 Spacer(modifier = Modifier.height(8.dp))
                                 for (cardElement in card.cardElements) {
@@ -208,9 +263,7 @@ fun App() {
                         if (!advancedFolded) {
                             Column(modifier = Modifier.fillMaxWidth()) {
                                 for (cardElement in card.cardElements) {
-                                    cardElement.buildElements(
-                                        modifier = Modifier
-                                    )
+                                    cardElement.buildElements()
                                 }
                             }
                         }
@@ -251,6 +304,9 @@ fun App() {
 
             // Popup window
             Popup()
+
+            // Rename window
+            Rename()
         }
     }
 }

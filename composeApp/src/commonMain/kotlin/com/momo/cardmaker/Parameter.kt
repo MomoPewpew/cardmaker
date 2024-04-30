@@ -14,8 +14,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.mohamedrejeb.richeditor.model.rememberRichTextState
 import com.mohamedrejeb.richeditor.ui.material.OutlinedRichTextEditor
-import com.momo.cardmaker.components.PopupState
-import com.momo.cardmaker.components.RichTextStyleRow
+import com.momo.cardmaker.components.*
 import com.notkamui.keval.Keval
 import com.notkamui.keval.KevalInvalidExpressionException
 import com.notkamui.keval.KevalInvalidSymbolException
@@ -23,14 +22,15 @@ import com.notkamui.keval.KevalZeroDivisionException
 import kotlin.math.round
 
 abstract class Parameter<T>(
-    val name: String,
-    var defaultExpression: String,
+    defaultName: String,
+    defaultExpression: String,
     var isPinned: Boolean = false
 ) {
+    var name = mutableStateOf(defaultName)
     var expression = mutableStateOf(defaultExpression)
 
-    abstract @Composable
-    fun buildElements(modifier: Modifier, label: String)
+    @Composable
+    abstract fun buildElements(modifier: Modifier, label: String)
 
     abstract fun get(): T
 
@@ -48,7 +48,7 @@ abstract class Parameter<T>(
             }
 
             // Establish either a constant value, or whether the last segment is a constant addition/substraction
-            var constantString = ""
+            val constantString: String
             if (expression.value.isEmpty()) {
                 // expression.value is empty and becomes 0
                 constantString = "0"
@@ -151,14 +151,19 @@ abstract class Parameter<T>(
     }
 }
 
-class IntParameter(name: String, expression: String, isHighlighted: Boolean = false) :
-    Parameter<Int>(name, expression, isHighlighted) {
+class IntParameter(defaultName: String, expression: String, isHighlighted: Boolean = false) :
+    Parameter<Int>(defaultName, expression, isHighlighted) {
     @Composable
     override fun buildElements(modifier: Modifier, label: String) {
         Row(modifier = Modifier
-            .clickable(enabled = PinningState.state.value) {
-                isPinned = !isPinned
-                PinningState.togglePinning()
+            .clickable(enabled = EditState.state.value != EditState.States.NONE) {
+                when (EditState.state.value) {
+                    EditState.States.PINNING -> isPinned = !isPinned
+                    EditState.States.RENAMING -> RenameState.rename(name)
+
+                    else -> {}
+                }
+                EditState.off()
             }
             .height(48.dp)
             .padding(
@@ -236,15 +241,20 @@ class IntParameter(name: String, expression: String, isHighlighted: Boolean = fa
     }
 }
 
-class DoubleParameter(name: String, expression: String, isHighlighted: Boolean = false) :
-    Parameter<Double>(name, expression, isHighlighted) {
+class DoubleParameter(defaultName: String, expression: String, isHighlighted: Boolean = false) :
+    Parameter<Double>(defaultName, expression, isHighlighted) {
     @Composable
     override fun buildElements(modifier: Modifier, label: String) {
         Row(
             modifier = Modifier
-                .clickable(enabled = PinningState.state.value) {
-                    isPinned = !isPinned
-                    PinningState.togglePinning()
+                .clickable(enabled = EditState.state.value != EditState.States.NONE) {
+                    when (EditState.state.value) {
+                        EditState.States.PINNING -> isPinned = !isPinned
+                        EditState.States.RENAMING -> RenameState.rename(name)
+
+                        else -> {}
+                    }
+                    EditState.off()
                 }
                 .height(48.dp)
                 .padding(
@@ -323,14 +333,19 @@ class DoubleParameter(name: String, expression: String, isHighlighted: Boolean =
     }
 }
 
-class TextParameter(name: String, expression: String, isHighlighted: Boolean = false) :
-    Parameter<String>(name, expression, isHighlighted) {
+class TextParameter(defaultName: String, expression: String, isHighlighted: Boolean = false) :
+    Parameter<String>(defaultName, expression, isHighlighted) {
     @Composable
     override fun buildElements(modifier: Modifier, label: String) {
         Row(modifier = Modifier
-            .clickable(enabled = PinningState.state.value) {
-                isPinned = !isPinned
-                PinningState.togglePinning()
+            .clickable(enabled = EditState.state.value != EditState.States.NONE) {
+                when (EditState.state.value) {
+                    EditState.States.PINNING -> isPinned = !isPinned
+                    EditState.States.RENAMING -> RenameState.rename(name)
+
+                    else -> {}
+                }
+                EditState.off()
             }
             .padding(
                 horizontal = 16.dp
