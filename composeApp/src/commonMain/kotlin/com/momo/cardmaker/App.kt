@@ -155,7 +155,8 @@ fun App() {
                         }
 
                         // Rename
-                        val renameColor = if (ClickState.state.value == ClickState.States.RENAMING) Color.Gray else Color(0xFF013220)
+                        val renameColor =
+                            if (ClickState.state.value == ClickState.States.RENAMING) Color.Gray else Color(0xFF013220)
                         Button(
                             onClick = {
                                 ClickState.toggleRenaming()
@@ -169,7 +170,8 @@ fun App() {
                         }
 
                         // Pin parameter
-                        val pinColor = if (ClickState.state.value == ClickState.States.PINNING) Color.Gray else Color(0xFF013220)
+                        val pinColor =
+                            if (ClickState.state.value == ClickState.States.PINNING) Color.Gray else Color(0xFF013220)
                         Button(
                             onClick = {
                                 ClickState.togglePinning()
@@ -198,72 +200,80 @@ fun App() {
                         }
                     }
 
-                    // Pinned
-                    var pinnedFolded by remember { mutableStateOf(false) }
-                    Row(modifier = Modifier) {
-                        Text(
-                            text = if (pinnedFolded) "▲ Pinned" else "▼ Pinned",
-                            modifier = Modifier
-                                .padding(top = 16.dp, start = 32.dp)
-                                .clickable { pinnedFolded = !pinnedFolded },
-                            style = MaterialTheme.typography.h3
-                        )
-                    }
-                    Row(
+                    Box(
                         modifier = Modifier
-                            .padding(horizontal = 16.dp)
-                            .fillMaxWidth()
-                            .border(
-                                width = 1.dp,
-                                Color.Black.copy(alpha = 0.2f),
-                                shape = RoundedCornerShape(
-                                    topStart = 15.dp,
-                                    topEnd = 15.dp,
-                                    bottomStart = 15.dp,
-                                    bottomEnd = 15.dp
-                                )
-                            )
+                            .fillMaxSize()
+                            .verticalScroll(rememberScrollState())
                     ) {
-                        if (!pinnedFolded && (ClickState.state.value == ClickState.States.PINNING || ClickState.state.value != ClickState.States.PINNING)) { // This seemingly redundant check is made to force a recomposition after a new pin is made
-                            Column(modifier = Modifier.fillMaxWidth()) {
-                                Spacer(modifier = Modifier.height(8.dp))
-                                for (cardElement in card.cardElements) {
-                                    cardElement.buildPinnedElements(modifier = Modifier)
+                        Column {
+                            // Pinned
+                            var pinnedFolded by remember { mutableStateOf(false) }
+                            Row(modifier = Modifier) {
+                                Text(
+                                    text = if (pinnedFolded) "▲ Pinned" else "▼ Pinned",
+                                    modifier = Modifier
+                                        .padding(top = 16.dp, start = 32.dp)
+                                        .clickable { pinnedFolded = !pinnedFolded },
+                                    style = MaterialTheme.typography.h3
+                                )
+                            }
+                            Row(
+                                modifier = Modifier
+                                    .padding(horizontal = 16.dp)
+                                    .fillMaxWidth()
+                                    .border(
+                                        width = 1.dp,
+                                        Color.Black.copy(alpha = 0.2f),
+                                        shape = RoundedCornerShape(
+                                            topStart = 15.dp,
+                                            topEnd = 15.dp,
+                                            bottomStart = 15.dp,
+                                            bottomEnd = 15.dp
+                                        )
+                                    )
+                            ) {
+                                if (!pinnedFolded && (ClickState.state.value == ClickState.States.PINNING || ClickState.state.value != ClickState.States.PINNING)) { // This seemingly redundant check is made to force a recomposition after a new pin is made
+                                    Column(modifier = Modifier.fillMaxWidth()) {
+                                        Spacer(modifier = Modifier.height(8.dp))
+                                        for (cardElement in card.cardElements) {
+                                            cardElement.buildPinnedElements(modifier = Modifier)
+                                        }
+                                    }
                                 }
                             }
-                        }
-                    }
 
-                    // Advanced
-                    Row(modifier = Modifier) {
-                        Text(
-                            text = if (advancedFolded) "▲ Advanced" else "▼ Advanced",
-                            modifier = Modifier
-                                .padding(top = 16.dp, start = 32.dp)
-                                .clickable { advancedFolded = !advancedFolded },
-                            style = MaterialTheme.typography.h3
-                        )
-                    }
-                    Row(
-                        modifier = Modifier
-                            .padding(horizontal = 16.dp)
-                            .defaultMinSize(minHeight = 8.dp)
-                            .fillMaxWidth()
-                            .border(
-                                width = 1.dp,
-                                Color.Black.copy(alpha = 0.2f),
-                                shape = RoundedCornerShape(
-                                    topStart = 15.dp,
-                                    topEnd = 15.dp,
-                                    bottomStart = 15.dp,
-                                    bottomEnd = 15.dp
+                            // Advanced
+                            Row(modifier = Modifier) {
+                                Text(
+                                    text = if (advancedFolded) "▲ Advanced" else "▼ Advanced",
+                                    modifier = Modifier
+                                        .padding(top = 16.dp, start = 32.dp)
+                                        .clickable { advancedFolded = !advancedFolded },
+                                    style = MaterialTheme.typography.h3
                                 )
-                            )
-                    ) {
-                        if (!advancedFolded) {
-                            Column(modifier = Modifier.fillMaxWidth()) {
-                                for (cardElement in card.cardElements) {
-                                    cardElement.buildElements()
+                            }
+                            Row(
+                                modifier = Modifier
+                                    .padding(horizontal = 16.dp)
+                                    .defaultMinSize(minHeight = 8.dp)
+                                    .fillMaxWidth()
+                                    .border(
+                                        width = 1.dp,
+                                        Color.Black.copy(alpha = 0.2f),
+                                        shape = RoundedCornerShape(
+                                            topStart = 15.dp,
+                                            topEnd = 15.dp,
+                                            bottomStart = 15.dp,
+                                            bottomEnd = 15.dp
+                                        )
+                                    )
+                            ) {
+                                if (!advancedFolded) {
+                                    Column(modifier = Modifier.fillMaxWidth()) {
+                                        for (cardElement in card.cardElements) {
+                                            cardElement.buildElements()
+                                        }
+                                    }
                                 }
                             }
                         }
