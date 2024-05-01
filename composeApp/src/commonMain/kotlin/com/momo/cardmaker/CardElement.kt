@@ -24,8 +24,8 @@ import com.momo.cardmaker.components.RenameState
 abstract class CardElement(
     defaultName: String,
 ) {
-    var name = mutableStateOf(defaultName)
-    private val transformations: CardElementTransformations = CardElementTransformations()
+    val name = mutableStateOf(defaultName)
+    private val transformations = CardElementTransformations()
     private var folded = false
 
     /** Build the expandable segment, and fills it with the elements that are specific to this element type. */
