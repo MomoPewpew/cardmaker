@@ -115,9 +115,7 @@ fun App() {
                         // Add text
                         Button(
                             onClick = {
-                                CardState.card.value.cardElements.value.add(TextElement())
-                                advancedFolded =
-                                    true // Fold before unfolding to ensure a recomposition of the advanced segment
+                                CardState.card.value.addElement(TextElement())
                                 advancedFolded = false
                             },
                             modifier = Modifier
@@ -130,9 +128,7 @@ fun App() {
                         // Add image
                         Button(
                             onClick = {
-                                CardState.card.value.cardElements.value.add(ImageElement())
-                                advancedFolded =
-                                    true // Fold before unfolding to ensure a recomposition of the  advanced segment
+                                CardState.card.value.addElement(ImageElement())
                                 advancedFolded = false
                             },
                             modifier = Modifier
@@ -234,7 +230,7 @@ fun App() {
                                         )
                                     )
                             ) {
-                                if (!pinnedFolded && (ClickState.state.value == ClickState.States.PINNING || ClickState.state.value != ClickState.States.PINNING)) { // This seemingly redundant check is made to force a recomposition after a new pin is made
+                                if (!pinnedFolded) {
                                     Column(modifier = Modifier.fillMaxWidth()) {
                                         Spacer(modifier = Modifier.height(8.dp))
                                         CardState.card.value.cardElements.value.forEach { cardElement ->

@@ -28,10 +28,11 @@ import kotlin.math.round
 abstract class Parameter<T>(
     defaultName: String,
     defaultExpression: String,
-    var isPinned: Boolean = false
+    isPinnedDefault: Boolean = false
 ) {
     var name = mutableStateOf(defaultName)
     var expression = mutableStateOf(defaultExpression)
+    var isPinned = mutableStateOf(isPinnedDefault)
 
     @Composable
     abstract fun buildElements(modifier: Modifier, label: MutableState<String>)
@@ -233,7 +234,7 @@ class IntParameter(defaultName: String, expression: String, isHighlighted: Boole
                     .matchParentSize()
                     .clickable {
                         when (ClickState.state.value) {
-                            ClickState.States.PINNING -> isPinned = !isPinned
+                            ClickState.States.PINNING -> isPinned.value = !isPinned.value
                             ClickState.States.RENAMING -> RenameState.rename(name)
 
                             else -> {}
@@ -333,7 +334,7 @@ class DoubleParameter(defaultName: String, expression: String, isHighlighted: Bo
                     .matchParentSize()
                     .clickable {
                         when (ClickState.state.value) {
-                            ClickState.States.PINNING -> isPinned = !isPinned
+                            ClickState.States.PINNING -> isPinned.value = !isPinned.value
                             ClickState.States.RENAMING -> RenameState.rename(name)
 
                             else -> {}
@@ -405,7 +406,7 @@ class RichTextParameter(defaultName: String, expression: String, isHighlighted: 
                     .matchParentSize()
                     .clickable {
                         when (ClickState.state.value) {
-                            ClickState.States.PINNING -> isPinned = !isPinned
+                            ClickState.States.PINNING -> isPinned.value = !isPinned.value
                             ClickState.States.RENAMING -> RenameState.rename(name)
 
                             else -> {}

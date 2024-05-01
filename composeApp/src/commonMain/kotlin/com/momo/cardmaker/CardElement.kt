@@ -190,25 +190,25 @@ data class CardElementTransformations(
     @Composable
     fun buildPinnedElements() {
         offsetX.let {
-            if (it.isPinned) {
+            if (it.isPinned.value) {
                 it.buildElements(modifier = Modifier, label = it.name)
                 Spacer(modifier = Modifier.height(8.dp))
             }
         }
         offsetY.let {
-            if (it.isPinned) {
+            if (it.isPinned.value) {
                 it.buildElements(modifier = Modifier, label = it.name)
                 Spacer(modifier = Modifier.height(8.dp))
             }
         }
         scaleX.let {
-            if (it.isPinned) {
+            if (it.isPinned.value) {
                 it.buildElements(modifier = Modifier, label = it.name)
                 Spacer(modifier = Modifier.height(8.dp))
             }
         }
         scaleY.let {
-            if (it.isPinned) {
+            if (it.isPinned.value) {
                 it.buildElements(modifier = Modifier, label = it.name)
                 Spacer(modifier = Modifier.height(8.dp))
             }
@@ -235,7 +235,7 @@ class TextElement(
     @Composable
     override fun buildPinnedElements(modifier: Modifier) {
         text.let {
-            if (it.isPinned) {
+            if (it.isPinned.value) {
                 it.buildElements(modifier = Modifier, label = it.name)
                 Spacer(modifier = Modifier.height(8.dp))
             }
@@ -258,7 +258,7 @@ class ImageElement(
     @Composable
     override fun buildPinnedElements(modifier: Modifier) {
         url.let {
-            if (it.isPinned) {
+            if (it.isPinned.value) {
                 it.buildElements(modifier = Modifier, label = it.name)
             }
         }
