@@ -30,7 +30,7 @@ abstract class Parameter<T>(
     var expression = mutableStateOf(defaultExpression)
 
     @Composable
-    abstract fun buildElements(modifier: Modifier, label: String)
+    abstract fun buildElements(modifier: Modifier, label: MutableState<String>)
 
     abstract fun get(): T
 
@@ -154,7 +154,7 @@ abstract class Parameter<T>(
 class IntParameter(defaultName: String, expression: String, isHighlighted: Boolean = false) :
     Parameter<Int>(defaultName, expression, isHighlighted) {
     @Composable
-    override fun buildElements(modifier: Modifier, label: String) {
+    override fun buildElements(modifier: Modifier, label: MutableState<String>) {
         Row(modifier = Modifier
             .clickable(enabled = EditState.state.value != EditState.States.NONE) {
                 when (EditState.state.value) {
@@ -170,14 +170,14 @@ class IntParameter(defaultName: String, expression: String, isHighlighted: Boole
                 horizontal = 16.dp
             )
         ) {
-            if (label.isNotEmpty()) {
+            if (label.value.isNotEmpty()) {
                 Column(
                     modifier = Modifier
                         .weight(1f)
                         .align(Alignment.CenterVertically)
                 ) {
                     Text(
-                        text = label,
+                        text = label.value,
                         modifier = Modifier
                             .align(Alignment.CenterHorizontally),
                         style = MaterialTheme.typography.h5
@@ -212,7 +212,7 @@ class IntParameter(defaultName: String, expression: String, isHighlighted: Boole
                             onValueChange = { newValue ->
                                 expression.value = newValue
                             },
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
                         )
                     }
                 }
@@ -244,7 +244,7 @@ class IntParameter(defaultName: String, expression: String, isHighlighted: Boole
 class DoubleParameter(defaultName: String, expression: String, isHighlighted: Boolean = false) :
     Parameter<Double>(defaultName, expression, isHighlighted) {
     @Composable
-    override fun buildElements(modifier: Modifier, label: String) {
+    override fun buildElements(modifier: Modifier, label: MutableState<String>) {
         Row(
             modifier = Modifier
                 .clickable(enabled = EditState.state.value != EditState.States.NONE) {
@@ -261,14 +261,14 @@ class DoubleParameter(defaultName: String, expression: String, isHighlighted: Bo
                     horizontal = 16.dp
                 )
         ) {
-            if (label.isNotEmpty()) {
+            if (label.value.isNotEmpty()) {
                 Column(
                     modifier = Modifier
                         .weight(1f)
                         .align(Alignment.CenterVertically)
                 ) {
                     Text(
-                        text = label,
+                        text = label.value,
                         modifier = Modifier
                             .align(Alignment.CenterHorizontally),
                         style = MaterialTheme.typography.h5
@@ -304,7 +304,7 @@ class DoubleParameter(defaultName: String, expression: String, isHighlighted: Bo
                             onValueChange = { newValue ->
                                 expression.value = newValue
                             },
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
                         )
                     }
                 }
@@ -336,7 +336,7 @@ class DoubleParameter(defaultName: String, expression: String, isHighlighted: Bo
 class TextParameter(defaultName: String, expression: String, isHighlighted: Boolean = false) :
     Parameter<String>(defaultName, expression, isHighlighted) {
     @Composable
-    override fun buildElements(modifier: Modifier, label: String) {
+    override fun buildElements(modifier: Modifier, label: MutableState<String>) {
         Row(modifier = Modifier
             .clickable(enabled = EditState.state.value != EditState.States.NONE) {
                 when (EditState.state.value) {
@@ -351,14 +351,14 @@ class TextParameter(defaultName: String, expression: String, isHighlighted: Bool
                 horizontal = 16.dp
             )
         ) {
-            if (label.isNotEmpty()) {
+            if (label.value.isNotEmpty()) {
                 Column(
                     modifier = Modifier
                         .weight(1f)
                         .align(Alignment.CenterVertically)
                 ) {
                     Text(
-                        text = label,
+                        text = label.value,
                         modifier = Modifier
                             .align(Alignment.CenterHorizontally),
                         style = MaterialTheme.typography.h5

@@ -68,25 +68,25 @@ abstract class CardElement {
     open fun buildPinnedElements(modifier: Modifier) {
         transformations.offsetX.let {
             if (it.isPinned) {
-                it.buildElements(modifier = Modifier, label = it.name.value)
+                it.buildElements(modifier = Modifier, label = it.name)
                 Spacer(modifier = Modifier.height(8.dp))
             }
         }
         transformations.offsetY.let {
             if (it.isPinned) {
-                it.buildElements(modifier = Modifier, label = it.name.value)
+                it.buildElements(modifier = Modifier, label = it.name)
                 Spacer(modifier = Modifier.height(8.dp))
             }
         }
         transformations.scaleX.let {
             if (it.isPinned) {
-                it.buildElements(modifier = Modifier, label = it.name.value)
+                it.buildElements(modifier = Modifier, label = it.name)
                 Spacer(modifier = Modifier.height(8.dp))
             }
         }
         transformations.scaleY.let {
             if (it.isPinned) {
-                it.buildElements(modifier = Modifier, label = it.name.value)
+                it.buildElements(modifier = Modifier, label = it.name)
                 Spacer(modifier = Modifier.height(8.dp))
             }
         }
@@ -100,13 +100,13 @@ abstract class CardElement {
                 modifier = Modifier.weight(1f)
                     .align(Alignment.CenterVertically)
             ) {
-                transformations.offsetX.buildElements(modifier = Modifier, "Offset X")
+                transformations.offsetX.buildElements(modifier = Modifier, mutableStateOf("Offset X"))
             }
             Column(
                 modifier = Modifier.weight(1f)
                     .align(Alignment.CenterVertically)
             ) {
-                transformations.scaleX.buildElements(modifier = Modifier, "Scale X")
+                transformations.scaleX.buildElements(modifier = Modifier, mutableStateOf("Scale X"))
             }
         }
         Row(modifier = Modifier.padding(bottom = 16.dp)) {
@@ -114,13 +114,13 @@ abstract class CardElement {
                 modifier = Modifier.weight(1f)
                     .align(Alignment.CenterVertically)
             ) {
-                transformations.offsetY.buildElements(modifier = Modifier, "Offset Y")
+                transformations.offsetY.buildElements(modifier = Modifier, mutableStateOf("Offset Y"))
             }
             Column(
                 modifier = Modifier.weight(1f)
                     .align(Alignment.CenterVertically)
             ) {
-                transformations.scaleY.buildElements(modifier = Modifier, "Scale Y")
+                transformations.scaleY.buildElements(modifier = Modifier, mutableStateOf("Scale Y"))
             }
         }
     }
@@ -148,7 +148,7 @@ data class TextElement(
             modifier = Modifier
                 .padding(bottom = 16.dp)
         ) {
-            text.buildElements(modifier = Modifier, "")
+            text.buildElements(modifier = Modifier, mutableStateOf(""))
         }
     }
 
@@ -156,7 +156,7 @@ data class TextElement(
     override fun buildPinnedElements(modifier: Modifier) {
         text.let {
             if (it.isPinned) {
-                it.buildElements(modifier = Modifier, label = it.name.value)
+                it.buildElements(modifier = Modifier, label = it.name)
                 Spacer(modifier = Modifier.height(8.dp))
             }
         }
@@ -181,7 +181,7 @@ data class ImageElement(
     override fun buildPinnedElements(modifier: Modifier) {
         url.let {
             if (it.isPinned) {
-                it.buildElements(modifier = Modifier, label = it.name.value)
+                it.buildElements(modifier = Modifier, label = it.name)
             }
         }
         super.buildPinnedElements(modifier)
