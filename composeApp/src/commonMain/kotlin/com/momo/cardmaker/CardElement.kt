@@ -4,8 +4,14 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Button
+import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDownward
+import androidx.compose.material.icons.filled.ArrowUpward
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,21 +32,80 @@ abstract class CardElement(
     fun buildElements() {
         var foldedRemember by remember { mutableStateOf(folded) }
         Row(modifier = Modifier) {
-            Text(
-                text = if (folded) "▲ ${name.value}" else "▼ ${name.value}",
+            // Clickable name text
+            Column(
                 modifier = Modifier
-                    .padding(top = 8.dp, start = 32.dp)
-                    .clickable {
-                        if (ClickState.state.value == ClickState.States.RENAMING) {
-                            RenameState.rename(name)
-                            ClickState.off()
-                        } else {
-                            folded = !folded
-                            foldedRemember = folded
+                    .weight(weight = 9f)
+            ) {
+                Row {
+                    Text(
+                        text = if (folded) "▲ ${name.value}" else "▼ ${name.value}",
+                        modifier = Modifier
+                            .padding(top = 8.dp, start = 32.dp)
+                            .clickable {
+                                if (ClickState.state.value == ClickState.States.RENAMING) {
+                                    RenameState.rename(name)
+                                    ClickState.off()
+                                } else {
+                                    folded = !folded
+                                    foldedRemember = folded
+                                }
+                            },
+                        style = MaterialTheme.typography.h4
+                    )
+                }
+            }
+
+            // Element buttons
+            Column(
+                modifier = Modifier
+                    .weight(2f)
+                    .align(Alignment.CenterVertically)
+            ) {
+                Row (modifier = Modifier
+                    .padding(end = 31.dp)
+                    .align(Alignment.End)) {
+                    // Move up button
+                    Column(
+                        modifier = Modifier
+                            .width(48.dp)
+                    ) {
+                        Button(modifier = Modifier
+                            .fillMaxSize(),
+                            onClick = {
+
+                            }) {
+                            Icon(imageVector = Icons.Filled.ArrowUpward, contentDescription = "Move Up")
                         }
-                    },
-                style = MaterialTheme.typography.h4
-            )
+                    }
+                    // Move Down Button
+                    Column(
+                        modifier = Modifier
+                            .width(48.dp)
+                    ) {
+                        Button(modifier = Modifier
+                            .fillMaxSize(),
+                            onClick = {
+
+                            }) {
+                            Icon(imageVector = Icons.Filled.ArrowDownward, contentDescription = "Move Down")
+                        }
+                    }
+                    // Delete button
+                    Column(
+                        modifier = Modifier
+                            .width(48.dp)
+                    ) {
+                        Button(modifier = Modifier
+                            .fillMaxSize(),
+                            onClick = {
+
+                            }) {
+                            Icon(imageVector = Icons.Filled.Delete, contentDescription = "Delete")
+                        }
+                    }
+                }
+            }
         }
         Row(
             modifier = Modifier
