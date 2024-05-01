@@ -31,7 +31,7 @@ abstract class CardElement(
     @Composable
     fun buildElements() {
         var foldedRemember by remember { mutableStateOf(folded) }
-        val me by remember { mutableStateOf(this) }
+        val me = mutableStateOf(this)
         Row(modifier = Modifier) {
             // Clickable name text
             Column(
@@ -76,7 +76,7 @@ abstract class CardElement(
                         Button(modifier = Modifier
                             .fillMaxSize(),
                             onClick = {
-                                CardState.card.value.moveElementUp(me)
+                                CardState.card.value.moveElementUp(me.value)
                             }) {
                             Icon(imageVector = Icons.Filled.ArrowUpward, contentDescription = "Move Up")
                         }
@@ -89,7 +89,7 @@ abstract class CardElement(
                         Button(modifier = Modifier
                             .fillMaxSize(),
                             onClick = {
-                                CardState.card.value.moveElementDown(me)
+                                CardState.card.value.moveElementDown(me.value)
                             }) {
                             Icon(imageVector = Icons.Filled.ArrowDownward, contentDescription = "Move Down")
                         }
