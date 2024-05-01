@@ -11,10 +11,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.momo.cardmaker.components.RenameState
 
 /** A card element can be subclassed into all the elements that are added to cards, such as text or images. */
-abstract class CardElement {
-    var name: String = ""
+abstract class CardElement(
+    defaultName: String,
+) {
+    var name = mutableStateOf(defaultName)
     private val transformations: CardElementTransformations = CardElementTransformations()
     private var folded = false
 
@@ -24,12 +27,17 @@ abstract class CardElement {
         var foldedRemember by remember { mutableStateOf(folded) }
         Row(modifier = Modifier) {
             Text(
-                text = if (folded) "▲ $name" else "▼ $name",
+                text = if (folded) "▲ ${name.value}" else "▼ ${name.value}",
                 modifier = Modifier
                     .padding(top = 8.dp, start = 32.dp)
                     .clickable {
-                        folded = !folded
-                        foldedRemember = folded
+                        if (ClickState.state.value == ClickState.States.RENAMING) {
+                            RenameState.rename(name)
+                            ClickState.off()
+                        } else {
+                            folded = !folded
+                            foldedRemember = folded
+                        }
                     },
                 style = MaterialTheme.typography.h4
             )
@@ -135,12 +143,10 @@ data class CardElementTransformations(
 )
 
 /** Textbox element to add text to the card. */
-data class TextElement(
+class TextElement(
+    defaultName: String = "Text Element"
+) : CardElement(defaultName) {
     var text: TextParameter = TextParameter(defaultName = "Text", expression = "")
-) : CardElement() {
-    init {
-        name = "Text Element"
-    }
 
     @Composable
     override fun buildSpecificElements(modifier: Modifier) {
@@ -165,12 +171,10 @@ data class TextElement(
 }
 
 /** Image element to add images to the card. */
-data class ImageElement(
+class ImageElement(
+    defaultName: String = "Image Element"
+) : CardElement(defaultName) {
     var url: TextParameter = TextParameter(defaultName = "Url", expression = "")
-) : CardElement() {
-    init {
-        name = "Image Element"
-    }
 
     @Composable
     override fun buildSpecificElements(modifier: Modifier) {
