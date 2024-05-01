@@ -7,14 +7,18 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDownward
 import androidx.compose.material.icons.filled.ArrowUpward
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.mohamedrejeb.richeditor.model.rememberRichTextState
 import com.mohamedrejeb.richeditor.ui.material.OutlinedRichTextEditor
-import com.momo.cardmaker.components.*
+import com.momo.cardmaker.components.PopupState
+import com.momo.cardmaker.components.RenameState
+import com.momo.cardmaker.components.RichTextStyleRow
 import com.notkamui.keval.Keval
 import com.notkamui.keval.KevalInvalidExpressionException
 import com.notkamui.keval.KevalInvalidSymbolException
@@ -155,79 +159,88 @@ class IntParameter(defaultName: String, expression: String, isHighlighted: Boole
     Parameter<Int>(defaultName, expression, isHighlighted) {
     @Composable
     override fun buildElements(modifier: Modifier, label: MutableState<String>) {
-        Row(modifier = Modifier
-            .clickable(enabled = ClickState.state.value != ClickState.States.NONE) {
-                when (ClickState.state.value) {
-                    ClickState.States.PINNING -> isPinned = !isPinned
-                    ClickState.States.RENAMING -> RenameState.rename(name)
-
-                    else -> {}
-                }
-                ClickState.off()
-            }
-            .height(48.dp)
-            .padding(
-                horizontal = 16.dp
-            )
-        ) {
-            if (label.value.isNotEmpty()) {
-                Column(
-                    modifier = Modifier
-                        .weight(1f)
-                        .align(Alignment.CenterVertically)
-                ) {
-                    Text(
-                        text = label.value,
-                        modifier = Modifier
-                            .align(Alignment.CenterHorizontally),
-                        style = MaterialTheme.typography.h5
-                    )
-                }
-            }
-            Column(
+        Box {
+            Row(
                 modifier = Modifier
-                    .weight(4f)
-                    .padding(start = 10.dp)
+                    .height(48.dp)
+                    .padding(
+                        horizontal = 16.dp
+                    )
             ) {
-                Row {
-                    Column(
-                        modifier = Modifier.width(48.dp)
-                    ) {
-                        Button(modifier = Modifier
-                            .fillMaxSize(),
-                            onClick = {
-                                addToConstant(1.0)
-                                expression.value = expression.value
-                            }) {
-                            Icon(imageVector = Icons.Filled.ArrowUpward, contentDescription = "Increase")
-                        }
-                    }
+                if (label.value.isNotEmpty()) {
                     Column(
                         modifier = Modifier
+                            .weight(1f)
+                            .align(Alignment.CenterVertically)
                     ) {
-                        TextField(
-                            modifier = Modifier.fillMaxWidth(),
-                            maxLines = 1,
-                            value = expression.value,
-                            onValueChange = { newValue ->
-                                expression.value = newValue
-                            },
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
+                        Text(
+                            text = label.value,
+                            modifier = Modifier
+                                .align(Alignment.CenterHorizontally),
+                            style = MaterialTheme.typography.h5
                         )
                     }
                 }
-            }
-            Column(
-                modifier = Modifier.width(48.dp)
-            ) {
-                Button(modifier = Modifier
-                    .fillMaxSize(),
-                    onClick = {
-                        addToConstant(-1.0)
-                        expression.value = expression.value
-                    }) {
-                    Icon(imageVector = Icons.Filled.ArrowDownward, contentDescription = "Decrease")
+                Column(
+                    modifier = Modifier
+                        .weight(4f)
+                        .padding(start = 10.dp)
+                ) {
+                    Row {
+                        Column(
+                            modifier = Modifier.width(48.dp)
+                        ) {
+                            Button(modifier = Modifier
+                                .fillMaxSize(),
+                                onClick = {
+                                    addToConstant(1.0)
+                                    expression.value = expression.value
+                                }) {
+                                Icon(imageVector = Icons.Filled.ArrowUpward, contentDescription = "Increase")
+                            }
+                        }
+                        Column(
+                            modifier = Modifier
+                        ) {
+                            TextField(
+                                modifier = Modifier.fillMaxWidth(),
+                                maxLines = 1,
+                                value = expression.value,
+                                onValueChange = { newValue ->
+                                    expression.value = newValue
+                                },
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
+                            )
+                        }
+                    }
                 }
+                Column(
+                    modifier = Modifier.width(48.dp)
+                ) {
+                    Button(modifier = Modifier
+                        .fillMaxSize(),
+                        onClick = {
+                            addToConstant(-1.0)
+                            expression.value = expression.value
+                        }) {
+                        Icon(imageVector = Icons.Filled.ArrowDownward, contentDescription = "Decrease")
+                    }
+                }
+            }
+            // Clickable overlay
+            if (ClickState.state.value != ClickState.States.NONE) {
+                Box(modifier = Modifier
+                    .matchParentSize()
+                    .clickable {
+                        when (ClickState.state.value) {
+                            ClickState.States.PINNING -> isPinned = !isPinned
+                            ClickState.States.RENAMING -> RenameState.rename(name)
+
+                            else -> {}
+                        }
+                        ClickState.off()
+                    }
+                )
             }
         }
     }
@@ -245,81 +258,89 @@ class DoubleParameter(defaultName: String, expression: String, isHighlighted: Bo
     Parameter<Double>(defaultName, expression, isHighlighted) {
     @Composable
     override fun buildElements(modifier: Modifier, label: MutableState<String>) {
-        Row(
-            modifier = Modifier
-                .clickable(enabled = ClickState.state.value != ClickState.States.NONE) {
-                    when (ClickState.state.value) {
-                        ClickState.States.PINNING -> isPinned = !isPinned
-                        ClickState.States.RENAMING -> RenameState.rename(name)
-
-                        else -> {}
-                    }
-                    ClickState.off()
-                }
-                .height(48.dp)
-                .padding(
-                    horizontal = 16.dp
-                )
-        ) {
-            if (label.value.isNotEmpty()) {
-                Column(
-                    modifier = Modifier
-                        .weight(1f)
-                        .align(Alignment.CenterVertically)
-                ) {
-                    Text(
-                        text = label.value,
-                        modifier = Modifier
-                            .align(Alignment.CenterHorizontally),
-                        style = MaterialTheme.typography.h5
-                    )
-                }
-            }
-            Column(
+        Box {
+            Row(
                 modifier = Modifier
-                    .weight(4f)
-                    .padding(start = 10.dp)
+                    .height(48.dp)
+                    .padding(
+                        horizontal = 16.dp
+                    )
             ) {
-                Row {
+                if (label.value.isNotEmpty()) {
                     Column(
                         modifier = Modifier
-                            .width(48.dp)
+                            .weight(1f)
+                            .align(Alignment.CenterVertically)
                     ) {
-                        Button(modifier = Modifier
-                            .fillMaxSize(),
-                            onClick = {
-                                addToConstant(0.05)
-                                expression.value = expression.value
-                            }) {
-                            Icon(imageVector = Icons.Filled.ArrowUpward, contentDescription = "Increase")
-                        }
-                    }
-                    Column(
-                        modifier = Modifier
-                    ) {
-                        TextField(
-                            modifier = Modifier.fillMaxWidth(),
-                            maxLines = 1,
-                            value = expression.value,
-                            onValueChange = { newValue ->
-                                expression.value = newValue
-                            },
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
+                        Text(
+                            text = label.value,
+                            modifier = Modifier
+                                .align(Alignment.CenterHorizontally),
+                            style = MaterialTheme.typography.h5
                         )
                     }
                 }
-            }
-            Column(
-                modifier = Modifier.width(48.dp)
-            ) {
-                Button(modifier = Modifier
-                    .fillMaxSize(),
-                    onClick = {
-                        addToConstant(-0.05)
-                        expression.value = expression.value
-                    }) {
-                    Icon(imageVector = Icons.Filled.ArrowDownward, contentDescription = "Decrease")
+                Column(
+                    modifier = Modifier
+                        .weight(4f)
+                        .padding(start = 10.dp)
+                ) {
+                    Row {
+                        Column(
+                            modifier = Modifier
+                                .width(48.dp)
+                        ) {
+                            Button(modifier = Modifier
+                                .fillMaxSize(),
+                                onClick = {
+                                    addToConstant(0.05)
+                                    expression.value = expression.value
+                                }) {
+                                Icon(imageVector = Icons.Filled.ArrowUpward, contentDescription = "Increase")
+                            }
+                        }
+                        Column(
+                            modifier = Modifier
+                        ) {
+                            TextField(
+                                modifier = Modifier.fillMaxWidth(),
+                                maxLines = 1,
+                                value = expression.value,
+                                onValueChange = { newValue ->
+                                    expression.value = newValue
+                                },
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
+                            )
+                        }
+                    }
                 }
+                Column(
+                    modifier = Modifier.width(48.dp)
+                ) {
+                    Button(modifier = Modifier
+                        .fillMaxSize(),
+                        onClick = {
+                            addToConstant(-0.05)
+                            expression.value = expression.value
+                        }) {
+                        Icon(imageVector = Icons.Filled.ArrowDownward, contentDescription = "Decrease")
+                    }
+                }
+            }
+            // Clickable overlay
+            if (ClickState.state.value != ClickState.States.NONE) {
+                Box(modifier = Modifier
+                    .matchParentSize()
+                    .clickable {
+                        when (ClickState.state.value) {
+                            ClickState.States.PINNING -> isPinned = !isPinned
+                            ClickState.States.RENAMING -> RenameState.rename(name)
+
+                            else -> {}
+                        }
+                        ClickState.off()
+                    }
+                )
             }
         }
     }
@@ -337,51 +358,60 @@ class TextParameter(defaultName: String, expression: String, isHighlighted: Bool
     Parameter<String>(defaultName, expression, isHighlighted) {
     @Composable
     override fun buildElements(modifier: Modifier, label: MutableState<String>) {
-        Row(modifier = Modifier
-            .clickable(enabled = ClickState.state.value != ClickState.States.NONE) {
-                when (ClickState.state.value) {
-                    ClickState.States.PINNING -> isPinned = !isPinned
-                    ClickState.States.RENAMING -> RenameState.rename(name)
-
-                    else -> {}
+        Box {
+            Row(
+                modifier = Modifier
+                    .padding(
+                        horizontal = 16.dp
+                    )
+            ) {
+                if (label.value.isNotEmpty()) {
+                    Column(
+                        modifier = Modifier
+                            .weight(1f)
+                            .align(Alignment.CenterVertically)
+                    ) {
+                        Text(
+                            text = label.value,
+                            modifier = Modifier
+                                .align(Alignment.CenterHorizontally),
+                            style = MaterialTheme.typography.h5
+                        )
+                    }
                 }
-                ClickState.off()
-            }
-            .padding(
-                horizontal = 16.dp
-            )
-        ) {
-            if (label.value.isNotEmpty()) {
+
                 Column(
                     modifier = Modifier
-                        .weight(1f)
-                        .align(Alignment.CenterVertically)
+                        .weight(4f)
                 ) {
-                    Text(
-                        text = label.value,
+                    val richTextState = rememberRichTextState()
+
+                    RichTextStyleRow(
+                        state = richTextState,
                         modifier = Modifier
-                            .align(Alignment.CenterHorizontally),
-                        style = MaterialTheme.typography.h5
+                            .fillMaxWidth()
+                    )
+
+                    OutlinedRichTextEditor(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        state = richTextState,
                     )
                 }
             }
+            // Clickable overlay
+            if (ClickState.state.value != ClickState.States.NONE) {
+                Box(modifier = Modifier
+                    .matchParentSize()
+                    .clickable {
+                        when (ClickState.state.value) {
+                            ClickState.States.PINNING -> isPinned = !isPinned
+                            ClickState.States.RENAMING -> RenameState.rename(name)
 
-            Column(
-                modifier = Modifier
-                    .weight(4f)
-            ) {
-                val richTextState = rememberRichTextState()
-
-                RichTextStyleRow(
-                    state = richTextState,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                )
-
-                OutlinedRichTextEditor(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    state = richTextState,
+                            else -> {}
+                        }
+                        ClickState.off()
+                    }
                 )
             }
         }
