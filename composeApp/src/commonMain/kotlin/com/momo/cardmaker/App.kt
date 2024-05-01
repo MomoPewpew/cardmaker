@@ -14,9 +14,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import com.momo.cardmaker.components.CardPreview
-import com.momo.cardmaker.components.Popup
-import com.momo.cardmaker.components.Rename
+import com.momo.cardmaker.components.*
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
@@ -315,6 +313,9 @@ fun App() {
 
             // Rename window
             Rename()
+
+            // Delete Confirm window
+            DeleteConfirm()
         }
     }
 }

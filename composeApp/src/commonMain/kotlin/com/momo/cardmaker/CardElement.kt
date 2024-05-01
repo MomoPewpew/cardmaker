@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.momo.cardmaker.components.DeleteState
 import com.momo.cardmaker.components.RenameState
 
 /** A card element can be subclassed into all the elements that are added to cards, such as text or images. */
@@ -102,7 +103,7 @@ abstract class CardElement(
                         Button(modifier = Modifier
                             .fillMaxSize(),
                             onClick = {
-
+                                DeleteState.confirmDelete(me.value)
                             }) {
                             Icon(imageVector = Icons.Filled.Delete, contentDescription = "Delete")
                         }

@@ -19,6 +19,13 @@ data class Card(
         CardState.card.value = CardState.card.value.copy(cardElements = mutableStateOf(cardElements))
     }
 
+    fun removeElement(element: CardElement) {
+        val cardElements = cardElements.value
+        cardElements.remove(element)
+
+        CardState.card.value = CardState.card.value.copy(cardElements = mutableStateOf(cardElements))
+    }
+
     fun moveElementUp(element: CardElement) {
         val cardElements = cardElements.value
         val currentIndex = cardElements.indexOf(element)
