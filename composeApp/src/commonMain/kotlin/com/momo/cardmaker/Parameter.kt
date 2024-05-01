@@ -156,14 +156,14 @@ class IntParameter(defaultName: String, expression: String, isHighlighted: Boole
     @Composable
     override fun buildElements(modifier: Modifier, label: MutableState<String>) {
         Row(modifier = Modifier
-            .clickable(enabled = EditState.state.value != EditState.States.NONE) {
-                when (EditState.state.value) {
-                    EditState.States.PINNING -> isPinned = !isPinned
-                    EditState.States.RENAMING -> RenameState.rename(name)
+            .clickable(enabled = ClickState.state.value != ClickState.States.NONE) {
+                when (ClickState.state.value) {
+                    ClickState.States.PINNING -> isPinned = !isPinned
+                    ClickState.States.RENAMING -> RenameState.rename(name)
 
                     else -> {}
                 }
-                EditState.off()
+                ClickState.off()
             }
             .height(48.dp)
             .padding(
@@ -247,14 +247,14 @@ class DoubleParameter(defaultName: String, expression: String, isHighlighted: Bo
     override fun buildElements(modifier: Modifier, label: MutableState<String>) {
         Row(
             modifier = Modifier
-                .clickable(enabled = EditState.state.value != EditState.States.NONE) {
-                    when (EditState.state.value) {
-                        EditState.States.PINNING -> isPinned = !isPinned
-                        EditState.States.RENAMING -> RenameState.rename(name)
+                .clickable(enabled = ClickState.state.value != ClickState.States.NONE) {
+                    when (ClickState.state.value) {
+                        ClickState.States.PINNING -> isPinned = !isPinned
+                        ClickState.States.RENAMING -> RenameState.rename(name)
 
                         else -> {}
                     }
-                    EditState.off()
+                    ClickState.off()
                 }
                 .height(48.dp)
                 .padding(
@@ -338,14 +338,14 @@ class TextParameter(defaultName: String, expression: String, isHighlighted: Bool
     @Composable
     override fun buildElements(modifier: Modifier, label: MutableState<String>) {
         Row(modifier = Modifier
-            .clickable(enabled = EditState.state.value != EditState.States.NONE) {
-                when (EditState.state.value) {
-                    EditState.States.PINNING -> isPinned = !isPinned
-                    EditState.States.RENAMING -> RenameState.rename(name)
+            .clickable(enabled = ClickState.state.value != ClickState.States.NONE) {
+                when (ClickState.state.value) {
+                    ClickState.States.PINNING -> isPinned = !isPinned
+                    ClickState.States.RENAMING -> RenameState.rename(name)
 
                     else -> {}
                 }
-                EditState.off()
+                ClickState.off()
             }
             .padding(
                 horizontal = 16.dp

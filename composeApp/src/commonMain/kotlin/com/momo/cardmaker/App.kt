@@ -23,7 +23,7 @@ import org.jetbrains.compose.resources.painterResource
 
 var card = Card()
 
-object EditState {
+object ClickState {
     enum class States {
         NONE,
         PINNING,
@@ -155,10 +155,10 @@ fun App() {
                         }
 
                         // Rename
-                        val renameColor = if (EditState.state.value == EditState.States.RENAMING) Color.Gray else Color(0xFF013220)
+                        val renameColor = if (ClickState.state.value == ClickState.States.RENAMING) Color.Gray else Color(0xFF013220)
                         Button(
                             onClick = {
-                                EditState.toggleRenaming()
+                                ClickState.toggleRenaming()
                             },
                             modifier = Modifier
                                 .fillMaxHeight()
@@ -169,10 +169,10 @@ fun App() {
                         }
 
                         // Pin parameter
-                        val pinColor = if (EditState.state.value == EditState.States.PINNING) Color.Gray else Color(0xFF013220)
+                        val pinColor = if (ClickState.state.value == ClickState.States.PINNING) Color.Gray else Color(0xFF013220)
                         Button(
                             onClick = {
-                                EditState.togglePinning()
+                                ClickState.togglePinning()
                             },
                             modifier = Modifier
                                 .fillMaxHeight()
@@ -224,7 +224,7 @@ fun App() {
                                 )
                             )
                     ) {
-                        if (!pinnedFolded && (EditState.state.value == EditState.States.PINNING || EditState.state.value != EditState.States.PINNING)) { // This seemingly redundant check is made to force a recomposition after a new pin is made
+                        if (!pinnedFolded && (ClickState.state.value == ClickState.States.PINNING || ClickState.state.value != ClickState.States.PINNING)) { // This seemingly redundant check is made to force a recomposition after a new pin is made
                             Column(modifier = Modifier.fillMaxWidth()) {
                                 Spacer(modifier = Modifier.height(8.dp))
                                 for (cardElement in card.cardElements) {
