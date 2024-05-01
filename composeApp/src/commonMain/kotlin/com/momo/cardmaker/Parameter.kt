@@ -47,7 +47,7 @@ abstract class Parameter<T>(
                 expression.value = expression.value.replace("+", "")
             }
 
-            // Establish either a constant value, or whether the last segment is a constant addition/substraction
+            // Establish either a constant value, or whether the last segment is a constant addition/subtraction
             val constantString: String
             if (expression.value.isEmpty()) {
                 // expression.value is empty and becomes 0
@@ -57,11 +57,11 @@ abstract class Parameter<T>(
                 val regex2 = Regex("(?:(?<=[0-9)}]) *[+-] *|^ *-? *)[0-9.]+\$")
                 val match2 = regex2.find(expression.value)
                 if (match2 == null) {
-                    // Expression is not empty but doesn't end with a constant addition/substraction
+                    // Expression is not empty but doesn't end with a constant addition/subtraction
                     constantString = "+0"
                     expression.value += constantString
                 } else {
-                    // Expression already has a constant addition/substraction at the end
+                    // Expression already has a constant addition/subtraction at the end
                     constantString = match2.value.trimStart()
                 }
             }
@@ -189,7 +189,7 @@ class IntParameter(defaultName: String, expression: String, isHighlighted: Boole
                     .weight(4f)
                     .padding(start = 10.dp)
             ) {
-                Row() {
+                Row {
                     Column(
                         modifier = Modifier.width(48.dp)
                     ) {
@@ -280,7 +280,7 @@ class DoubleParameter(defaultName: String, expression: String, isHighlighted: Bo
                     .weight(4f)
                     .padding(start = 10.dp)
             ) {
-                Row() {
+                Row {
                     Column(
                         modifier = Modifier
                             .width(48.dp)

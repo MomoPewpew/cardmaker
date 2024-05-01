@@ -23,10 +23,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.mohamedrejeb.richeditor.annotation.ExperimentalRichTextApi
 import com.mohamedrejeb.richeditor.model.RichTextState
 
-@OptIn(ExperimentalRichTextApi::class)
 @Composable
 fun RichTextStyleRow(
     modifier: Modifier = Modifier,

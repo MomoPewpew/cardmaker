@@ -66,25 +66,25 @@ abstract class CardElement {
     /** Build the composables for all pinned Parameters associated with this CardElement. */
     @Composable
     open fun buildPinnedElements(modifier: Modifier) {
-        transformations.offsetX.let { it ->
+        transformations.offsetX.let {
             if (it.isPinned) {
                 it.buildElements(modifier = Modifier, label = it.name.value)
                 Spacer(modifier = Modifier.height(8.dp))
             }
         }
-        transformations.offsetY.let { it ->
+        transformations.offsetY.let {
             if (it.isPinned) {
                 it.buildElements(modifier = Modifier, label = it.name.value)
                 Spacer(modifier = Modifier.height(8.dp))
             }
         }
-        transformations.scaleX.let { it ->
+        transformations.scaleX.let {
             if (it.isPinned) {
                 it.buildElements(modifier = Modifier, label = it.name.value)
                 Spacer(modifier = Modifier.height(8.dp))
             }
         }
-        transformations.scaleY.let { it ->
+        transformations.scaleY.let {
             if (it.isPinned) {
                 it.buildElements(modifier = Modifier, label = it.name.value)
                 Spacer(modifier = Modifier.height(8.dp))
@@ -154,7 +154,7 @@ data class TextElement(
 
     @Composable
     override fun buildPinnedElements(modifier: Modifier) {
-        text.let { it ->
+        text.let {
             if (it.isPinned) {
                 it.buildElements(modifier = Modifier, label = it.name.value)
                 Spacer(modifier = Modifier.height(8.dp))
@@ -179,7 +179,7 @@ data class ImageElement(
 
     @Composable
     override fun buildPinnedElements(modifier: Modifier) {
-        url.let { it ->
+        url.let {
             if (it.isPinned) {
                 it.buildElements(modifier = Modifier, label = it.name.value)
             }
