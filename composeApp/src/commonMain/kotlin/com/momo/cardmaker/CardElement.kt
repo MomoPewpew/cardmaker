@@ -74,30 +74,7 @@ abstract class CardElement(
     /** Build the composables for all pinned Parameters associated with this CardElement. */
     @Composable
     open fun buildPinnedElements(modifier: Modifier) {
-        transformations.offsetX.let {
-            if (it.isPinned) {
-                it.buildElements(modifier = Modifier, label = it.name)
-                Spacer(modifier = Modifier.height(8.dp))
-            }
-        }
-        transformations.offsetY.let {
-            if (it.isPinned) {
-                it.buildElements(modifier = Modifier, label = it.name)
-                Spacer(modifier = Modifier.height(8.dp))
-            }
-        }
-        transformations.scaleX.let {
-            if (it.isPinned) {
-                it.buildElements(modifier = Modifier, label = it.name)
-                Spacer(modifier = Modifier.height(8.dp))
-            }
-        }
-        transformations.scaleY.let {
-            if (it.isPinned) {
-                it.buildElements(modifier = Modifier, label = it.name)
-                Spacer(modifier = Modifier.height(8.dp))
-            }
-        }
+        transformations.buildPinnedElements()
     }
 
     /** Build the transformation segment. */
@@ -140,7 +117,36 @@ data class CardElementTransformations(
     val scaleY: DoubleParameter = DoubleParameter(defaultName = "Scale Y", expression = "1.0"),
     val offsetX: IntParameter = IntParameter(defaultName = "Offset X", expression = "0"),
     val offsetY: IntParameter = IntParameter(defaultName = "Offset Y", expression = "0")
-)
+) {
+    /** Build the composables for all pinned transformations. */
+    @Composable
+    fun buildPinnedElements() {
+        offsetX.let {
+            if (it.isPinned) {
+                it.buildElements(modifier = Modifier, label = it.name)
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+        }
+        offsetY.let {
+            if (it.isPinned) {
+                it.buildElements(modifier = Modifier, label = it.name)
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+        }
+        scaleX.let {
+            if (it.isPinned) {
+                it.buildElements(modifier = Modifier, label = it.name)
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+        }
+        scaleY.let {
+            if (it.isPinned) {
+                it.buildElements(modifier = Modifier, label = it.name)
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+        }
+    }
+}
 
 /** Textbox element to add text to the card. */
 class TextElement(
