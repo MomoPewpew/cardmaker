@@ -24,9 +24,36 @@ import com.momo.cardmaker.components.RenameState
 abstract class CardElement(
     defaultName: String,
 ) {
-    val name = mutableStateOf(defaultName)
+    val name = mutableStateOf("")
     private val transformations = CardElementTransformations()
     private var folded = false
+
+    init {
+        rename(defaultName)
+    }
+
+    /** Updates this elements name. If the name is already in use, add an index to it. */
+    fun rename(newName: String) {
+        if (name.value.equals(newName)) return
+
+        var modifiedName = newName
+        var nameInUse = true
+        var index = 1
+
+        while (nameInUse) {
+            nameInUse = false
+            for (cardElement in CardState.card.value.cardElements.value) {
+                if (cardElement.name.value.equals(modifiedName)) {
+                    nameInUse = true
+                    index++
+                    modifiedName = "$newName $index"
+                    break
+                }
+            }
+        }
+
+        name.value = modifiedName
+    }
 
     /** Build the expandable segment, and fills it with the elements that are specific to this element type. */
     @Composable
