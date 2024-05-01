@@ -21,8 +21,6 @@ import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 
-var card = Card()
-
 object ClickState {
     enum class States {
         NONE,
@@ -51,6 +49,10 @@ object ClickState {
             state.value = States.RENAMING
         }
     }
+}
+
+object CardState {
+    var card = mutableStateOf(Card())
 }
 
 @OptIn(ExperimentalResourceApi::class)
@@ -113,7 +115,7 @@ fun App() {
                         // Add text
                         Button(
                             onClick = {
-                                card.cardElements.add(TextElement())
+                                CardState.card.value.cardElements.value.add(TextElement())
                                 advancedFolded =
                                     true // Fold before unfolding to ensure a recomposition of the advanced segment
                                 advancedFolded = false
@@ -128,7 +130,7 @@ fun App() {
                         // Add image
                         Button(
                             onClick = {
-                                card.cardElements.add(ImageElement())
+                                CardState.card.value.cardElements.value.add(ImageElement())
                                 advancedFolded =
                                     true // Fold before unfolding to ensure a recomposition of the  advanced segment
                                 advancedFolded = false
@@ -235,7 +237,7 @@ fun App() {
                                 if (!pinnedFolded && (ClickState.state.value == ClickState.States.PINNING || ClickState.state.value != ClickState.States.PINNING)) { // This seemingly redundant check is made to force a recomposition after a new pin is made
                                     Column(modifier = Modifier.fillMaxWidth()) {
                                         Spacer(modifier = Modifier.height(8.dp))
-                                        for (cardElement in card.cardElements) {
+                                        CardState.card.value.cardElements.value.forEach { cardElement ->
                                             cardElement.buildPinnedElements(modifier = Modifier)
                                         }
                                     }
@@ -270,7 +272,7 @@ fun App() {
                             ) {
                                 if (!advancedFolded) {
                                     Column(modifier = Modifier.fillMaxWidth()) {
-                                        for (cardElement in card.cardElements) {
+                                        CardState.card.value.cardElements.value.forEach { cardElement ->
                                             cardElement.buildElements()
                                         }
                                     }

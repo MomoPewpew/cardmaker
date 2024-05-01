@@ -354,7 +354,7 @@ class DoubleParameter(defaultName: String, expression: String, isHighlighted: Bo
     }
 }
 
-class TextParameter(defaultName: String, expression: String, isHighlighted: Boolean = false) :
+class RichTextParameter(defaultName: String, expression: String, isHighlighted: Boolean = false) :
     Parameter<String>(defaultName, expression, isHighlighted) {
     @Composable
     override fun buildElements(modifier: Modifier, label: MutableState<String>) {

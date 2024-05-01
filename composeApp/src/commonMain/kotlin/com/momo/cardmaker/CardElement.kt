@@ -31,6 +31,7 @@ abstract class CardElement(
     @Composable
     fun buildElements() {
         var foldedRemember by remember { mutableStateOf(folded) }
+        val me by remember { mutableStateOf(this) }
         Row(modifier = Modifier) {
             // Clickable name text
             Column(
@@ -62,9 +63,11 @@ abstract class CardElement(
                     .weight(2f)
                     .align(Alignment.CenterVertically)
             ) {
-                Row (modifier = Modifier
-                    .padding(end = 31.dp)
-                    .align(Alignment.End)) {
+                Row(
+                    modifier = Modifier
+                        .padding(end = 31.dp)
+                        .align(Alignment.End)
+                ) {
                     // Move up button
                     Column(
                         modifier = Modifier
@@ -73,7 +76,7 @@ abstract class CardElement(
                         Button(modifier = Modifier
                             .fillMaxSize(),
                             onClick = {
-
+                                CardState.card.value.moveElementUp(me)
                             }) {
                             Icon(imageVector = Icons.Filled.ArrowUpward, contentDescription = "Move Up")
                         }
@@ -86,7 +89,7 @@ abstract class CardElement(
                         Button(modifier = Modifier
                             .fillMaxSize(),
                             onClick = {
-
+                                CardState.card.value.moveElementDown(me)
                             }) {
                             Icon(imageVector = Icons.Filled.ArrowDownward, contentDescription = "Move Down")
                         }
@@ -217,7 +220,7 @@ data class CardElementTransformations(
 class TextElement(
     defaultName: String = "Text Element"
 ) : CardElement(defaultName) {
-    var text: TextParameter = TextParameter(defaultName = "Text", expression = "")
+    var text = RichTextParameter(defaultName = "Text", expression = "")
 
     @Composable
     override fun buildSpecificElements(modifier: Modifier) {
@@ -245,11 +248,11 @@ class TextElement(
 class ImageElement(
     defaultName: String = "Image Element"
 ) : CardElement(defaultName) {
-    var url: TextParameter = TextParameter(defaultName = "Url", expression = "")
+    var url = RichTextParameter(defaultName = "Url", expression = "")
 
     @Composable
     override fun buildSpecificElements(modifier: Modifier) {
-        TODO("Not yet implemented")
+
     }
 
     @Composable
