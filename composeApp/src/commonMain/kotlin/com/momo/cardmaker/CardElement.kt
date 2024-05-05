@@ -73,7 +73,7 @@ abstract class CardElement(
                             .padding(top = 8.dp, start = 32.dp)
                             .clickable {
                                 if (ClickState.state.value == ClickState.States.RENAMING) {
-                                    RenameState.rename(name)
+                                    RenameState.rename(me.value)
                                     ClickState.off()
                                 } else {
                                     folded = !folded

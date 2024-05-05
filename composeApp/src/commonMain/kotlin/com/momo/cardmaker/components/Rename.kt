@@ -8,16 +8,26 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
+import com.momo.cardmaker.CardElement
 import com.momo.cardmaker.components.RenameState.isOpen
 
 object RenameState {
     var name = mutableStateOf("")
+    var cardElement: MutableState<CardElement>? = null
     var newName = mutableStateOf(name.value)
     var isOpen = mutableStateOf(false)
 
     fun rename(name: MutableState<String>) {
+        this.cardElement = null
         this.name = name
-        newName = mutableStateOf(RenameState.name.value)
+        newName = mutableStateOf(this.name.value)
+        isOpen.value = true
+    }
+
+    fun rename(cardElement: CardElement) {
+        this.cardElement = mutableStateOf(cardElement)
+        this.name = this.cardElement?.value?.name ?: mutableStateOf("")
+        newName = mutableStateOf(this.name.value)
         isOpen.value = true
     }
 }
@@ -49,6 +59,8 @@ fun Rename() {
                 Button(onClick = {
                     if (RenameState.newName.value.isEmpty()) {
                         PopupState.popup("Name Error", "A name cannot be empty.")
+                    } else if (RenameState.cardElement != null) {
+                        RenameState.cardElement!!.value.rename(RenameState.newName.value)
                     } else {
                         RenameState.name.value = RenameState.newName.value
                     }
