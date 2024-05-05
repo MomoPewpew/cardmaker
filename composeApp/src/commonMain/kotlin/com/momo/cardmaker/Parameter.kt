@@ -24,6 +24,7 @@ import com.notkamui.keval.KevalInvalidExpressionException
 import com.notkamui.keval.KevalInvalidSymbolException
 import com.notkamui.keval.KevalZeroDivisionException
 import kotlin.math.round
+import kotlin.math.roundToInt
 
 abstract class Parameter<T>(
     defaultName: String,
@@ -85,7 +86,10 @@ abstract class Parameter<T>(
                     return
                 } else {
                     newConstantString =
-                        constantString.replace(match2.value, (match2.value.toDouble() - add).toString())
+                        constantString.replace(
+                            match2.value,
+                            (((match2.value.toDouble() - add) * 10000.0).roundToInt() / 10000.0).toString()
+                        )
 
                     // Handle double negatives on a negative to positive flip
                     val regex3 = Regex("- *-")
@@ -114,7 +118,10 @@ abstract class Parameter<T>(
                     return
                 } else {
                     newConstantString =
-                        constantString.replace(match2.value, (match2.value.toDouble() + add).toString())
+                        constantString.replace(
+                            match2.value,
+                            (((match2.value.toDouble() + add) * 10000.0).roundToInt() / 10000.0).toString()
+                        )
 
                     // Handle redundant plus signs on a positive to negative flip
                     val regex3 = Regex("[+] *-")
