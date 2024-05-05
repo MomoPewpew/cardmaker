@@ -176,34 +176,7 @@ abstract class CardElement(
     /** Build the transformation segment. */
     @Composable
     fun buildTransformationElements() {
-        Row(modifier = Modifier) {
-            Column(
-                modifier = Modifier.weight(1f)
-                    .align(Alignment.CenterVertically)
-            ) {
-                transformations.offsetX.buildElements(modifier = Modifier, mutableStateOf("Offset X"))
-            }
-            Column(
-                modifier = Modifier.weight(1f)
-                    .align(Alignment.CenterVertically)
-            ) {
-                transformations.scaleX.buildElements(modifier = Modifier, mutableStateOf("Scale X"))
-            }
-        }
-        Row(modifier = Modifier.padding(bottom = 16.dp)) {
-            Column(
-                modifier = Modifier.weight(1f)
-                    .align(Alignment.CenterVertically)
-            ) {
-                transformations.offsetY.buildElements(modifier = Modifier, mutableStateOf("Offset Y"))
-            }
-            Column(
-                modifier = Modifier.weight(1f)
-                    .align(Alignment.CenterVertically)
-            ) {
-                transformations.scaleY.buildElements(modifier = Modifier, mutableStateOf("Scale Y"))
-            }
-        }
+        transformations.buildElements()
     }
 
     /** Get the value of one of this cards properties by name. Used in expression replacement. */
@@ -225,6 +198,39 @@ data class CardElementTransformations(
     val offsetX: IntParameter = IntParameter(defaultName = "Offset X", defaultExpression = "0"),
     val offsetY: IntParameter = IntParameter(defaultName = "Offset Y", defaultExpression = "0")
 ) {
+    /** Build the default transformation segment. */
+    @Composable
+    fun buildElements() {
+        Row(modifier = Modifier) {
+            Column(
+                modifier = Modifier.weight(1f)
+                    .align(Alignment.CenterVertically)
+            ) {
+                offsetX.buildElements(modifier = Modifier, mutableStateOf("Offset X"))
+            }
+            Column(
+                modifier = Modifier.weight(1f)
+                    .align(Alignment.CenterVertically)
+            ) {
+                scaleX.buildElements(modifier = Modifier, mutableStateOf("Scale X"))
+            }
+        }
+        Row(modifier = Modifier.padding(bottom = 16.dp)) {
+            Column(
+                modifier = Modifier.weight(1f)
+                    .align(Alignment.CenterVertically)
+            ) {
+                offsetY.buildElements(modifier = Modifier, mutableStateOf("Offset Y"))
+            }
+            Column(
+                modifier = Modifier.weight(1f)
+                    .align(Alignment.CenterVertically)
+            ) {
+                scaleY.buildElements(modifier = Modifier, mutableStateOf("Scale Y"))
+            }
+        }
+    }
+
     /** Build the composables for all pinned transformations. */
     @Composable
     fun buildPinnedElements() {
