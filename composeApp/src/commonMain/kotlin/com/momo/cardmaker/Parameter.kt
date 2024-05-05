@@ -40,11 +40,46 @@ abstract class Parameter<T>(
 
     abstract fun get(): T
 
+    fun evaluate(): Double {
+        var s = expression.value
+
+        val regex = Regex("\\{([^}]*)}")
+
+        val matches = regex.findAll(s)
+
+        for (match in matches) {
+            val content = match.groups[1]?.value
+            if (content != null) {
+                val lastDotIndex = content.lastIndexOf('.')
+
+                if (lastDotIndex != -1) {
+                    val cardElementName = content.substring(0, lastDotIndex)
+                    val propertyValueName = content.substring(lastDotIndex + 1)
+
+                    if (cardElementName.isEmpty() || propertyValueName.isEmpty()) continue
+
+                    val cardElement =
+                        CardState.card.value.cardElements.value.find { it.name.value.equals(cardElementName) }
+
+                    if (cardElement != null) {
+                        val propertyValue = cardElement.getPropertyValueByName(propertyValueName)
+
+                        if (propertyValue != null) {
+                            s = s.replace("{$content}", propertyValue.toString())
+                        }
+                    }
+                }
+            }
+        }
+
+        return Keval.eval(s)
+    }
+
     /** Gets the last integer value in the expression string. */
     fun addToConstant(add: Double) {
         try {
             // Confirm that the expression can be parsed
-            Keval.eval(expression.value)
+            evaluate()
 
             // Handle redundant + sign on constant value
             val regex = Regex("^[ +]+[0-9.]+\$")
@@ -255,7 +290,7 @@ class IntParameter(defaultName: String, defaultExpression: String, isHighlighted
 
     override fun get(): Int {
         return try {
-            round(Keval.eval(expression.value)).toInt()
+            round(evaluate()).toInt()
         } catch (e: Exception) {
             0
         }
@@ -355,7 +390,7 @@ class DoubleParameter(defaultName: String, defaultExpression: String, isHighligh
 
     override fun get(): Double {
         return try {
-            Keval.eval(expression.value)
+            evaluate()
         } catch (e: Exception) {
             0.0
         }

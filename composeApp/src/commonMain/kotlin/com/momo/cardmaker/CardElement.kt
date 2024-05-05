@@ -205,6 +205,17 @@ abstract class CardElement(
             }
         }
     }
+
+    /** Get the value of one of this cards properties by name. Used in expression replacement. */
+    fun getPropertyValueByName(name: String): Double? {
+        return when (name) {
+            "offsetX" -> transformations.offsetX.get().toDouble()
+            "offsetY" -> transformations.offsetY.get().toDouble()
+            "scaleX" -> transformations.scaleX.get()
+            "scaleY" -> transformations.scaleY.get()
+            else -> null
+        }
+    }
 }
 
 /** This class holds all the transformation data of a card element. */
