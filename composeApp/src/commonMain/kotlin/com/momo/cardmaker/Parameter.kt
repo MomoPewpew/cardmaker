@@ -59,7 +59,7 @@ abstract class Parameter<T>(
                     if (cardElementName.isEmpty() || propertyValueName.isEmpty()) continue
 
                     val cardElement =
-                        CardState.card.value.cardElements.value.find { it.name.value.equals(cardElementName) }
+                        CardState.card.value.cardElements.value.find { it.name.value == cardElementName }
 
                     if (cardElement != null) {
                         val propertyValue = cardElement.getPropertyValueByName(propertyValueName)

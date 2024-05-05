@@ -34,7 +34,7 @@ abstract class CardElement(
 
     /** Updates this elements name. If the name is already in use, add an index to it. */
     fun rename(newName: String) {
-        if (name.value.equals(newName)) return
+        if (name.value == newName) return
 
         var modifiedName = newName
         var nameInUse = true
@@ -43,7 +43,7 @@ abstract class CardElement(
         while (nameInUse) {
             nameInUse = false
             for (cardElement in CardState.card.value.cardElements.value) {
-                if (cardElement.name.value.equals(modifiedName)) {
+                if (cardElement.name.value == modifiedName) {
                     nameInUse = true
                     index++
                     modifiedName = "$newName $index"
@@ -179,7 +179,7 @@ abstract class CardElement(
         transformations.buildElements()
     }
 
-    /** Get the value of one of this cards properties by name. Used in expression replacement. */
+    /** Get the value of one of this card's properties by name. Used in expression replacement. */
     fun getPropertyValueByName(name: String): Double? {
         return when (name) {
             "offsetX" -> transformations.offsetX.get().toDouble()
