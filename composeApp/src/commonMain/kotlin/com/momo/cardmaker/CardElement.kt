@@ -209,10 +209,10 @@ abstract class CardElement(
 
 /** This class holds all the transformation data of a card element. */
 data class CardElementTransformations(
-    val scaleX: DoubleParameter = DoubleParameter(defaultName = "Scale X", expression = "1.0"),
-    val scaleY: DoubleParameter = DoubleParameter(defaultName = "Scale Y", expression = "1.0"),
-    val offsetX: IntParameter = IntParameter(defaultName = "Offset X", expression = "0"),
-    val offsetY: IntParameter = IntParameter(defaultName = "Offset Y", expression = "0")
+    val scaleX: DoubleParameter = DoubleParameter(defaultName = "Scale X", defaultExpression = "1.0"),
+    val scaleY: DoubleParameter = DoubleParameter(defaultName = "Scale Y", defaultExpression = "1.0"),
+    val offsetX: IntParameter = IntParameter(defaultName = "Offset X", defaultExpression = "0"),
+    val offsetY: IntParameter = IntParameter(defaultName = "Offset Y", defaultExpression = "0")
 ) {
     /** Build the composables for all pinned transformations. */
     @Composable
@@ -248,7 +248,7 @@ data class CardElementTransformations(
 class TextElement(
     defaultName: String = "Text Element"
 ) : CardElement(defaultName) {
-    var text = RichTextParameter(defaultName = "Text", expression = "")
+    var text = RichTextParameter(defaultName = "Text", defaultExpression = "")
 
     @Composable
     override fun buildSpecificElements(modifier: Modifier) {
@@ -276,11 +276,11 @@ class TextElement(
 class ImageElement(
     defaultName: String = "Image Element"
 ) : CardElement(defaultName) {
-    var url = RichTextParameter(defaultName = "Url", expression = "")
+    var url = TextParameter(defaultName = "URL", defaultExpression = "")
 
     @Composable
     override fun buildSpecificElements(modifier: Modifier) {
-
+        url.buildElements(modifier = Modifier, mutableStateOf("URL"))
     }
 
     @Composable

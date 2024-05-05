@@ -156,8 +156,8 @@ abstract class Parameter<T>(
     }
 }
 
-class IntParameter(defaultName: String, expression: String, isHighlighted: Boolean = false) :
-    Parameter<Int>(defaultName, expression, isHighlighted) {
+class IntParameter(defaultName: String, defaultExpression: String, isHighlighted: Boolean = false) :
+    Parameter<Int>(defaultName, defaultExpression, isHighlighted) {
     @Composable
     override fun buildElements(modifier: Modifier, label: MutableState<String>) {
         Box {
@@ -255,8 +255,8 @@ class IntParameter(defaultName: String, expression: String, isHighlighted: Boole
     }
 }
 
-class DoubleParameter(defaultName: String, expression: String, isHighlighted: Boolean = false) :
-    Parameter<Double>(defaultName, expression, isHighlighted) {
+class DoubleParameter(defaultName: String, defaultExpression: String, isHighlighted: Boolean = false) :
+    Parameter<Double>(defaultName, defaultExpression, isHighlighted) {
     @Composable
     override fun buildElements(modifier: Modifier, label: MutableState<String>) {
         Box {
@@ -355,8 +355,8 @@ class DoubleParameter(defaultName: String, expression: String, isHighlighted: Bo
     }
 }
 
-class RichTextParameter(defaultName: String, expression: String, isHighlighted: Boolean = false) :
-    Parameter<String>(defaultName, expression, isHighlighted) {
+class RichTextParameter(defaultName: String, defaultExpression: String, isHighlighted: Boolean = false) :
+    Parameter<String>(defaultName, defaultExpression, isHighlighted) {
     @Composable
     override fun buildElements(modifier: Modifier, label: MutableState<String>) {
         Box {
@@ -397,6 +397,73 @@ class RichTextParameter(defaultName: String, expression: String, isHighlighted: 
                         modifier = Modifier
                             .fillMaxWidth(),
                         state = richTextState,
+                    )
+                }
+            }
+            // Clickable overlay
+            if (ClickState.state.value != ClickState.States.NONE) {
+                Box(modifier = Modifier
+                    .matchParentSize()
+                    .clickable {
+                        when (ClickState.state.value) {
+                            ClickState.States.PINNING -> isPinned.value = !isPinned.value
+                            ClickState.States.RENAMING -> RenameState.rename(name)
+
+                            else -> {}
+                        }
+                        ClickState.off()
+                    }
+                )
+            }
+        }
+    }
+
+    override fun get(): String {
+        return expression.value
+    }
+}
+
+
+class TextParameter(defaultName: String, defaultExpression: String, isHighlighted: Boolean = false) :
+    Parameter<String>(defaultName, defaultExpression, isHighlighted) {
+    @Composable
+    override fun buildElements(modifier: Modifier, label: MutableState<String>) {
+        Box {
+            Row(
+                modifier = Modifier
+                    .padding(
+                        horizontal = 16.dp
+                    )
+            ) {
+                if (label.value.isNotEmpty()) {
+                    Column(
+                        modifier = Modifier
+                            .weight(1f)
+                            .align(Alignment.CenterVertically)
+                    ) {
+                        Text(
+                            text = label.value,
+                            modifier = Modifier
+                                .align(Alignment.CenterHorizontally),
+                            style = MaterialTheme.typography.h5
+                        )
+                    }
+                }
+
+                Column(
+                    modifier = Modifier
+                        .weight(4f)
+                ) {
+                    TextField(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp),
+                        maxLines = 1,
+                        value = expression.value,
+                        onValueChange = {
+                            expression.value = it
+                        },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
                     )
                 }
             }
