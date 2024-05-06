@@ -64,6 +64,8 @@ object CardState {
     var card = mutableStateOf(Card())
 }
 
+var showBorder = mutableStateOf(true)
+
 @OptIn(ExperimentalResourceApi::class)
 @Composable
 fun App() {
@@ -424,8 +426,6 @@ fun App() {
                             .weight(weight = 0.9f, fill = false)
                     ) {
                         Column {
-
-
                             CardPreview()
                         }
                     }
@@ -435,13 +435,27 @@ fun App() {
                             .align(Alignment.CenterHorizontally)
                             .weight(0.1f)
                     ) {
+                        // Export
                         Button(
                             onClick = {
-                                // Render image and download png
+                                // TODO: Render image and download png
                             },
-                            modifier = Modifier.padding(horizontal = 16.dp)
+                            modifier = Modifier
+                                .weight(1f, fill = false)
+                                .padding(horizontal = 16.dp)
                         ) {
                             Text("Export as PNG")
+                        }
+                        // Toggle Border
+                        Button(
+                            onClick = {
+                                showBorder.value = !showBorder.value
+                            },
+                            modifier = Modifier
+                                .weight(1f, fill = false)
+                                .padding(horizontal = 16.dp)
+                        ) {
+                            Text("Toggle Border")
                         }
                     }
                 }
