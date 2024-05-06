@@ -466,7 +466,7 @@ class RichTextParameter(defaultName: String, defaultExpression: String, isHighli
 }
 
 
-class TextParameter(defaultName: String, defaultExpression: String, isHighlighted: Boolean = false) :
+class UriParameter(defaultName: String, defaultExpression: String, isHighlighted: Boolean = false) :
     Parameter<String>(defaultName, defaultExpression, isHighlighted) {
     @Composable
     override fun buildElements(modifier: Modifier, label: MutableState<String>) {
@@ -505,7 +505,7 @@ class TextParameter(defaultName: String, defaultExpression: String, isHighlighte
                         onValueChange = {
                             expression.value = it
                         },
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri)
                     )
                 }
             }

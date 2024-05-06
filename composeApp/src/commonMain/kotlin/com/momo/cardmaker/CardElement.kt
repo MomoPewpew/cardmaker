@@ -304,16 +304,16 @@ class TextElement(
 class ImageElement(
     defaultName: String = "Image Element"
 ) : CardElement(defaultName) {
-    var url = TextParameter(defaultName = "URL", defaultExpression = "")
+    var uri = UriParameter(defaultName = "URL", defaultExpression = "")
 
     @Composable
     override fun buildSpecificElements() {
-        url.buildElements(modifier = Modifier, mutableStateOf("URL"))
+        uri.buildElements(modifier = Modifier, mutableStateOf("URL"))
     }
 
     @Composable
     override fun buildPinnedElements() {
-        url.let {
+        uri.let {
             if (it.isPinned.value) {
                 it.buildElements(modifier = Modifier, label = it.name)
             }
