@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ExpandLess
+import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.outlined.PushPin
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -14,7 +16,10 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import com.momo.cardmaker.components.*
+import com.momo.cardmaker.components.CardPreview
+import com.momo.cardmaker.components.DeleteConfirm
+import com.momo.cardmaker.components.Popup
+import com.momo.cardmaker.components.Rename
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
@@ -204,13 +209,30 @@ fun App() {
                         Column {
                             // Pinned
                             var pinnedFolded by remember { mutableStateOf(false) }
-                            Row(modifier = Modifier) {
-                                Text(
-                                    text = if (pinnedFolded) "▲ Pinned" else "▼ Pinned",
-                                    modifier = Modifier
-                                        .padding(top = 16.dp, start = 32.dp)
-                                        .clickable { pinnedFolded = !pinnedFolded },
-                                    style = MaterialTheme.typography.h3
+                            Box(
+                                modifier = Modifier
+                                    .padding(start = 21.dp, top = 8.dp)
+                            ) {
+                                Row(modifier = Modifier) {
+                                    Icon(
+                                        modifier = Modifier
+                                            .align(Alignment.CenterVertically)
+                                            .padding(horizontal = 8.dp),
+                                        imageVector = if (pinnedFolded) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore,
+                                        contentDescription = if (pinnedFolded) "Folded" else "Expanded"
+                                    )
+                                    Text(
+                                        text = "Pinned",
+                                        modifier = Modifier
+                                            .clickable { pinnedFolded = !pinnedFolded },
+                                        style = MaterialTheme.typography.h3
+                                    )
+                                }
+                                Box(modifier = Modifier
+                                    .matchParentSize()
+                                    .clickable {
+                                        pinnedFolded = !pinnedFolded
+                                    }
                                 )
                             }
                             Row(
@@ -228,30 +250,47 @@ fun App() {
                                         )
                                     )
                             ) {
+                                Spacer(modifier = Modifier.height(8.dp))
                                 if (!pinnedFolded) {
                                     Column(modifier = Modifier.fillMaxWidth()) {
                                         Spacer(modifier = Modifier.height(8.dp))
                                         CardState.card.value.cardElements.value.forEach { cardElement ->
-                                            cardElement.buildPinnedElements(modifier = Modifier)
+                                            cardElement.buildPinnedElements()
                                         }
                                     }
                                 }
                             }
 
                             // Advanced
-                            Row(modifier = Modifier) {
-                                Text(
-                                    text = if (advancedFolded) "▲ Advanced" else "▼ Advanced",
-                                    modifier = Modifier
-                                        .padding(top = 16.dp, start = 32.dp)
-                                        .clickable { advancedFolded = !advancedFolded },
-                                    style = MaterialTheme.typography.h3
+                            Box(
+                                modifier = Modifier
+                                    .padding(start = 21.dp, top = 8.dp)
+                            ) {
+                                Row(modifier = Modifier) {
+                                    Icon(
+                                        modifier = Modifier
+                                            .align(Alignment.CenterVertically)
+                                            .padding(horizontal = 8.dp),
+                                        imageVector = if (advancedFolded) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore,
+                                        contentDescription = if (advancedFolded) "Folded" else "Expanded"
+                                    )
+                                    Text(
+                                        text = "Advanced",
+                                        modifier = Modifier
+                                            .clickable { advancedFolded = !advancedFolded },
+                                        style = MaterialTheme.typography.h3
+                                    )
+                                }
+                                Box(modifier = Modifier
+                                    .matchParentSize()
+                                    .clickable {
+                                        advancedFolded = !advancedFolded
+                                    }
                                 )
                             }
                             Row(
                                 modifier = Modifier
                                     .padding(horizontal = 16.dp)
-                                    .defaultMinSize(minHeight = 8.dp)
                                     .fillMaxWidth()
                                     .border(
                                         width = 1.dp,
@@ -263,7 +302,9 @@ fun App() {
                                             bottomEnd = 15.dp
                                         )
                                     )
-                            ) {
+                            )
+                            {
+                                Spacer(modifier = Modifier.height(8.dp))
                                 if (!advancedFolded) {
                                     Column(modifier = Modifier.fillMaxWidth()) {
                                         CardState.card.value.cardElements.value.forEach { cardElement ->

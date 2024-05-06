@@ -9,9 +9,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDownward
-import androidx.compose.material.icons.filled.ArrowUpward
-import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -66,21 +64,34 @@ abstract class CardElement(
                 modifier = Modifier
                     .weight(weight = 9f)
             ) {
-                Row {
-                    Text(
-                        text = if (folded) "▲ ${name.value}" else "▼ ${name.value}",
-                        modifier = Modifier
-                            .padding(top = 8.dp, start = 32.dp)
-                            .clickable {
-                                if (ClickState.state.value == ClickState.States.RENAMING) {
-                                    RenameState.rename(me.value)
-                                    ClickState.off()
-                                } else {
-                                    folded = !folded
-                                    foldedRemember = folded
-                                }
-                            },
-                        style = MaterialTheme.typography.h4
+                Box {
+                    Row {
+                        Icon(
+                            modifier = Modifier
+                                .align(Alignment.CenterVertically)
+                                .padding(start = 30.dp, top = 8.dp),
+                            imageVector = if (folded) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore,
+                            contentDescription = if (folded) "Folded" else "Expanded"
+                        )
+                        Text(
+                            text = name.value,
+                            modifier = Modifier
+                                .padding(top = 8.dp, start = 8.dp),
+                            style = MaterialTheme.typography.h4
+                        )
+                    }
+                    Box(modifier = Modifier
+                        .padding(start = 15.dp)
+                        .matchParentSize()
+                        .clickable {
+                            if (ClickState.state.value == ClickState.States.RENAMING) {
+                                RenameState.rename(me.value)
+                                ClickState.off()
+                            } else {
+                                folded = !folded
+                                foldedRemember = folded
+                            }
+                        }
                     )
                 }
             }
@@ -156,7 +167,7 @@ abstract class CardElement(
         ) {
             if (!foldedRemember) {
                 Column(modifier = Modifier.fillMaxWidth()) {
-                    buildSpecificElements(modifier = Modifier)
+                    buildSpecificElements()
                     buildTransformationElements()
                 }
             }
@@ -165,11 +176,11 @@ abstract class CardElement(
 
     /** Build specific composables to this card element type. */
     @Composable
-    abstract fun buildSpecificElements(modifier: Modifier)
+    abstract fun buildSpecificElements()
 
     /** Build the composables for all pinned Parameters associated with this CardElement. */
     @Composable
-    open fun buildPinnedElements(modifier: Modifier) {
+    open fun buildPinnedElements() {
         transformations.buildPinnedElements()
     }
 
@@ -268,7 +279,7 @@ class TextElement(
     var text = RichTextParameter(defaultName = "Text", defaultExpression = "")
 
     @Composable
-    override fun buildSpecificElements(modifier: Modifier) {
+    override fun buildSpecificElements() {
         Row(
             modifier = Modifier
                 .padding(bottom = 16.dp)
@@ -278,14 +289,14 @@ class TextElement(
     }
 
     @Composable
-    override fun buildPinnedElements(modifier: Modifier) {
+    override fun buildPinnedElements() {
         text.let {
             if (it.isPinned.value) {
                 it.buildElements(modifier = Modifier, label = it.name)
                 Spacer(modifier = Modifier.height(8.dp))
             }
         }
-        super.buildPinnedElements(modifier)
+        super.buildPinnedElements()
     }
 }
 
@@ -296,18 +307,18 @@ class ImageElement(
     var url = TextParameter(defaultName = "URL", defaultExpression = "")
 
     @Composable
-    override fun buildSpecificElements(modifier: Modifier) {
+    override fun buildSpecificElements() {
         url.buildElements(modifier = Modifier, mutableStateOf("URL"))
     }
 
     @Composable
-    override fun buildPinnedElements(modifier: Modifier) {
+    override fun buildPinnedElements() {
         url.let {
             if (it.isPinned.value) {
                 it.buildElements(modifier = Modifier, label = it.name)
             }
         }
-        super.buildPinnedElements(modifier)
+        super.buildPinnedElements()
     }
 }
 
