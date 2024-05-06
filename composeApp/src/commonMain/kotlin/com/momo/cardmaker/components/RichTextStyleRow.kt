@@ -204,24 +204,5 @@ fun RichTextStyleRow(
                 icon = Icons.Outlined.FormatListNumbered,
             )
         }
-
-        item {
-            Box(
-                Modifier
-                    .height(24.dp)
-                    .width(1.dp)
-                    .background(Color(0xFF393B3D))
-            )
-        }
-
-        item {
-            RichTextStyleButton(
-                onClick = {
-                    state.toggleCodeSpan()
-                },
-                isSelected = state.isCodeSpan,
-                icon = Icons.Outlined.Code,
-            )
-        }
     }
 }
