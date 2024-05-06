@@ -160,8 +160,6 @@ fun App() {
                         }
 
                         // Rename
-                        val renameColor =
-                            if (ClickState.state.value == ClickState.States.RENAMING) Color.Gray else Color(0xFF013220)
                         Button(
                             onClick = {
                                 ClickState.toggleRenaming()
@@ -169,14 +167,16 @@ fun App() {
                             modifier = Modifier
                                 .fillMaxHeight()
                                 .padding(horizontal = 16.dp),
-                            colors = ButtonDefaults.buttonColors(backgroundColor = renameColor)
+                            colors = ButtonDefaults.buttonColors(
+                                backgroundColor = if (ClickState.state.value == ClickState.States.RENAMING) Color.Gray else Color(
+                                    0xFF013220
+                                )
+                            ),
                         ) {
                             Text("Rename")
                         }
 
                         // Pin parameter
-                        val pinColor =
-                            if (ClickState.state.value == ClickState.States.PINNING) Color.Gray else Color(0xFF013220)
                         Button(
                             onClick = {
                                 ClickState.togglePinning()
@@ -184,7 +184,11 @@ fun App() {
                             modifier = Modifier
                                 .fillMaxHeight()
                                 .padding(horizontal = 16.dp),
-                            colors = ButtonDefaults.buttonColors(backgroundColor = pinColor)
+                            colors = ButtonDefaults.buttonColors(
+                                backgroundColor = if (ClickState.state.value == ClickState.States.PINNING) Color.Gray else Color(
+                                    0xFF013220
+                                )
+                            ),
                         ) {
                             Icon(imageVector = Icons.Outlined.PushPin, contentDescription = "Pin")
                         }
