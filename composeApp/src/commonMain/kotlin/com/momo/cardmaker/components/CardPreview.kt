@@ -10,14 +10,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.momo.cardmaker.CardState
 
 /** Build composables for previewing cards. */
 @Composable
 fun CardPreview(modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
-            //.size(width = 750.dp, height = 1050.dp)
-            .aspectRatio(2.5f / 3.5f)
+            .aspectRatio(CardState.card.value.resolutionHoriz.value / CardState.card.value.resolutionVert.value)
             .clip(
                 RoundedCornerShape(
                     topStartPercent = 10,

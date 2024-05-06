@@ -3,10 +3,11 @@ package com.momo.cardmaker
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ExpandLess
-import androidx.compose.material.icons.filled.ExpandMore
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.outlined.Code
 import androidx.compose.material.icons.outlined.PushPin
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -15,6 +16,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.momo.cardmaker.components.CardPreview
 import com.momo.cardmaker.components.DeleteConfirm
@@ -323,13 +327,101 @@ fun App() {
                         .weight(0.35f)
                         .padding(start = 16.dp)
                 ) {
+                    // Aspect ratio fields
+                    Row(
+                        modifier = Modifier
+                            .align(Alignment.CenterHorizontally)
+                            .weight(0.1f, fill = false)
+                            .padding(bottom = 8.dp)
+                            .background(Color.White.copy(alpha = 0.9f))
+                    ) {
+                        // Width
+                        Column(modifier = Modifier.weight(1f)) {
+                            Row {
+                                Icon(
+                                    modifier = Modifier
+                                        .align(Alignment.CenterVertically)
+                                        .padding(horizontal = 8.dp),
+                                    imageVector = Icons.Filled.Code,
+                                    contentDescription = "Width inches"
+                                )
+                                TextField(
+                                    modifier = Modifier,
+                                    maxLines = 1,
+                                    value = CardState.card.value.resolutionHoriz.value.toString(),
+                                    onValueChange = { newText ->
+                                        val floatValue = newText.toFloatOrNull()
+                                        if (floatValue != null) {
+                                            CardState.card.value.resolutionHoriz.value = floatValue
+                                        }
+                                    },
+                                    textStyle = TextStyle(textAlign = TextAlign.Center),
+                                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                                )
+                            }
+                        }
+                        // Height
+                        Column(modifier = Modifier.weight(1f)) {
+                            Row {
+                                Icon(
+                                    modifier = Modifier
+                                        .align(Alignment.CenterVertically)
+                                        .padding(horizontal = 8.dp),
+                                    imageVector = Icons.Filled.UnfoldMore,
+                                    contentDescription = "DPI"
+                                )
+                                TextField(
+                                    modifier = Modifier,
+                                    maxLines = 1,
+                                    value = CardState.card.value.resolutionVert.value.toString(),
+                                    onValueChange = { newText ->
+                                        val floatValue = newText.toFloatOrNull()
+                                        if (floatValue != null) {
+                                            CardState.card.value.resolutionVert.value = floatValue
+                                        }
+                                    },
+                                    textStyle = TextStyle(textAlign = TextAlign.Center),
+                                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                                )
+                            }
+                        }
+                        // DPI
+                        Column(modifier = Modifier.weight(1f)) {
+                            Row {
+                                Text(
+                                    modifier = Modifier
+                                        .align(Alignment.CenterVertically)
+                                        .padding(horizontal = 8.dp),
+                                    text = "DPI",
+                                    style = MaterialTheme.typography.h5
+                                )
+                                TextField(
+                                    modifier = Modifier,
+                                    maxLines = 1,
+                                    value = CardState.card.value.dpi.value.toString(),
+                                    onValueChange = { newText ->
+                                        val intValue = newText.toIntOrNull()
+                                        if (intValue != null) {
+                                            CardState.card.value.dpi.value = intValue
+                                        }
+                                    },
+                                    textStyle = TextStyle(textAlign = TextAlign.Center),
+                                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                                )
+                            }
+                        }
+                    }
                     // Card preview
                     Row(
                         modifier = Modifier
                             .align(Alignment.CenterHorizontally)
                             .weight(weight = 0.9f, fill = false)
                     ) {
-                        CardPreview()
+                        Column {
+
+
+                            CardPreview()
+                        }
                     }
                     // Download buttons
                     Row(

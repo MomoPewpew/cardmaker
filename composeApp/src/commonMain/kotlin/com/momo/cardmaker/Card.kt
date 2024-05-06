@@ -4,7 +4,10 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 
 data class Card(
-    var cardElements: MutableState<MutableList<CardElement>> = mutableStateOf(mutableListOf())
+    val cardElements: MutableState<MutableList<CardElement>> = mutableStateOf(mutableListOf()),
+    val resolutionHoriz: MutableState<Float> = mutableStateOf(2.5f),
+    val resolutionVert: MutableState<Float> = mutableStateOf(3.5f),
+    val dpi: MutableState<Int> = mutableStateOf(300)
 ) {
     fun toCsv(): String {
         var csv = ""
