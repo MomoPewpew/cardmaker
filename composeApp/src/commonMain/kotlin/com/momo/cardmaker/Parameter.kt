@@ -7,14 +7,12 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDownward
 import androidx.compose.material.icons.filled.ArrowUpward
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import com.mohamedrejeb.richeditor.model.rememberRichTextState
+import com.mohamedrejeb.richeditor.model.RichTextState
 import com.mohamedrejeb.richeditor.ui.material.OutlinedRichTextEditor
 import com.momo.cardmaker.components.PopupState
 import com.momo.cardmaker.components.RenameState
@@ -370,6 +368,7 @@ class DoubleParameter(defaultName: String, defaultExpression: String, isHighligh
                     }
                 }
             }
+
             // Clickable overlay
             if (ClickState.state.value != ClickState.States.NONE) {
                 Box(modifier = Modifier
@@ -399,6 +398,8 @@ class DoubleParameter(defaultName: String, defaultExpression: String, isHighligh
 
 class RichTextParameter(defaultName: String, defaultExpression: String, isHighlighted: Boolean = false) :
     Parameter<String>(defaultName, defaultExpression, isHighlighted) {
+    val richTextState = RichTextState().setMarkdown(expression.value)
+
     @Composable
     override fun buildElements(modifier: Modifier, label: MutableState<String>) {
         Box {
@@ -427,7 +428,11 @@ class RichTextParameter(defaultName: String, defaultExpression: String, isHighli
                     modifier = Modifier
                         .weight(4f)
                 ) {
-                    val richTextState = rememberRichTextState()
+                    val markDown by remember(richTextState.annotatedString) {
+                        mutableStateOf(richTextState.toMarkdown())
+                    }
+
+                    expression.value = markDown
 
                     RichTextStyleRow(
                         state = richTextState,
@@ -438,10 +443,11 @@ class RichTextParameter(defaultName: String, defaultExpression: String, isHighli
                     OutlinedRichTextEditor(
                         modifier = Modifier
                             .fillMaxWidth(),
-                        state = richTextState,
+                        state = richTextState
                     )
                 }
             }
+
             // Clickable overlay
             if (ClickState.state.value != ClickState.States.NONE) {
                 Box(modifier = Modifier
@@ -509,6 +515,7 @@ class UriParameter(defaultName: String, defaultExpression: String, isHighlighted
                     )
                 }
             }
+
             // Clickable overlay
             if (ClickState.state.value != ClickState.States.NONE) {
                 Box(modifier = Modifier
