@@ -8,10 +8,16 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.drawText
+import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.dp
 import com.momo.cardmaker.CardState
+import com.momo.cardmaker.ImageElement
+import com.momo.cardmaker.TextElement
 import com.momo.cardmaker.showBorder
 
 /** Build composables for previewing cards. */
@@ -48,11 +54,41 @@ fun CardPreview(modifier: Modifier = Modifier) {
         )
     }
 
+    val textMeasurer = rememberTextMeasurer()
+
     Canvas(
         modifier = modified
     )
     {
-        // TODO: Call a draw function for every CardElement
+        CardState.card.value.cardElements.value.forEach { cardElement ->
+            when (cardElement) {
+                is TextElement -> {
+                    val textElement = cardElement
+                    val text = textElement.text.expression.value
+
+                    val style = TextStyle.Default
+
+                    // Draw the text at the specified position
+                    drawText(
+                        textMeasurer = textMeasurer,
+                        text = text,
+                        style = style,
+                        topLeft = Offset(
+                            x = textElement.transformations.offsetX.get().toFloat(),
+                            y = textElement.transformations.offsetY.get().toFloat()
+                        )
+                    )
+                }
+
+                is ImageElement -> {
+                    val imageElement = cardElement as ImageElement
+
+                    // TODO
+                }
+
+                else -> {}
+            }
+        }
     }
 }
 

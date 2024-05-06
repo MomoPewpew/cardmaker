@@ -23,7 +23,7 @@ abstract class CardElement(
     defaultName: String,
 ) {
     val name = mutableStateOf("")
-    private val transformations = CardElementTransformations()
+    val transformations = CardElementTransformations()
     private var folded = false
 
     init {
