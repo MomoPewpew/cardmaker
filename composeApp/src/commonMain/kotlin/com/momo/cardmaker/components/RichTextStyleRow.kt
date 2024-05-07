@@ -166,21 +166,6 @@ fun RichTextStyleRow(
         }
 
         item {
-            RichTextStyleButton(
-                onClick = {
-                    state.toggleSpanStyle(
-                        SpanStyle(
-                            background = Color.Yellow
-                        )
-                    )
-                },
-                isSelected = state.currentSpanStyle.background == Color.Yellow,
-                icon = Icons.Outlined.Circle,
-                tint = Color.Yellow
-            )
-        }
-
-        item {
             Box(
                 Modifier
                     .height(24.dp)
