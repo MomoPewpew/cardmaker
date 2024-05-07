@@ -63,26 +63,20 @@ fun CardPreview(modifier: Modifier = Modifier) {
         CardState.card.value.cardElements.value.forEach { cardElement ->
             when (cardElement) {
                 is TextElement -> {
-                    val textElement = cardElement
-                    val text = textElement.text.expression.value
+                    val text = cardElement.text.richTextState.annotatedString
 
-                    val style = TextStyle.Default
-
-                    // Draw the text at the specified position
                     drawText(
                         textMeasurer = textMeasurer,
                         text = text,
-                        style = style,
+                        style = TextStyle.Default,
                         topLeft = Offset(
-                            x = textElement.transformations.offsetX.get().toFloat(),
-                            y = textElement.transformations.offsetY.get().toFloat()
+                            x = cardElement.transformations.offsetX.get().toFloat(),
+                            y = cardElement.transformations.offsetY.get().toFloat()
                         )
                     )
                 }
 
                 is ImageElement -> {
-                    val imageElement = cardElement as ImageElement
-
                     // TODO
                 }
 
@@ -95,6 +89,6 @@ fun CardPreview(modifier: Modifier = Modifier) {
 fun sizeFromDimensions(size: Size, width: Int, height: Int): Size {
     return Size(
         size.width * (width / (CardState.card.value.dpi.value * CardState.card.value.resolutionHoriz.value)),
-        size.height * (width / (CardState.card.value.dpi.value * CardState.card.value.resolutionVert.value))
+        size.height * (height / (CardState.card.value.dpi.value * CardState.card.value.resolutionVert.value))
     )
 }
