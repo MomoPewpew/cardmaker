@@ -11,6 +11,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
@@ -66,10 +67,9 @@ fun CardPreview(modifier: Modifier = Modifier) {
                     val textWidth = textMeasurer.measure(text, style).size.width
                     val textHeight = textMeasurer.measure(text, style).size.height
 
-                    val topLeft = offsetFromTransformations(
-                        size,
-                        cardElement.transformations.offsetX.get(),
-                        cardElement.transformations.offsetY.get()
+                    val topLeft = Offset(
+                        cardElement.transformations.offsetX.get().toFloat(),
+                        cardElement.transformations.offsetY.get().toFloat()
                     )
 
                     var anchorOffsetX = 0f
@@ -105,12 +105,17 @@ fun CardPreview(modifier: Modifier = Modifier) {
                         y = topLeft.y + anchorOffsetY
                     )
 
-                    drawText(
-                        textMeasurer = textMeasurer,
-                        text = text,
-                        style = style,
-                        topLeft = finalTopLeft
-                    )
+                    scale(
+                        size.width / (CardState.card.value.dpi.value * CardState.card.value.resolutionHoriz.value),
+                        pivot = Offset(0f, 0f)
+                    ) {
+                        drawText(
+                            textMeasurer = textMeasurer,
+                            text = text,
+                            style = style,
+                            topLeft = finalTopLeft
+                        )
+                    }
                 }
 
                 is ImageElement -> {
@@ -121,20 +126,4 @@ fun CardPreview(modifier: Modifier = Modifier) {
             }
         }
     }
-}
-
-/** Convert pixel dimensions into a Compose Size object. */
-fun sizeFromDimensions(size: Size, width: Int, height: Int): Size {
-    return Size(
-        size.width * (width / (CardState.card.value.dpi.value * CardState.card.value.resolutionHoriz.value)),
-        size.height * (height / (CardState.card.value.dpi.value * CardState.card.value.resolutionVert.value))
-    )
-}
-
-/** Convert pixel dimensions into a Compose Offset object. */
-fun offsetFromTransformations(size: Size, width: Int, height: Int): Offset {
-    return Offset(
-        size.width * (width / (CardState.card.value.dpi.value * CardState.card.value.resolutionHoriz.value)),
-        size.height * (height / (CardState.card.value.dpi.value * CardState.card.value.resolutionVert.value))
-    )
 }
