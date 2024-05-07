@@ -61,28 +61,55 @@ fun CardPreview(modifier: Modifier = Modifier) {
             when (cardElement) {
                 is TextElement -> {
                     val text = cardElement.text.richTextState.annotatedString
+                    val style = TextStyle.Default
 
-                    var anchorOffsetX = 0
-                    var anchorOffsetY = 0
+                    val textWidth = textMeasurer.measure(text, style).size.width
+                    val textHeight = textMeasurer.measure(text, style).size.height
 
-                    // TODO: Add proper anchor transformations for every anchor point
+                    val topLeft = offsetFromTransformations(
+                        size,
+                        cardElement.transformations.offsetX.get(),
+                        cardElement.transformations.offsetY.get()
+                    )
+
+                    var anchorOffsetX = 0f
+                    var anchorOffsetY = 0f
+
                     when (cardElement.text.anchor.value) {
-                        Anchor.TOP_RIGHT -> {}
-                        Anchor.BOTTOM_LEFT -> {}
-                        Anchor.BOTTOM_RIGHT -> {}
-                        Anchor.CENTER -> {}
-                        else -> {}
+                        Anchor.TOP_RIGHT -> {
+                            anchorOffsetX -= textWidth
+                        }
+
+                        Anchor.BOTTOM_LEFT -> {
+                            anchorOffsetY -= textHeight
+                        }
+
+                        Anchor.BOTTOM_RIGHT -> {
+                            anchorOffsetX -= textWidth
+                            anchorOffsetY -= textHeight
+                        }
+
+                        Anchor.CENTER -> {
+                            anchorOffsetX -= textWidth / 2
+                            anchorOffsetY -= textHeight / 2
+                        }
+
+                        else -> {
+                            anchorOffsetX = 0f
+                            anchorOffsetY = 0f
+                        }
                     }
+
+                    val finalTopLeft = Offset(
+                        x = topLeft.x + anchorOffsetX,
+                        y = topLeft.y + anchorOffsetY
+                    )
 
                     drawText(
                         textMeasurer = textMeasurer,
                         text = text,
-                        style = TextStyle.Default,
-                        topLeft = offsetFromTransformations(
-                            size,
-                            cardElement.transformations.offsetX.get() + anchorOffsetX,
-                            cardElement.transformations.offsetY.get() + anchorOffsetY
-                        )
+                        style = style,
+                        topLeft = finalTopLeft
                     )
                 }
 
