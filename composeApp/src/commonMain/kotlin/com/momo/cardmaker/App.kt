@@ -29,6 +29,7 @@ import com.momo.cardmaker.components.Rename
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
+import kotlin.math.max
 
 object ClickState {
     enum class States {
@@ -360,7 +361,7 @@ fun App() {
                                     onValueChange = { newText ->
                                         val floatValue = newText.toFloatOrNull()
                                         if (floatValue != null) {
-                                            CardState.card.value.resolutionHoriz.value = floatValue
+                                            CardState.card.value.resolutionHoriz.value = max(floatValue, 0.1f)
                                         }
                                     },
                                     textStyle = TextStyle(textAlign = TextAlign.Center),
@@ -385,7 +386,7 @@ fun App() {
                                     onValueChange = { newText ->
                                         val floatValue = newText.toFloatOrNull()
                                         if (floatValue != null) {
-                                            CardState.card.value.resolutionVert.value = floatValue
+                                            CardState.card.value.resolutionVert.value = max(floatValue, 0.1f)
                                         }
                                     },
                                     textStyle = TextStyle(textAlign = TextAlign.Center),
@@ -410,7 +411,7 @@ fun App() {
                                     onValueChange = { newText ->
                                         val intValue = newText.toIntOrNull()
                                         if (intValue != null) {
-                                            CardState.card.value.dpi.value = intValue
+                                            CardState.card.value.dpi.value = max(intValue, 1)
                                         }
                                     },
                                     textStyle = TextStyle(textAlign = TextAlign.Center),
