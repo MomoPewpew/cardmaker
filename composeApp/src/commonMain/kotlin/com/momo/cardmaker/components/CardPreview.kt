@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.text.TextStyle
@@ -112,7 +113,15 @@ fun CardPreview(modifier: Modifier = Modifier) {
                             textMeasurer = textMeasurer,
                             text = text,
                             style = style,
-                            topLeft = finalTopLeft
+                            topLeft = finalTopLeft,
+                            size = Size(
+                                if ((cardElement.transformations as TextElementTransformations).width.get()
+                                        .toFloat() > 0f
+                                ) (cardElement.transformations).width.get().toFloat() else size.width,
+                                if ((cardElement.transformations).height.get()
+                                        .toFloat() > 0f
+                                ) (cardElement.transformations).height.get().toFloat() else size.height
+                            )
                         )
                     }
                 }
