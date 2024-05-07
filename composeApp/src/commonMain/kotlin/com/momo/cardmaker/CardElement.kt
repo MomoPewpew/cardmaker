@@ -21,9 +21,9 @@ import com.momo.cardmaker.components.RenameState
 /** A card element can be subclassed into all the elements that are added to cards, such as text or images. */
 abstract class CardElement(
     defaultName: String,
+    val transformations: Transformations
 ) {
     val name = mutableStateOf("")
-    val transformations = CardElementTransformations()
     private var folded = false
 
     init {
@@ -195,79 +195,7 @@ abstract class CardElement(
         return when (name) {
             "offsetX" -> transformations.offsetX.get().toDouble()
             "offsetY" -> transformations.offsetY.get().toDouble()
-            "scaleX" -> transformations.scaleX.get()
-            "scaleY" -> transformations.scaleY.get()
             else -> null
-        }
-    }
-}
-
-/** This class holds all the transformation data of a card element. */
-data class CardElementTransformations(
-    val scaleX: DoubleParameter = DoubleParameter(defaultName = "Scale X", defaultExpression = "1.0"),
-    val scaleY: DoubleParameter = DoubleParameter(defaultName = "Scale Y", defaultExpression = "1.0"),
-    val offsetX: IntParameter = IntParameter(defaultName = "Offset X", defaultExpression = "0"),
-    val offsetY: IntParameter = IntParameter(defaultName = "Offset Y", defaultExpression = "0")
-) {
-    /** Build the default transformation segment. */
-    @Composable
-    fun buildElements() {
-        Row(modifier = Modifier) {
-            Column(
-                modifier = Modifier.weight(1f)
-                    .align(Alignment.CenterVertically)
-            ) {
-                offsetX.buildElements(modifier = Modifier, mutableStateOf("Offset X"))
-            }
-            Column(
-                modifier = Modifier.weight(1f)
-                    .align(Alignment.CenterVertically)
-            ) {
-                scaleX.buildElements(modifier = Modifier, mutableStateOf("Scale X"))
-            }
-        }
-        Row(modifier = Modifier.padding(bottom = 16.dp)) {
-            Column(
-                modifier = Modifier.weight(1f)
-                    .align(Alignment.CenterVertically)
-            ) {
-                offsetY.buildElements(modifier = Modifier, mutableStateOf("Offset Y"))
-            }
-            Column(
-                modifier = Modifier.weight(1f)
-                    .align(Alignment.CenterVertically)
-            ) {
-                scaleY.buildElements(modifier = Modifier, mutableStateOf("Scale Y"))
-            }
-        }
-    }
-
-    /** Build the composables for all pinned transformations. */
-    @Composable
-    fun buildPinnedElements() {
-        offsetX.let {
-            if (it.isPinned.value) {
-                it.buildElements(modifier = Modifier, label = it.name)
-                Spacer(modifier = Modifier.height(8.dp))
-            }
-        }
-        offsetY.let {
-            if (it.isPinned.value) {
-                it.buildElements(modifier = Modifier, label = it.name)
-                Spacer(modifier = Modifier.height(8.dp))
-            }
-        }
-        scaleX.let {
-            if (it.isPinned.value) {
-                it.buildElements(modifier = Modifier, label = it.name)
-                Spacer(modifier = Modifier.height(8.dp))
-            }
-        }
-        scaleY.let {
-            if (it.isPinned.value) {
-                it.buildElements(modifier = Modifier, label = it.name)
-                Spacer(modifier = Modifier.height(8.dp))
-            }
         }
     }
 }
@@ -275,7 +203,7 @@ data class CardElementTransformations(
 /** Textbox element to add text to the card. */
 class TextElement(
     defaultName: String = "Text Element"
-) : CardElement(defaultName) {
+) : CardElement(defaultName, TextElementTransformations()) {
     var text = RichTextParameter(defaultName = "Text", defaultExpression = "")
 
     @Composable
@@ -303,7 +231,7 @@ class TextElement(
 /** Image element to add images to the card. */
 class ImageElement(
     defaultName: String = "Image Element"
-) : CardElement(defaultName) {
+) : CardElement(defaultName, CardElementTransformations()) {
     var uri = UriParameter(defaultName = "URL", defaultExpression = "")
 
     @Composable

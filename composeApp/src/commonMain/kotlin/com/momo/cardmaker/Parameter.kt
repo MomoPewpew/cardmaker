@@ -398,6 +398,7 @@ class DoubleParameter(defaultName: String, defaultExpression: String, isHighligh
 
 class RichTextParameter(defaultName: String, defaultExpression: String, isHighlighted: Boolean = false) :
     Parameter<String>(defaultName, defaultExpression, isHighlighted) {
+    var anchor = mutableStateOf(Anchor.TOP_LEFT)
     val richTextState = RichTextState().setMarkdown(expression.value)
 
     @Composable
@@ -436,6 +437,7 @@ class RichTextParameter(defaultName: String, defaultExpression: String, isHighli
 
                     RichTextStyleRow(
                         state = richTextState,
+                        anchor = anchor,
                         modifier = Modifier
                             .fillMaxWidth()
                     )

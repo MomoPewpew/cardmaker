@@ -12,6 +12,7 @@ import androidx.compose.material.icons.automirrored.outlined.FormatListBulleted
 import androidx.compose.material.icons.filled.Circle
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -24,11 +25,14 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mohamedrejeb.richeditor.model.RichTextState
+import com.momo.cardmaker.Anchor
+import com.momo.cardmaker.TextElementTransformations
 
 @Composable
 fun RichTextStyleRow(
     modifier: Modifier = Modifier,
     state: RichTextState,
+    anchor: MutableState<Anchor>
 ) {
     LazyRow(
         verticalAlignment = Alignment.CenterVertically,
@@ -202,6 +206,65 @@ fun RichTextStyleRow(
                 },
                 isSelected = state.isOrderedList,
                 icon = Icons.Outlined.FormatListNumbered,
+            )
+        }
+
+        item {
+            Box(
+                Modifier
+                    .height(24.dp)
+                    .width(1.dp)
+                    .background(Color(0xFF393B3D))
+            )
+        }
+
+        item {
+            RichTextStyleButton(
+                onClick = {
+                    anchor.value = Anchor.TOP_LEFT
+                },
+                isSelected = anchor.value == Anchor.TOP_LEFT,
+                icon = Icons.Outlined.NorthWest,
+            )
+        }
+
+        item {
+            RichTextStyleButton(
+                onClick = {
+                    anchor.value = Anchor.TOP_RIGHT
+                },
+                isSelected = anchor.value == Anchor.TOP_RIGHT,
+                icon = Icons.Outlined.NorthEast,
+            )
+        }
+
+        item {
+            RichTextStyleButton(
+                onClick = {
+                    anchor.value = Anchor.BOTTOM_LEFT
+                },
+                isSelected = anchor.value == Anchor.BOTTOM_LEFT,
+                icon = Icons.Outlined.SouthWest,
+            )
+        }
+
+        item {
+            RichTextStyleButton(
+                onClick = {
+                    anchor.value = Anchor.BOTTOM_RIGHT
+                },
+                isSelected = anchor.value == Anchor.BOTTOM_RIGHT,
+                icon = Icons.Outlined.SouthEast,
+            )
+        }
+
+        item {
+            RichTextStyleButton(
+                onClick = {
+                    anchor.value = Anchor.CENTER
+                },
+                isSelected = anchor.value == Anchor.CENTER,
+                icon = Icons.Outlined.CenterFocusWeak,
             )
         }
     }

@@ -15,10 +15,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.dp
-import com.momo.cardmaker.CardState
-import com.momo.cardmaker.ImageElement
-import com.momo.cardmaker.TextElement
-import com.momo.cardmaker.showBorder
+import com.momo.cardmaker.*
 
 /** Build composables for previewing cards. */
 @Composable
@@ -65,14 +62,26 @@ fun CardPreview(modifier: Modifier = Modifier) {
                 is TextElement -> {
                     val text = cardElement.text.richTextState.annotatedString
 
+                    var anchorOffsetX = 0
+                    var anchorOffsetY = 0
+
+                    // TODO: Add proper anchor transformations for every anchor point
+                    when (cardElement.text.anchor.value) {
+                        Anchor.TOP_RIGHT -> {}
+                        Anchor.BOTTOM_LEFT -> {}
+                        Anchor.BOTTOM_RIGHT -> {}
+                        Anchor.CENTER -> {}
+                        else -> {}
+                    }
+
                     drawText(
                         textMeasurer = textMeasurer,
                         text = text,
                         style = TextStyle.Default,
                         topLeft = offsetFromTransformations(
                             size,
-                            cardElement.transformations.offsetX.get(),
-                            cardElement.transformations.offsetY.get()
+                            cardElement.transformations.offsetX.get() + anchorOffsetX,
+                            cardElement.transformations.offsetY.get() + anchorOffsetY
                         )
                     )
                 }
