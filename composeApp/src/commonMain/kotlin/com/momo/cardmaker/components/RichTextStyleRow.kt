@@ -26,7 +26,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mohamedrejeb.richeditor.model.RichTextState
 import com.momo.cardmaker.Anchor
-import com.momo.cardmaker.TextElementTransformations
 
 @Composable
 fun RichTextStyleRow(
@@ -77,6 +76,15 @@ fun RichTextStyleRow(
                 },
                 isSelected = state.currentParagraphStyle.textAlign == TextAlign.Right,
                 icon = Icons.AutoMirrored.Outlined.FormatAlignRight
+            )
+        }
+
+        item {
+            Box(
+                Modifier
+                    .height(24.dp)
+                    .width(1.dp)
+                    .background(Color(0xFF393B3D))
             )
         }
 
@@ -141,20 +149,6 @@ fun RichTextStyleRow(
                 onClick = {
                     state.toggleSpanStyle(
                         SpanStyle(
-                            fontSize = 28.sp
-                        )
-                    )
-                },
-                isSelected = state.currentSpanStyle.fontSize == 28.sp,
-                icon = Icons.Outlined.FormatSize
-            )
-        }
-
-        item {
-            RichTextStyleButton(
-                onClick = {
-                    state.toggleSpanStyle(
-                        SpanStyle(
                             color = Color.Red
                         )
                     )
@@ -162,6 +156,47 @@ fun RichTextStyleRow(
                 isSelected = state.currentSpanStyle.color == Color.Red,
                 icon = Icons.Filled.Circle,
                 tint = Color.Red
+            )
+        }
+
+        item {
+            Box(
+                Modifier
+                    .height(24.dp)
+                    .width(1.dp)
+                    .background(Color(0xFF393B3D))
+            )
+        }
+
+        item {
+            RichTextStyleButton(
+                onClick = {
+                    var currentSize = state.currentSpanStyle.fontSize.value
+                    if (currentSize.isNaN()) currentSize = 14f
+                    state.addSpanStyle(
+                        SpanStyle(
+                            fontSize = (currentSize - 2f).sp
+                        )
+                    )
+                },
+                isSelected = false,
+                icon = Icons.Outlined.TextFields
+            )
+        }
+
+        item {
+            RichTextStyleButton(
+                onClick = {
+                    var currentSize = state.currentSpanStyle.fontSize.value
+                    if (currentSize.isNaN()) currentSize = 14f
+                    state.addSpanStyle(
+                        SpanStyle(
+                            fontSize = (currentSize + 2f).sp
+                        )
+                    )
+                },
+                isSelected = false,
+                icon = Icons.Outlined.FormatSize
             )
         }
 
