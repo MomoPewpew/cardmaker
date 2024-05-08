@@ -439,7 +439,7 @@ fun App() {
                         // Export
                         Button(
                             onClick = {
-                                // TODO: Render image and download png
+                                val bitmap = CardState.card.value.drawToBitmap()
                             },
                             modifier = Modifier
                                 .weight(1f, fill = false)
