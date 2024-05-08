@@ -17,13 +17,13 @@ object ImageUtilsWasmJs : ImageUtils {
         canvas.width = bitmap.width
         canvas.height = bitmap.height
 
-        val bitArray = bitmap.readPixels()
-        if (bitArray != null) {
+        val byteArray = bitmap.readPixels()
+        if (byteArray != null) {
             // Create Skia Image from Bitmap
-            val clampedArray: Uint8ClampedArray = Uint8ClampedArray(bitArray.size)
+            val clampedArray = Uint8ClampedArray(byteArray.size)
 
-            for (i in 1..<bitArray.size) {
-                clampedArray.set(i, bitArray.get(i))
+            for (i in 1..<byteArray.size) {
+                clampedArray[i] = byteArray[i]
             }
 
             val imageData = context.createImageData(bitmap.width.toDouble(), bitmap.height.toDouble())
