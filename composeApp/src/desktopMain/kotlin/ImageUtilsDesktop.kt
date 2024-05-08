@@ -30,6 +30,10 @@ actual object ImageUtilsDesktop : ImageUtils {
         val pngFilter = FileNameExtensionFilter("PNG Image", "png")
         fileChooser.setFileFilter(pngFilter)
 
+        // Set a default filename suggestion
+        val defaultFileName = "card.png"
+        fileChooser.setSelectedFile(File(defaultDir, defaultFileName))
+
         // Show the save dialog
         val returnVal = fileChooser.showSaveDialog(Frame())
 
