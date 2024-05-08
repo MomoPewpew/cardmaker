@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.momo.cardmaker.components.CardPreview
@@ -71,6 +72,8 @@ var imageUtils: ImageUtils? = null
 @OptIn(ExperimentalResourceApi::class)
 @Composable
 fun App() {
+    val textMeasurer = rememberTextMeasurer()
+
     MaterialTheme(
         colors = lightColors(
             primary = Color(0xFF013220)
@@ -428,7 +431,7 @@ fun App() {
                             .weight(weight = 0.9f, fill = false)
                     ) {
                         Column {
-                            CardPreview()
+                            CardPreview(textMeasurer = textMeasurer)
                         }
                     }
                     // Download buttons
@@ -440,7 +443,7 @@ fun App() {
                         // Export
                         Button(
                             onClick = {
-                                val bitmap = CardState.card.value.drawToBitmap()
+                                val bitmap = CardState.card.value.drawToBitmap(textMeasurer)
                                 val viewModel = ViewModel()
 
                                 viewModel.triggerSaveImage(bitmap, "card.png")

@@ -12,15 +12,15 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.scale
+import androidx.compose.ui.text.TextMeasurer
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
-import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.dp
 import com.momo.cardmaker.*
 
 /** Build composables for previewing cards. */
 @Composable
-fun CardPreview(modifier: Modifier = Modifier) {
+fun CardPreview(modifier: Modifier = Modifier, textMeasurer: TextMeasurer) {
     var modified = modifier
 
     modified =
@@ -51,8 +51,6 @@ fun CardPreview(modifier: Modifier = Modifier) {
             )
         )
     }
-
-    val textMeasurer = rememberTextMeasurer()
 
     Canvas(
         modifier = modified
