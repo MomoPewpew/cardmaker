@@ -56,57 +56,57 @@ fun CardPreview(modifier: Modifier = Modifier, textMeasurer: TextMeasurer) {
         modifier = modified
     )
     {
-        CardState.card.value.cardElements.value.forEach { cardElement ->
-            when (cardElement) {
-                is TextElement -> {
-                    val text = cardElement.text.richTextState.annotatedString
-                    val style = TextStyle.Default
+        scale(
+            size.width / (CardState.card.value.dpi.value * CardState.card.value.resolutionHoriz.value),
+            pivot = Offset(0f, 0f)
+        ) {
+            CardState.card.value.cardElements.value.forEach { cardElement ->
+                when (cardElement) {
+                    is TextElement -> {
+                        val text = cardElement.text.richTextState.annotatedString
+                        val style = TextStyle.Default
 
-                    val textWidth = textMeasurer.measure(text, style).size.width
-                    val textHeight = textMeasurer.measure(text, style).size.height
+                        val textWidth = textMeasurer.measure(text, style).size.width
+                        val textHeight = textMeasurer.measure(text, style).size.height
 
-                    val topLeft = Offset(
-                        cardElement.transformations.offsetX.get().toFloat(),
-                        cardElement.transformations.offsetY.get().toFloat()
-                    )
+                        val topLeft = Offset(
+                            cardElement.transformations.offsetX.get().toFloat(),
+                            cardElement.transformations.offsetY.get().toFloat()
+                        )
 
-                    var anchorOffsetX = 0f
-                    var anchorOffsetY = 0f
+                        var anchorOffsetX = 0f
+                        var anchorOffsetY = 0f
 
-                    when (cardElement.text.anchor.value) {
-                        Anchor.TOP_RIGHT -> {
-                            anchorOffsetX -= textWidth
+                        when (cardElement.text.anchor.value) {
+                            Anchor.TOP_RIGHT -> {
+                                anchorOffsetX -= textWidth
+                            }
+
+                            Anchor.BOTTOM_LEFT -> {
+                                anchorOffsetY -= textHeight
+                            }
+
+                            Anchor.BOTTOM_RIGHT -> {
+                                anchorOffsetX -= textWidth
+                                anchorOffsetY -= textHeight
+                            }
+
+                            Anchor.CENTER -> {
+                                anchorOffsetX -= textWidth / 2
+                                anchorOffsetY -= textHeight / 2
+                            }
+
+                            else -> {
+                                anchorOffsetX = 0f
+                                anchorOffsetY = 0f
+                            }
                         }
 
-                        Anchor.BOTTOM_LEFT -> {
-                            anchorOffsetY -= textHeight
-                        }
+                        val finalTopLeft = Offset(
+                            x = topLeft.x + anchorOffsetX,
+                            y = topLeft.y + anchorOffsetY
+                        )
 
-                        Anchor.BOTTOM_RIGHT -> {
-                            anchorOffsetX -= textWidth
-                            anchorOffsetY -= textHeight
-                        }
-
-                        Anchor.CENTER -> {
-                            anchorOffsetX -= textWidth / 2
-                            anchorOffsetY -= textHeight / 2
-                        }
-
-                        else -> {
-                            anchorOffsetX = 0f
-                            anchorOffsetY = 0f
-                        }
-                    }
-
-                    val finalTopLeft = Offset(
-                        x = topLeft.x + anchorOffsetX,
-                        y = topLeft.y + anchorOffsetY
-                    )
-
-                    scale(
-                        size.width / (CardState.card.value.dpi.value * CardState.card.value.resolutionHoriz.value),
-                        pivot = Offset(0f, 0f)
-                    ) {
                         drawText(
                             textMeasurer = textMeasurer,
                             text = text,
@@ -122,13 +122,13 @@ fun CardPreview(modifier: Modifier = Modifier, textMeasurer: TextMeasurer) {
                             )
                         )
                     }
-                }
 
-                is ImageElement -> {
-                    // TODO
-                }
+                    is ImageElement -> {
+                        // TODO
+                    }
 
-                else -> {}
+                    else -> {}
+                }
             }
         }
     }
