@@ -7,10 +7,12 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Canvas
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asSkiaBitmap
 import androidx.compose.ui.graphics.drawscope.CanvasDrawScope
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
+import org.jetbrains.skia.Bitmap
 
 data class Card(
     val cardElements: MutableState<MutableList<CardElement>> = mutableStateOf(mutableListOf()),
@@ -62,7 +64,7 @@ data class Card(
         CardState.card.value = CardState.card.value.copy(cardElements = mutableStateOf(cardElements))
     }
 
-    fun drawToBitmap(): ImageBitmap {
+    fun drawToBitmap(): Bitmap {
         val drawScope = CanvasDrawScope()
         val size = Size(
             dpi.value * resolutionHoriz.value,
@@ -79,7 +81,7 @@ data class Card(
 
         }
 
-        return bitmap
+        return bitmap.asSkiaBitmap()
     }
 
     companion object {

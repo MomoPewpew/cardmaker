@@ -66,6 +66,7 @@ object CardState {
 }
 
 var showBorder = mutableStateOf(true)
+var imageUtils: ImageUtils? = null
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
@@ -440,6 +441,9 @@ fun App() {
                         Button(
                             onClick = {
                                 val bitmap = CardState.card.value.drawToBitmap()
+                                val viewModel = ViewModel()
+
+                                viewModel.triggerSaveImage(bitmap, "card.png")
                             },
                             modifier = Modifier
                                 .weight(1f, fill = false)
