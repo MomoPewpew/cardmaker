@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage
 import java.io.File
 import javax.imageio.ImageIO
 import javax.swing.JFileChooser
+import javax.swing.JOptionPane
 import javax.swing.filechooser.FileNameExtensionFilter
 
 expect object ImageUtilsDesktop : ImageUtils {
@@ -38,10 +39,7 @@ actual object ImageUtilsDesktop : ImageUtils {
         val returnVal = fileChooser.showSaveDialog(Frame())
 
         if (returnVal == JFileChooser.APPROVE_OPTION) {
-            val selectedFile = fileChooser.selectedFile
-
-            // Write the image to the selected file
-            ImageIO.write(bufferedImage, "png", selectedFile)
+            var selectedFile = fileChooser.selectedFile
 
             // Ensure filename ends with .png
             val filename = selectedFile.absolutePath
@@ -53,9 +51,25 @@ actual object ImageUtilsDesktop : ImageUtils {
 
             if (extension.lowercase() != ".png") {
                 val newFilename = "$filename.png"
-                selectedFile.renameTo(File(newFilename))
+                selectedFile = File(newFilename)
             }
 
+            // Check if file already exists
+            if (selectedFile.exists()) {
+                val confirmation = JOptionPane.showConfirmDialog(
+                    Frame(),
+                    "The file '${selectedFile.name}' already exists. Overwrite?",
+                    "Save Image Confirmation",
+                    JOptionPane.YES_NO_OPTION
+                )
+
+                if (confirmation != JOptionPane.YES_OPTION) {
+                    return
+                }
+            }
+
+            // Write the image to the selected file
+            ImageIO.write(bufferedImage, "png", selectedFile)
         }
     }
 }
