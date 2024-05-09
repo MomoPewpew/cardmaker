@@ -17,6 +17,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.unit.dp
 import com.momo.cardmaker.*
+import kotlin.math.max
 
 /** Build composables for previewing cards. */
 @Composable
@@ -116,11 +117,11 @@ fun CardPreview(modifier: Modifier = Modifier, textMeasurer: TextMeasurer) {
                                 if ((cardElement.transformations as TextElementTransformations).width.get()
                                         .toFloat() > 0f
                                 ) (cardElement.transformations).width.get()
-                                    .toFloat() else size.width - cardElement.transformations.offsetX.get(),
+                                    .toFloat() else max(size.width - cardElement.transformations.offsetX.get(), 0f),
                                 if ((cardElement.transformations).height.get()
                                         .toFloat() > 0f
                                 ) (cardElement.transformations).height.get()
-                                    .toFloat() else size.height - cardElement.transformations.offsetY.get()
+                                    .toFloat() else max(size.height - cardElement.transformations.offsetY.get(), 0f)
                             )
                         )
                     }
