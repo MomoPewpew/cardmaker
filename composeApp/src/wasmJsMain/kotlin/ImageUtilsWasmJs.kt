@@ -1,13 +1,15 @@
 import com.momo.cardmaker.ImageUtils
-import org.jetbrains.skia.Bitmap
 import kotlinx.browser.window
-import org.khronos.webgl.Uint8ClampedArray
+import org.jetbrains.skia.*
+import org.khronos.webgl.Uint16Array
+import org.khronos.webgl.get
 import org.khronos.webgl.set
 import org.w3c.dom.CanvasRenderingContext2D
 import org.w3c.dom.HTMLAnchorElement
 import org.w3c.dom.HTMLCanvasElement
 
 object ImageUtilsWasmJs : ImageUtils {
+    @OptIn(ExperimentalUnsignedTypes::class)
     override suspend fun saveBitmapToFile(bitmap: Bitmap, filePath: String) {
         // Create a canvas element
         val canvas = window.document.createElement("canvas") as HTMLCanvasElement
@@ -17,17 +19,24 @@ object ImageUtilsWasmJs : ImageUtils {
         canvas.width = bitmap.width
         canvas.height = bitmap.height
 
-        val byteArray = bitmap.readPixels()
-        if (byteArray != null) {
+        val uByteArray = bitmap.readPixels(
+            dstInfo = ImageInfo(
+                ColorInfo(
+                    ColorType.RGBA_8888,
+                    ColorAlphaType.OPAQUE,
+                    ColorSpace.sRGB
+                ), bitmap.width, bitmap.height
+            )
+        )?.asUByteArray()
+        if (uByteArray != null) {
             // Create Skia Image from Bitmap
-            val clampedArray = Uint8ClampedArray(byteArray.size)
-
-            for (i in byteArray.indices) {
-                clampedArray[i] = byteArray[i]
-            }
-
             val imageData = context.createImageData(bitmap.width.toDouble(), bitmap.height.toDouble())
-            imageData.data.set(clampedArray)
+
+            val pix = imageData.data.unsafeCast<Uint16Array>()
+
+            for (i in uByteArray.indices) {
+                pix[i] = uByteArray[i].toShort()
+            }
 
             // Draw Skia Image onto canvas
             context.putImageData(imageData, 0.0, 0.0)
