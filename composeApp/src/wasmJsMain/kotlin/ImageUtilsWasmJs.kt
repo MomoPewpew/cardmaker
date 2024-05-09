@@ -2,7 +2,6 @@ import com.momo.cardmaker.ImageUtils
 import kotlinx.browser.window
 import org.jetbrains.skia.*
 import org.khronos.webgl.Uint16Array
-import org.khronos.webgl.get
 import org.khronos.webgl.set
 import org.w3c.dom.CanvasRenderingContext2D
 import org.w3c.dom.HTMLAnchorElement
