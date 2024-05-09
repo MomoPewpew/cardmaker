@@ -117,14 +117,16 @@ fun CardPreview(modifier: Modifier = Modifier, textMeasurer: TextMeasurer) {
                             style = style,
                             topLeft = finalTopLeft,
                             size = Size(
-                                if ((cardElement.transformations as TextElementTransformations).width.get()
-                                        .toFloat() > 0f
-                                ) (cardElement.transformations).width.get()
-                                    .toFloat() else max(size.width - cardElement.transformations.offsetX.get(), 0f),
-                                if ((cardElement.transformations).height.get()
-                                        .toFloat() > 0f
-                                ) (cardElement.transformations).height.get()
-                                    .toFloat() else max(size.height - cardElement.transformations.offsetY.get(), 0f)
+                                if ((cardElement.transformations as TextElementTransformations).width.get() > 0) (cardElement.transformations).width.get()
+                                    .toFloat() else max(
+                                    (CardState.card.value.dpi.value * CardState.card.value.resolutionHoriz.value) - cardElement.transformations.offsetX.get(),
+                                    0f
+                                ),
+                                if ((cardElement.transformations).height.get() > 0) (cardElement.transformations).height.get()
+                                    .toFloat() else max(
+                                    (CardState.card.value.dpi.value * CardState.card.value.resolutionVert.value) - cardElement.transformations.offsetY.get(),
+                                    0f
+                                )
                             )
                         )
                     }
