@@ -22,7 +22,7 @@ object ImageUtilsWasmJs : ImageUtils {
             // Create Skia Image from Bitmap
             val clampedArray = Uint8ClampedArray(byteArray.size)
 
-            for (i in 1..<byteArray.size) {
+            for (i in byteArray.indices) {
                 clampedArray[i] = byteArray[i]
             }
 
