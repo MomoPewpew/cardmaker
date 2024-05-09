@@ -11,6 +11,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.text.TextMeasurer
 import androidx.compose.ui.text.TextStyle
@@ -36,6 +37,8 @@ fun CardPreview(modifier: Modifier = Modifier, textMeasurer: TextMeasurer) {
                 bottomEndPercent = 4
             )
         )
+    } else {
+        modified = modified.clip(RectangleShape)
     }
 
     modified = modified.background(Color.White)
