@@ -128,10 +128,12 @@ data class Card(
                             size = Size(
                                 if ((cardElement.transformations as TextElementTransformations).width.get()
                                         .toFloat() > 0f
-                                ) (cardElement.transformations).width.get().toFloat() else size.width,
+                                ) (cardElement.transformations).width.get()
+                                    .toFloat() else size.width - cardElement.transformations.offsetX.get(),
                                 if ((cardElement.transformations).height.get()
                                         .toFloat() > 0f
-                                ) (cardElement.transformations).height.get().toFloat() else size.height
+                                ) (cardElement.transformations).height.get()
+                                    .toFloat() else size.height - cardElement.transformations.offsetY.get()
                             )
                         )
                     }
