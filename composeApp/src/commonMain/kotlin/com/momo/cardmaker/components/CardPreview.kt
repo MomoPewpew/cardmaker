@@ -71,7 +71,7 @@ fun CardPreview(modifier: Modifier = Modifier, textMeasurer: TextMeasurer) {
 
                         val topLeft = Offset(
                             cardElement.transformations.offsetX.get().toFloat(),
-                            cardElement.transformations.offsetY.get().toFloat()
+                            -cardElement.transformations.offsetY.get().toFloat()
                         )
 
                         var anchorOffsetX = 0f
