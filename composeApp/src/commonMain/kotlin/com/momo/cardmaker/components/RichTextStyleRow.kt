@@ -10,7 +10,7 @@ import androidx.compose.material.icons.automirrored.outlined.FormatAlignLeft
 import androidx.compose.material.icons.automirrored.outlined.FormatAlignRight
 import androidx.compose.material.icons.automirrored.outlined.FormatListBulleted
 import androidx.compose.material.icons.filled.Circle
-import androidx.compose.material.icons.filled.Palette
+import androidx.compose.material.icons.outlined.Palette
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -176,7 +176,7 @@ fun RichTextStyleRow(
                     ColorPickerState.pick(color)
                 },
                 isSelected = false,
-                icon = Icons.Filled.Palette
+                icon = Icons.Outlined.Palette
             )
         }
 
