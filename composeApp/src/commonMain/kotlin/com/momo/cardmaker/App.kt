@@ -23,10 +23,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.momo.cardmaker.components.CardPreview
-import com.momo.cardmaker.components.DeleteConfirm
-import com.momo.cardmaker.components.Popup
-import com.momo.cardmaker.components.Rename
+import com.momo.cardmaker.components.*
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
@@ -477,6 +474,9 @@ fun App() {
 
             // Delete Confirm window
             DeleteConfirm()
+
+            // Color picker
+            ColorPickerWindow()
         }
     }
 }

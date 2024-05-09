@@ -40,6 +40,7 @@ kotlin {
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
             implementation("com.mohamedrejeb.richeditor:richeditor-compose:1.0.0-rc04")
+            implementation("com.eygraber:compose-color-picker:0.0.19")
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)

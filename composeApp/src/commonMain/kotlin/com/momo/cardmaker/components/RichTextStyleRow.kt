@@ -10,6 +10,7 @@ import androidx.compose.material.icons.automirrored.outlined.FormatAlignLeft
 import androidx.compose.material.icons.automirrored.outlined.FormatAlignRight
 import androidx.compose.material.icons.automirrored.outlined.FormatListBulleted
 import androidx.compose.material.icons.filled.Circle
+import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -31,7 +32,8 @@ import com.momo.cardmaker.Anchor
 fun RichTextStyleRow(
     modifier: Modifier = Modifier,
     state: RichTextState,
-    anchor: MutableState<Anchor>
+    anchor: MutableState<Anchor>,
+    color: MutableState<Long>
 ) {
     LazyRow(
         verticalAlignment = Alignment.CenterVertically,
@@ -145,17 +147,36 @@ fun RichTextStyleRow(
         }
 
         item {
+            Box(
+                Modifier
+                    .height(24.dp)
+                    .width(1.dp)
+                    .background(Color(0xFF393B3D))
+            )
+        }
+
+        item {
             RichTextStyleButton(
                 onClick = {
                     state.toggleSpanStyle(
                         SpanStyle(
-                            color = Color.Red
+                            color = Color(color.value)
                         )
                     )
                 },
-                isSelected = state.currentSpanStyle.color == Color.Red,
+                isSelected = state.currentSpanStyle.color == Color(color.value),
                 icon = Icons.Filled.Circle,
-                tint = Color.Red
+                tint = Color(color.value)
+            )
+        }
+
+        item {
+            RichTextStyleButton(
+                onClick = {
+                    ColorPickerState.pick(color)
+                },
+                isSelected = false,
+                icon = Icons.Filled.Palette
             )
         }
 
