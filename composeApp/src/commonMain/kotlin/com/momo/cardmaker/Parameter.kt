@@ -396,9 +396,8 @@ class DoubleParameter(defaultName: String, defaultExpression: String, isHighligh
     }
 }
 
-class RichTextParameter(defaultName: String, defaultExpression: String, isHighlighted: Boolean = false) :
+class RichTextParameter(defaultName: String, defaultExpression: String, isHighlighted: Boolean = false, private val anchor: MutableState<Anchor>) :
     Parameter<String>(defaultName, defaultExpression, isHighlighted) {
-    var anchor = mutableStateOf(Anchor.TOP_LEFT)
     val richTextState = RichTextState().setMarkdown(expression.value)
     val color: MutableState<Long> = mutableStateOf(0xFFFF0000)
 

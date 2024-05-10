@@ -91,7 +91,7 @@ data class Card(
                         var anchorOffsetX = 0f
                         var anchorOffsetY = 0f
 
-                        when (cardElement.text.anchor.value) {
+                        when (cardElement.transformations.anchor.value) {
                             Anchor.TOP_RIGHT -> {
                                 anchorOffsetX -= textWidth
                             }
@@ -127,7 +127,7 @@ data class Card(
                             style = style,
                             topLeft = finalTopLeft,
                             size = Size(
-                                if ((cardElement.transformations as TextElementTransformations).width.get() > 0) (cardElement.transformations).width.get()
+                                if (cardElement.transformations.width.get() > 0) (cardElement.transformations).width.get()
                                     .toFloat() else max(
                                     (CardState.card.value.dpi.value * CardState.card.value.resolutionHoriz.value) - cardElement.transformations.offsetX.get(),
                                     0f

@@ -20,9 +20,9 @@ import com.momo.cardmaker.components.RenameState
 
 /** A card element can be subclassed into all the elements that are added to cards, such as text or images. */
 abstract class CardElement(
-    defaultName: String,
-    val transformations: Transformations
+    defaultName: String
 ) {
+    val transformations = CardElementTransformations()
     val name = mutableStateOf("")
     private var folded = false
 
@@ -203,8 +203,8 @@ abstract class CardElement(
 /** Textbox element to add text to the card. */
 class TextElement(
     defaultName: String = "Text Element"
-) : CardElement(defaultName, TextElementTransformations()) {
-    var text = RichTextParameter(defaultName = "Text", defaultExpression = "")
+) : CardElement(defaultName) {
+    var text = RichTextParameter(defaultName = "Text", defaultExpression = "", anchor = transformations.anchor)
 
     @Composable
     override fun buildSpecificElements() {
@@ -231,7 +231,7 @@ class TextElement(
 /** Image element to add images to the card. */
 class ImageElement(
     defaultName: String = "Image Element"
-) : CardElement(defaultName, CardElementTransformations()) {
+) : CardElement(defaultName) {
     var uri = UriParameter(defaultName = "URL", defaultExpression = "")
 
     @Composable
