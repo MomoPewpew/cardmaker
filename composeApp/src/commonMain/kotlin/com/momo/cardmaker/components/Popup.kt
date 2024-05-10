@@ -5,6 +5,8 @@ import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
+import com.momo.cardmaker.components.PopupState.text
+import com.momo.cardmaker.components.PopupState.title
 
 object PopupState {
     var title = mutableStateOf("")
@@ -18,18 +20,18 @@ object PopupState {
 
 @Composable
 fun Popup() {
-    if (PopupState.text.value.isNotEmpty()) {
+    if (text.value.isNotEmpty()) {
         AlertDialog(
-            onDismissRequest = { PopupState.text.value = "" },
+            onDismissRequest = { text.value = "" },
             title = {
                 Text(
-                    PopupState.title.value,
+                    title.value,
                     style = MaterialTheme.typography.h5
                 )
             },
-            text = { Text(PopupState.text.value) },
+            text = { Text(text.value) },
             confirmButton = {
-                Button(onClick = { PopupState.text.value = "" }) {
+                Button(onClick = { text.value = "" }) {
                     Text("OK")
                 }
             }
