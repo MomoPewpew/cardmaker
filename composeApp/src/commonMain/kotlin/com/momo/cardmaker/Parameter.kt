@@ -396,10 +396,10 @@ class DoubleParameter(defaultName: String, defaultExpression: String, isHighligh
     }
 }
 
-class RichTextParameter(defaultName: String, defaultExpression: String, isHighlighted: Boolean = false, private val anchor: MutableState<Anchor>) :
+class RichTextParameter(defaultName: String, defaultExpression: String, isHighlighted: Boolean = false) :
     Parameter<String>(defaultName, defaultExpression, isHighlighted) {
     val richTextState = RichTextState().setMarkdown(expression.value)
-    val color: MutableState<Long> = mutableStateOf(0xFFFF0000)
+    private val color: MutableState<Long> = mutableStateOf(0xFFFF0000)
 
     @Composable
     override fun buildElements(modifier: Modifier, label: MutableState<String>) {
@@ -437,7 +437,6 @@ class RichTextParameter(defaultName: String, defaultExpression: String, isHighli
 
                     RichTextStyleRow(
                         state = richTextState,
-                        anchor = anchor,
                         color = color,
                         modifier = Modifier
                             .fillMaxWidth()

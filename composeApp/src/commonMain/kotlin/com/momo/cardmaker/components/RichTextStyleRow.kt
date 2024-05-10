@@ -26,13 +26,11 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mohamedrejeb.richeditor.model.RichTextState
-import com.momo.cardmaker.Anchor
 
 @Composable
 fun RichTextStyleRow(
     modifier: Modifier = Modifier,
     state: RichTextState,
-    anchor: MutableState<Anchor>,
     color: MutableState<Long>
 ) {
     LazyRow(
@@ -247,65 +245,6 @@ fun RichTextStyleRow(
                 },
                 isSelected = state.isOrderedList,
                 icon = Icons.Outlined.FormatListNumbered,
-            )
-        }
-
-        item {
-            Box(
-                Modifier
-                    .height(24.dp)
-                    .width(1.dp)
-                    .background(Color(0xFF393B3D))
-            )
-        }
-
-        item {
-            RichTextStyleButton(
-                onClick = {
-                    anchor.value = Anchor.TOP_LEFT
-                },
-                isSelected = anchor.value == Anchor.TOP_LEFT,
-                icon = Icons.Outlined.NorthWest,
-            )
-        }
-
-        item {
-            RichTextStyleButton(
-                onClick = {
-                    anchor.value = Anchor.TOP_RIGHT
-                },
-                isSelected = anchor.value == Anchor.TOP_RIGHT,
-                icon = Icons.Outlined.NorthEast,
-            )
-        }
-
-        item {
-            RichTextStyleButton(
-                onClick = {
-                    anchor.value = Anchor.BOTTOM_LEFT
-                },
-                isSelected = anchor.value == Anchor.BOTTOM_LEFT,
-                icon = Icons.Outlined.SouthWest,
-            )
-        }
-
-        item {
-            RichTextStyleButton(
-                onClick = {
-                    anchor.value = Anchor.BOTTOM_RIGHT
-                },
-                isSelected = anchor.value == Anchor.BOTTOM_RIGHT,
-                icon = Icons.Outlined.SouthEast,
-            )
-        }
-
-        item {
-            RichTextStyleButton(
-                onClick = {
-                    anchor.value = Anchor.CENTER
-                },
-                isSelected = anchor.value == Anchor.CENTER,
-                icon = Icons.Outlined.CenterFocusWeak,
             )
         }
     }

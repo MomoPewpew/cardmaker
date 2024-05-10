@@ -1,15 +1,15 @@
 package com.momo.cardmaker
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.outlined.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.momo.cardmaker.components.DeleteState
 import com.momo.cardmaker.components.RenameState
+import com.momo.cardmaker.components.RichTextStyleButton
 
 /** A card element can be subclassed into all the elements that are added to cards, such as text or images. */
 abstract class CardElement(
@@ -99,20 +100,76 @@ abstract class CardElement(
             // Element buttons
             Column(
                 modifier = Modifier
-                    .weight(2f)
+                    .weight(4f)
                     .align(Alignment.CenterVertically)
             ) {
-                Row(
+                LazyRow(
                     modifier = Modifier
                         .padding(end = 31.dp)
-                        .align(Alignment.End)
+                        .align(Alignment.End),
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    // Move up button
-                    Column(
-                        modifier = Modifier
-                            .width(48.dp)
-                    ) {
-                        Button(modifier = Modifier
+                    item {
+                        RichTextStyleButton(
+                            onClick = {
+                                transformations.anchor.value = Anchor.TOP_LEFT
+                            },
+                            isSelected = transformations.anchor.value == Anchor.TOP_LEFT,
+                            icon = Icons.Outlined.NorthWest,
+                        )
+                    }
+
+                    item {
+                        RichTextStyleButton(
+                            onClick = {
+                                transformations.anchor.value = Anchor.TOP_RIGHT
+                            },
+                            isSelected = transformations.anchor.value == Anchor.TOP_RIGHT,
+                            icon = Icons.Outlined.NorthEast,
+                        )
+                    }
+
+                    item {
+                        RichTextStyleButton(
+                            onClick = {
+                                transformations.anchor.value = Anchor.BOTTOM_LEFT
+                            },
+                            isSelected = transformations.anchor.value == Anchor.BOTTOM_LEFT,
+                            icon = Icons.Outlined.SouthWest,
+                        )
+                    }
+
+                    item {
+                        RichTextStyleButton(
+                            onClick = {
+                                transformations.anchor.value = Anchor.BOTTOM_RIGHT
+                            },
+                            isSelected = transformations.anchor.value == Anchor.BOTTOM_RIGHT,
+                            icon = Icons.Outlined.SouthEast,
+                        )
+                    }
+
+                    item {
+                        RichTextStyleButton(
+                            onClick = {
+                                transformations.anchor.value = Anchor.CENTER
+                            },
+                            isSelected = transformations.anchor.value == Anchor.CENTER,
+                            icon = Icons.Outlined.CenterFocusWeak,
+                        )
+                    }
+
+                    item {
+                        Box(
+                            Modifier
+                                .height(24.dp)
+                                .width(1.dp)
+                                .background(Color(0xFF393B3D))
+                        )
+                    }
+
+                    item {
+                        IconButton(modifier = Modifier
                             .fillMaxSize(),
                             onClick = {
                                 CardState.card.value.moveElementUp(me.value)
@@ -120,12 +177,9 @@ abstract class CardElement(
                             Icon(imageVector = Icons.Filled.ArrowUpward, contentDescription = "Move Up")
                         }
                     }
-                    // Move Down Button
-                    Column(
-                        modifier = Modifier
-                            .width(48.dp)
-                    ) {
-                        Button(modifier = Modifier
+
+                    item {
+                        IconButton(modifier = Modifier
                             .fillMaxSize(),
                             onClick = {
                                 CardState.card.value.moveElementDown(me.value)
@@ -133,12 +187,9 @@ abstract class CardElement(
                             Icon(imageVector = Icons.Filled.ArrowDownward, contentDescription = "Move Down")
                         }
                     }
-                    // Delete button
-                    Column(
-                        modifier = Modifier
-                            .width(48.dp)
-                    ) {
-                        Button(modifier = Modifier
+
+                    item {
+                        IconButton(modifier = Modifier
                             .fillMaxSize(),
                             onClick = {
                                 DeleteState.confirmDelete(me.value)
@@ -204,7 +255,7 @@ abstract class CardElement(
 class TextElement(
     defaultName: String = "Text Element"
 ) : CardElement(defaultName) {
-    var text = RichTextParameter(defaultName = "Text", defaultExpression = "", anchor = transformations.anchor)
+    var text = RichTextParameter(defaultName = "Text", defaultExpression = "")
 
     @Composable
     override fun buildSpecificElements() {
