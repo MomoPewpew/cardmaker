@@ -128,7 +128,7 @@ fun App() {
                         // Add text
                         Button(
                             onClick = {
-                                CardState.card.value.addElement(TextElement())
+                                CardState.card.value.addElement(RichTextElement())
                                 advancedFolded = false
                             },
                             modifier = Modifier

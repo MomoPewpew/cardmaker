@@ -252,7 +252,7 @@ abstract class CardElement(
 }
 
 /** Textbox element to add text to the card. */
-class TextElement(
+class RichTextElement(
     defaultName: String = "Text Element"
 ) : CardElement(defaultName) {
     var text = RichTextParameter(defaultName = "Text", defaultExpression = "")

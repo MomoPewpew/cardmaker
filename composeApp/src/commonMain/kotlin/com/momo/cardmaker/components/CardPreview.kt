@@ -51,7 +51,7 @@ fun CardPreview(modifier: Modifier = Modifier, textMeasurer: TextMeasurer) {
         ) {
             CardState.card.value.cardElements.value.forEach { cardElement ->
                 when (cardElement) {
-                    is TextElement -> {
+                    is RichTextElement -> {
                         val text = cardElement.text.richTextState.annotatedString
                         val style = TextStyle.Default
 
