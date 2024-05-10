@@ -460,7 +460,7 @@ fun App() {
                                 .weight(1f, fill = false)
                                 .padding(horizontal = 16.dp)
                         ) {
-                            Text("Border")
+                            Text("Preview Corners")
                         }
                         // Bleed
                         Button(

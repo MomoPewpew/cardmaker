@@ -41,20 +41,7 @@ fun CardPreview(modifier: Modifier = Modifier, textMeasurer: TextMeasurer) {
         modified = modified.clip(RectangleShape)
     }
 
-    modified = modified.background(Color.White)
-
-    if (showBorder.value) {
-        modified = modified.border(
-            width = 1.dp,
-            color = Color.Black,
-            shape = RoundedCornerShape(
-                topStartPercent = 4,
-                topEndPercent = 4,
-                bottomStartPercent = 4,
-                bottomEndPercent = 4
-            )
-        )
-    }
+    modified = modified.background(Color.White.copy(alpha = 0.9f))
 
     Canvas(
         modifier = modified
