@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Canvas
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asSkiaBitmap
 import androidx.compose.ui.graphics.drawscope.CanvasDrawScope
@@ -21,7 +22,8 @@ data class Card(
     val cardElements: MutableState<MutableList<CardElement>> = mutableStateOf(mutableListOf()),
     val resolutionHoriz: MutableState<Float> = mutableStateOf(2.5f),
     val resolutionVert: MutableState<Float> = mutableStateOf(3.5f),
-    val dpi: MutableState<Int> = mutableStateOf(300)
+    val dpi: MutableState<Int> = mutableStateOf(300),
+    val bleedColor: MutableState<Long> = mutableStateOf(0)
 ) {
     fun toCsv(): String {
         var csv = ""
@@ -147,6 +149,51 @@ data class Card(
 
                     else -> {}
                 }
+            }
+
+            // Bleed border
+            if (CardState.card.value.bleedColor.value > 0) {
+                val bleedThickness: Float = CardState.card.value.dpi.value / 12.7f
+                val color = Color(CardState.card.value.bleedColor.value)
+
+                drawRect(
+                    color = color,
+                    topLeft = Offset.Zero,
+                    size = Size(
+                        width = CardState.card.value.dpi.value * CardState.card.value.resolutionHoriz.value,
+                        height = bleedThickness
+                    )
+                )
+                drawRect(
+                    color = color,
+                    topLeft = Offset.Zero,
+                    size = Size(
+                        width = bleedThickness,
+                        height = CardState.card.value.dpi.value * CardState.card.value.resolutionVert.value
+                    )
+                )
+                drawRect(
+                    color = color,
+                    topLeft = Offset(
+                        0f,
+                        CardState.card.value.dpi.value * CardState.card.value.resolutionVert.value - bleedThickness
+                    ),
+                    size = Size(
+                        width = CardState.card.value.dpi.value * CardState.card.value.resolutionHoriz.value,
+                        height = bleedThickness
+                    )
+                )
+                drawRect(
+                    color = color,
+                    topLeft = Offset(
+                        CardState.card.value.dpi.value * CardState.card.value.resolutionHoriz.value - bleedThickness,
+                        0f
+                    ),
+                    size = Size(
+                        width = bleedThickness,
+                        height = CardState.card.value.dpi.value * CardState.card.value.resolutionVert.value
+                    )
+                )
             }
         }
 

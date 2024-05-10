@@ -449,7 +449,7 @@ fun App() {
                                 .weight(1f, fill = false)
                                 .padding(horizontal = 16.dp)
                         ) {
-                            Text("Export as PNG")
+                            Text("Export")
                         }
                         // Toggle Border
                         Button(
@@ -460,7 +460,25 @@ fun App() {
                                 .weight(1f, fill = false)
                                 .padding(horizontal = 16.dp)
                         ) {
-                            Text("Toggle Border")
+                            Text("Border")
+                        }
+                        // Bleed
+                        Button(
+                            onClick = {
+                                CardState.card.value.bleedColor.let {
+                                    if (it.value == 0.toLong()) {
+                                        it.value = 0xFF000000
+                                        ColorPickerState.pick(it)
+                                    } else {
+                                        it.value = 0
+                                    }
+                                }
+                            },
+                            modifier = Modifier
+                                .weight(1f, fill = false)
+                                .padding(horizontal = 16.dp)
+                        ) {
+                            Text("Bleed")
                         }
                     }
                 }

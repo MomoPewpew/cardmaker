@@ -138,6 +138,51 @@ fun CardPreview(modifier: Modifier = Modifier, textMeasurer: TextMeasurer) {
                     else -> {}
                 }
             }
+
+            // Bleed border
+            if (CardState.card.value.bleedColor.value > 0) {
+                val bleedThickness: Float = CardState.card.value.dpi.value / 12.7f
+                val color = Color(CardState.card.value.bleedColor.value)
+
+                drawRect(
+                    color = color,
+                    topLeft = Offset.Zero,
+                    size = Size(
+                        width = CardState.card.value.dpi.value * CardState.card.value.resolutionHoriz.value,
+                        height = bleedThickness
+                    )
+                )
+                drawRect(
+                    color = color,
+                    topLeft = Offset.Zero,
+                    size = Size(
+                        width = bleedThickness,
+                        height = CardState.card.value.dpi.value * CardState.card.value.resolutionVert.value
+                    )
+                )
+                drawRect(
+                    color = color,
+                    topLeft = Offset(
+                        0f,
+                        CardState.card.value.dpi.value * CardState.card.value.resolutionVert.value - bleedThickness
+                    ),
+                    size = Size(
+                        width = CardState.card.value.dpi.value * CardState.card.value.resolutionHoriz.value,
+                        height = bleedThickness
+                    )
+                )
+                drawRect(
+                    color = color,
+                    topLeft = Offset(
+                        CardState.card.value.dpi.value * CardState.card.value.resolutionHoriz.value - bleedThickness,
+                        0f
+                    ),
+                    size = Size(
+                        width = bleedThickness,
+                        height = CardState.card.value.dpi.value * CardState.card.value.resolutionVert.value
+                    )
+                )
+            }
         }
     }
 }
