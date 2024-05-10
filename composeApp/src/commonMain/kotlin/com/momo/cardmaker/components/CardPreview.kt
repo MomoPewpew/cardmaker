@@ -2,7 +2,6 @@ package com.momo.cardmaker.components
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
@@ -16,7 +15,6 @@ import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.text.TextMeasurer
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
-import androidx.compose.ui.unit.dp
 import com.momo.cardmaker.*
 import kotlin.math.max
 
@@ -28,8 +26,8 @@ fun CardPreview(modifier: Modifier = Modifier, textMeasurer: TextMeasurer) {
     modified =
         modified.aspectRatio(CardState.card.value.resolutionHoriz.value / CardState.card.value.resolutionVert.value)
 
-    if (showBorder.value) {
-        modified = modified.clip(
+    modified = if (showBorder.value) {
+        modified.clip(
             RoundedCornerShape(
                 topStartPercent = 4,
                 topEndPercent = 4,
@@ -38,7 +36,7 @@ fun CardPreview(modifier: Modifier = Modifier, textMeasurer: TextMeasurer) {
             )
         )
     } else {
-        modified = modified.clip(RectangleShape)
+        modified.clip(RectangleShape)
     }
 
     modified = modified.background(Color.White.copy(alpha = 0.9f))
@@ -74,13 +72,11 @@ fun CardPreview(modifier: Modifier = Modifier, textMeasurer: TextMeasurer) {
                             style = style,
                             topLeft = offset,
                             size = Size(
-                                if (cardElement.transformations.width.get() > 0) (cardElement.transformations).width.get()
-                                    .toFloat() else max(
+                                if (cardElement.transformations.width.get() > 0) (cardElement.transformations).width.get() else max(
                                     (CardState.card.value.dpi.value * CardState.card.value.resolutionHoriz.value) - cardElement.transformations.offsetX.get(),
                                     0f
                                 ),
-                                if ((cardElement.transformations).height.get() > 0) (cardElement.transformations).height.get()
-                                    .toFloat() else max(
+                                if ((cardElement.transformations).height.get() > 0) (cardElement.transformations).height.get() else max(
                                     (CardState.card.value.dpi.value * CardState.card.value.resolutionVert.value) - cardElement.transformations.offsetY.get(),
                                     0f
                                 )

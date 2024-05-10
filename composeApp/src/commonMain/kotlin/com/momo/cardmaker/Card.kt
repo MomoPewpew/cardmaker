@@ -100,13 +100,11 @@ data class Card(
                             style = style,
                             topLeft = offset,
                             size = Size(
-                                if (cardElement.transformations.width.get() > 0) (cardElement.transformations).width.get()
-                                    .toFloat() else max(
+                                if (cardElement.transformations.width.get() > 0) (cardElement.transformations).width.get() else max(
                                     (CardState.card.value.dpi.value * CardState.card.value.resolutionHoriz.value) - cardElement.transformations.offsetX.get(),
                                     0f
                                 ),
-                                if ((cardElement.transformations).height.get() > 0) (cardElement.transformations).height.get()
-                                    .toFloat() else max(
+                                if ((cardElement.transformations).height.get() > 0) (cardElement.transformations).height.get() else max(
                                     (CardState.card.value.dpi.value * CardState.card.value.resolutionVert.value) - cardElement.transformations.offsetY.get(),
                                     0f
                                 )

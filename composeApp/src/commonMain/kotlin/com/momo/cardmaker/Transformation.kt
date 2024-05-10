@@ -20,8 +20,8 @@ enum class Anchor {
 data class CardElementTransformations(
     val offsetX: FloatParameter = FloatParameter(defaultName = "Offset X", defaultExpression = "0.0"),
     val offsetY: FloatParameter = FloatParameter(defaultName = "Offset Y", defaultExpression = "0.0"),
-    val width: IntParameter = IntParameter(defaultName = "Width", defaultExpression = "0"),
-    val height: IntParameter = IntParameter(defaultName = "Height", defaultExpression = "0"),
+    val width: FloatParameter = FloatParameter(defaultName = "Width", defaultExpression = "0.0"),
+    val height: FloatParameter = FloatParameter(defaultName = "Height", defaultExpression = "0.0"),
     val anchor: MutableState<Anchor> = mutableStateOf(Anchor.TOP_LEFT)
 ) {
     /** Build the default transformation segment. */
