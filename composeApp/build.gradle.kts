@@ -41,6 +41,9 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation("com.mohamedrejeb.richeditor:richeditor-compose:1.0.0-rc04")
             implementation("com.eygraber:compose-color-picker:0.0.19")
+            implementation("io.ktor:ktor-client-core:3.0.0-wasm2")
+            implementation("io.coil-kt.coil3:coil:3.0.0-alpha06")
+            implementation("io.coil-kt.coil3:coil-network-ktor:3.0.0-alpha06")
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
