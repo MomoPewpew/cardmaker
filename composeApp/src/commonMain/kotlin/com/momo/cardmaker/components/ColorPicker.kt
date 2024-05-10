@@ -2,6 +2,7 @@ package com.momo.cardmaker.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -44,6 +45,7 @@ fun ColorPickerWindow() {
             modifier = Modifier
                 .fillMaxSize()
                 .background(Color.Black.copy(alpha = 0.5f))
+                .clickable { showWindow.value = false }
         ) {
             Column(modifier = Modifier.fillMaxWidth()) {
                 Row(modifier = Modifier.weight(1f)) {}
@@ -61,6 +63,7 @@ fun ColorPickerWindow() {
                             )
                         )
                         .background(color = Color.White)
+                        .clickable(onClick = {}, enabled = false)
                         .border(
                             width = 1.dp,
                             Color.Black,
