@@ -6,7 +6,7 @@ import kotlinx.coroutines.launch
 import org.jetbrains.skia.Bitmap
 
 class ViewModel {
-    private val viewModelScope = CoroutineScope(Dispatchers.Default)
+    private val viewModelScope = CoroutineScope(Dispatchers.Main)
 
     suspend fun saveImage(bitmap: Bitmap, filePath: String) {
         imageUtils?.saveBitmapToFile(bitmap, filePath)
