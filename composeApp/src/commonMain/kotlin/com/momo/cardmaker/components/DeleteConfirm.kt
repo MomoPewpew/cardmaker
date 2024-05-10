@@ -7,6 +7,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import com.momo.cardmaker.CardElement
 import com.momo.cardmaker.CardState
+import com.momo.cardmaker.components.DeleteState.cardElement
 
 object DeleteState {
     var cardElement: MutableState<CardElement?> = mutableStateOf(null)
@@ -18,30 +19,30 @@ object DeleteState {
 
 @Composable
 fun DeleteConfirm() {
-    if (DeleteState.cardElement.value != null) {
+    if (cardElement.value != null) {
         AlertDialog(
-            onDismissRequest = { PopupState.text.value = "" },
+            onDismissRequest = { cardElement.value = null },
             title = {
                 Text(
-                    text = "Delete ${(DeleteState.cardElement.value as CardElement).name.value}",
+                    text = "Delete ${cardElement.value!!.name.value}",
                     style = MaterialTheme.typography.h5
                 )
             },
             text = {
                 Text(
-                    text = "Are you sure that you want to delete the element '${(DeleteState.cardElement.value as CardElement).name.value}'",
+                    text = "Are you sure that you want to delete the element '${cardElement.value!!.name.value}'",
                 )
             },
             confirmButton = {
                 Button(onClick = {
-                    DeleteState.cardElement.value?.let { CardState.card.value.removeElement(it) }
-                    DeleteState.cardElement.value = null
+                    cardElement.value.let { CardState.card.value.removeElement(cardElement.value!!) }
+                    cardElement.value = null
                 }) {
                     Text("Confirm")
                 }
             },
             dismissButton = {
-                Button(onClick = { DeleteState.cardElement.value = null }) {
+                Button(onClick = { cardElement.value = null }) {
                     Text("Cancel")
                 }
             }
