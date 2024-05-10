@@ -3,6 +3,7 @@ package com.momo.cardmaker.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
 import androidx.compose.material.Text
@@ -12,8 +13,8 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.eygraber.compose.colorpicker.ColorPicker
@@ -42,7 +43,7 @@ fun ColorPickerWindow() {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.White.copy(alpha = 0.5f))
+                .background(Color.Black.copy(alpha = 0.5f))
         ) {
             Column(modifier = Modifier.fillMaxWidth()) {
                 Row(modifier = Modifier.weight(1f)) {}
@@ -51,11 +52,24 @@ fun ColorPickerWindow() {
                     modifier = Modifier
                         .weight(2f)
                         .align(Alignment.CenterHorizontally)
+                        .clip(
+                            RoundedCornerShape(
+                                topStart = 4.dp,
+                                topEnd = 4.dp,
+                                bottomStart = 4.dp,
+                                bottomEnd = 4.dp
+                            )
+                        )
                         .background(color = Color.White)
                         .border(
                             width = 1.dp,
                             Color.Black,
-                            shape = RectangleShape
+                            shape = RoundedCornerShape(
+                                topStart = 4.dp,
+                                topEnd = 4.dp,
+                                bottomStart = 4.dp,
+                                bottomEnd = 4.dp
+                            )
                         )
                 ) {
                     Column {
@@ -97,7 +111,7 @@ fun ColorPickerWindow() {
 
                             Column {
                                 Button(modifier = Modifier
-                                    .padding(bottom = 8.dp)
+                                    .padding(start = 8.dp, end = 8.dp, bottom = 8.dp)
                                     .fillMaxHeight(),
                                     onClick = {
                                         try {
@@ -115,6 +129,18 @@ fun ColorPickerWindow() {
                                     }
                                 ) {
                                     Text(text = "OK")
+                                }
+                            }
+
+                            Column {
+                                Button(modifier = Modifier
+                                    .padding(start = 8.dp, end = 8.dp, bottom = 8.dp)
+                                    .fillMaxHeight(),
+                                    onClick = {
+                                        showWindow.value = false
+                                    }
+                                ) {
+                                    Text(text = "Cancel")
                                 }
                             }
                         }
