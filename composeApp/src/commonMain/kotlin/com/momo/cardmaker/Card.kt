@@ -15,6 +15,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
+import com.momo.cardmaker.components.getOffset
 import org.jetbrains.skia.Bitmap
 import kotlin.math.max
 
@@ -82,52 +83,22 @@ data class Card(
                         val text = cardElement.text.richTextState.annotatedString
                         val style = TextStyle.Default
 
-                        val textWidth = textMeasurer.measure(text, style).size.width
-                        val textHeight = textMeasurer.measure(text, style).size.height
+                        val textWidth = textMeasurer.measure(text, style).size.width.toFloat()
+                        val textHeight = textMeasurer.measure(text, style).size.height.toFloat()
 
-                        val topLeft = Offset(
-                            cardElement.transformations.offsetX.get().toFloat(),
-                            -cardElement.transformations.offsetY.get().toFloat()
-                        )
-
-                        var anchorOffsetX = 0f
-                        var anchorOffsetY = 0f
-
-                        when (cardElement.transformations.anchor.value) {
-                            Anchor.TOP_RIGHT -> {
-                                anchorOffsetX -= textWidth
-                            }
-
-                            Anchor.BOTTOM_LEFT -> {
-                                anchorOffsetY -= textHeight
-                            }
-
-                            Anchor.BOTTOM_RIGHT -> {
-                                anchorOffsetX -= textWidth
-                                anchorOffsetY -= textHeight
-                            }
-
-                            Anchor.CENTER -> {
-                                anchorOffsetX -= textWidth / 2
-                                anchorOffsetY -= textHeight / 2
-                            }
-
-                            else -> {
-                                anchorOffsetX = 0f
-                                anchorOffsetY = 0f
-                            }
-                        }
-
-                        val finalTopLeft = Offset(
-                            x = topLeft.x + anchorOffsetX,
-                            y = topLeft.y + anchorOffsetY
+                        val offset = getOffset(
+                            cardElement.transformations.anchor.value,
+                            cardElement.transformations.offsetX.get(),
+                            textWidth,
+                            cardElement.transformations.offsetY.get(),
+                            textHeight
                         )
 
                         drawText(
                             textMeasurer = textMeasurer,
                             text = text,
                             style = style,
-                            topLeft = finalTopLeft,
+                            topLeft = offset,
                             size = Size(
                                 if (cardElement.transformations.width.get() > 0) (cardElement.transformations).width.get()
                                     .toFloat() else max(

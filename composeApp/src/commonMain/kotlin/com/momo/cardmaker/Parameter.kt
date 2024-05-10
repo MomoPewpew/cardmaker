@@ -295,8 +295,8 @@ class IntParameter(defaultName: String, defaultExpression: String, isHighlighted
     }
 }
 
-class DoubleParameter(defaultName: String, defaultExpression: String, isHighlighted: Boolean = false) :
-    Parameter<Double>(defaultName, defaultExpression, isHighlighted) {
+class FloatParameter(defaultName: String, defaultExpression: String, isHighlighted: Boolean = false) :
+    Parameter<Float>(defaultName, defaultExpression, isHighlighted) {
     @Composable
     override fun buildElements(modifier: Modifier, label: MutableState<String>) {
         Box {
@@ -387,11 +387,11 @@ class DoubleParameter(defaultName: String, defaultExpression: String, isHighligh
         }
     }
 
-    override fun get(): Double {
+    override fun get(): Float {
         return try {
-            evaluate()
+            evaluate().toFloat()
         } catch (e: Exception) {
-            0.0
+            0.0f
         }
     }
 }

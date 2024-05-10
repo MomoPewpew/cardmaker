@@ -18,8 +18,8 @@ enum class Anchor {
 
 /** This class holds all the transformation data of a card element. */
 data class CardElementTransformations(
-    val offsetX: IntParameter = IntParameter(defaultName = "Offset X", defaultExpression = "0"),
-    val offsetY: IntParameter = IntParameter(defaultName = "Offset Y", defaultExpression = "0"),
+    val offsetX: FloatParameter = FloatParameter(defaultName = "Offset X", defaultExpression = "0.0"),
+    val offsetY: FloatParameter = FloatParameter(defaultName = "Offset Y", defaultExpression = "0.0"),
     val width: IntParameter = IntParameter(defaultName = "Width", defaultExpression = "0"),
     val height: IntParameter = IntParameter(defaultName = "Height", defaultExpression = "0"),
     val anchor: MutableState<Anchor> = mutableStateOf(Anchor.TOP_LEFT)
