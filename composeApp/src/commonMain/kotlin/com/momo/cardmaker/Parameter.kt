@@ -203,7 +203,7 @@ class IntParameter(defaultName: String, defaultExpression: String, isHighlighted
         Box {
             Row(
                 modifier = Modifier
-                    .height(48.dp)
+                    .height(56.dp)
                     .padding(
                         horizontal = 16.dp
                     )
@@ -302,7 +302,7 @@ class DoubleParameter(defaultName: String, defaultExpression: String, isHighligh
         Box {
             Row(
                 modifier = Modifier
-                    .height(48.dp)
+                    .height(56.dp)
                     .padding(
                         horizontal = 16.dp
                     )
