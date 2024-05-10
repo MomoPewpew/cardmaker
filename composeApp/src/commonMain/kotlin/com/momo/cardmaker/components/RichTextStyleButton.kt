@@ -38,7 +38,7 @@ fun RichTextStyleButton(
             modifier = Modifier
                 .background(
                     color = if (isSelected) {
-                        MaterialTheme.colorScheme.primary
+                        Color(0xFF013220)
                     } else {
                         Color.Transparent
                     },
