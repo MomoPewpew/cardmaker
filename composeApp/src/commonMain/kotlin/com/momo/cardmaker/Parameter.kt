@@ -10,6 +10,10 @@ import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusEvent
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.mohamedrejeb.richeditor.model.RichTextState
@@ -474,7 +478,12 @@ class RichTextParameter(defaultName: String, defaultExpression: String, isHighli
 }
 
 
-class UriParameter(defaultName: String, defaultExpression: String, isHighlighted: Boolean = false) :
+class UriParameter(
+    defaultName: String,
+    defaultExpression: String,
+    isHighlighted: Boolean = false,
+    val imageElement: ImageElement
+) :
     Parameter<String>(defaultName, defaultExpression, isHighlighted) {
     @Composable
     override fun buildElements(modifier: Modifier, label: MutableState<String>) {
@@ -507,11 +516,19 @@ class UriParameter(defaultName: String, defaultExpression: String, isHighlighted
                     TextField(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(vertical = 8.dp),
+                            .padding(vertical = 8.dp)
+                            .onFocusEvent { if (!it.isFocused) imageElement.downloadImage() }
+                            .onKeyEvent {
+                                if (it.key.equals(Key.Enter)) {
+                                    imageElement.downloadImage()
+                                    true
+                                } else false
+                            },
                         maxLines = 1,
                         value = expression.value,
                         onValueChange = {
                             expression.value = it
+                            imageElement.uriChanged = true
                         },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri)
                     )

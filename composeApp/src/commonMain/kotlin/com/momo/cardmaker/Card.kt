@@ -10,6 +10,7 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asSkiaBitmap
 import androidx.compose.ui.graphics.drawscope.CanvasDrawScope
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.text.TextMeasurer
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
@@ -77,7 +78,7 @@ data class Card(
             dpi.value * resolutionVert.value
         )
         val bitmap = drawScope.asBitmap(size) {
-            CardState.card.value.cardElements.value.forEach { cardElement ->
+            CardState.card.value.cardElements.value.asReversed().forEach { cardElement ->
                 when (cardElement) {
                     is RichTextElement -> {
                         val text = cardElement.text.richTextState.annotatedString
@@ -113,7 +114,55 @@ data class Card(
                     }
 
                     is ImageElement -> {
-                        // TODO
+                        if (cardElement.imageBitmap.value != null) {
+                            val imageWidth = cardElement.imageBitmap.value!!.width.toFloat()
+                            val imageHeight = cardElement.imageBitmap.value!!.height.toFloat()
+
+                            val maxAvailableWidth =
+                                (CardState.card.value.dpi.value * CardState.card.value.resolutionHoriz.value) - cardElement.transformations.offsetX.get()
+                            val maxAvailableHeight =
+                                (CardState.card.value.dpi.value * CardState.card.value.resolutionVert.value) - cardElement.transformations.offsetY.get()
+
+                            if (maxAvailableWidth > 0 && maxAvailableHeight > 0) {
+                                var elementWidth = cardElement.transformations.width.get()
+                                var elementHeight = cardElement.transformations.height.get()
+
+                                if (elementWidth == 0f) {
+                                    if (elementHeight == 0f) {
+                                        val widthRatio = maxAvailableWidth / imageWidth
+                                        val heightRatio = maxAvailableHeight / imageHeight
+
+                                        if (widthRatio > heightRatio) {
+                                            elementWidth = imageWidth * heightRatio
+                                            elementHeight = imageHeight * heightRatio
+                                        } else {
+                                            elementWidth = imageWidth * widthRatio
+                                            elementHeight = imageHeight * widthRatio
+                                        }
+                                    } else {
+                                        elementWidth = imageWidth * (elementHeight / imageHeight)
+                                    }
+                                } else if (elementHeight == 0f) {
+                                    elementHeight = imageHeight * (elementWidth / imageWidth)
+                                }
+
+                                val offset = getOffset(
+                                    cardElement.transformations.anchor.value,
+                                    cardElement.transformations.offsetX.get(),
+                                    elementWidth,
+                                    cardElement.transformations.offsetY.get(),
+                                    elementHeight
+                                )
+
+                                scale(
+                                    scaleX = (elementWidth / imageWidth),
+                                    scaleY = (elementHeight / imageHeight),
+                                    pivot = offset
+                                ) {
+                                    drawImage(image = cardElement.imageBitmap.value!!, topLeft = offset)
+                                }
+                            }
+                        }
                     }
 
                     else -> {}

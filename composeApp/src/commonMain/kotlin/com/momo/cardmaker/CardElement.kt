@@ -6,7 +6,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.*
@@ -14,7 +17,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asComposeImageBitmap
 import androidx.compose.ui.unit.dp
+import coil3.annotation.ExperimentalCoilApi
+import coil3.request.ImageRequest
 import com.momo.cardmaker.components.DeleteState
 import com.momo.cardmaker.components.RenameState
 import com.momo.cardmaker.components.RichTextStyleButton
@@ -283,7 +290,25 @@ class RichTextElement(
 class ImageElement(
     defaultName: String = "Image Element"
 ) : CardElement(defaultName) {
-    var uri = UriParameter(defaultName = "URL", defaultExpression = "")
+    var uri = UriParameter(defaultName = "URL", defaultExpression = "", imageElement = this)
+    var imageBitmap: MutableState<ImageBitmap?> = mutableStateOf(null)
+    var uriChanged = true
+
+    @OptIn(ExperimentalCoilApi::class)
+    fun downloadImage() {
+        if (!uriChanged || uri.get().isEmpty()) return
+        uriChanged = false
+
+        val request = ImageRequest.Builder(context)
+            .data(uri.get())
+            .target(
+                onSuccess = { result ->
+                    imageBitmap.value = result.toBitmap().asComposeImageBitmap()
+                }
+            ).build()
+
+        imageLoader.enqueue(request)
+    }
 
     @Composable
     override fun buildSpecificElements() {

@@ -23,6 +23,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import coil3.ImageLoader
+import coil3.PlatformContext
 import com.momo.cardmaker.components.*
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
@@ -65,6 +67,9 @@ object CardState {
 
 var showBorder = mutableStateOf(true)
 var imageUtils: ImageUtils? = null
+
+val context = PlatformContext.INSTANCE
+val imageLoader = ImageLoader(context)
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
