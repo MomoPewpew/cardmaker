@@ -9,7 +9,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import com.momo.cardmaker.CardElement
+import com.momo.cardmaker.components.RenameState.cardElement
 import com.momo.cardmaker.components.RenameState.isOpen
+import com.momo.cardmaker.components.RenameState.name
+import com.momo.cardmaker.components.RenameState.newName
 
 object RenameState {
     var name = mutableStateOf("")
@@ -39,7 +42,7 @@ fun Rename() {
             onDismissRequest = { isOpen.value = false },
             title = {
                 Text(
-                    text = "Rename ${RenameState.name.value}",
+                    text = "Rename ${name.value}",
                     style = MaterialTheme.typography.h5
                 )
             },
@@ -48,21 +51,21 @@ fun Rename() {
                     modifier = Modifier
                         .fillMaxWidth(),
                     maxLines = 1,
-                    value = RenameState.newName.value,
+                    value = newName.value,
                     onValueChange = {
-                        RenameState.newName.value = it
+                        newName.value = it
                     },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
                 )
             },
             confirmButton = {
                 Button(onClick = {
-                    if (RenameState.newName.value.isEmpty()) {
+                    if (newName.value.isEmpty()) {
                         PopupState.popup("Name Error", "A name cannot be empty.")
-                    } else if (RenameState.cardElement != null) {
-                        RenameState.cardElement!!.value.rename(RenameState.newName.value)
+                    } else if (cardElement != null) {
+                        cardElement!!.value.rename(newName.value)
                     } else {
-                        RenameState.name.value = RenameState.newName.value
+                        name.value = newName.value
                     }
                     isOpen.value = false
                 }) {
