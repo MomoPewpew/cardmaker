@@ -20,29 +20,25 @@ import com.momo.cardmaker.*
 
 /** Build composables for previewing cards. */
 @Composable
-fun CardPreview(modifier: Modifier = Modifier, textMeasurer: TextMeasurer) {
-    var modified = modifier
-
-    modified =
-        modified.aspectRatio(CardState.card.value.resolutionHoriz.value / CardState.card.value.resolutionVert.value)
-
-    modified = if (showBorder.value) {
-        modified.clip(
-            RoundedCornerShape(
-                topStartPercent = 4,
-                topEndPercent = 4,
-                bottomStartPercent = 4,
-                bottomEndPercent = 4
-            )
-        )
-    } else {
-        modified.clip(RectangleShape)
-    }
-
-    modified = modified.background(Color.White.copy(alpha = 0.9f))
-
+fun CardPreview(textMeasurer: TextMeasurer) {
     Canvas(
-        modifier = modified
+        modifier = Modifier
+            .aspectRatio(CardState.card.value.resolutionHoriz.value / CardState.card.value.resolutionVert.value)
+            .run {
+                if (showBorder.value) {
+                    clip(
+                        RoundedCornerShape(
+                            topStartPercent = 4,
+                            topEndPercent = 4,
+                            bottomStartPercent = 4,
+                            bottomEndPercent = 4
+                        )
+                    )
+                } else {
+                    clip(RectangleShape)
+                }
+            }
+            .background(Color.White.copy(alpha = 0.9f))
     )
     {
         scale(
@@ -110,9 +106,11 @@ fun CardPreview(modifier: Modifier = Modifier, textMeasurer: TextMeasurer) {
                         }
 
                         var elementHeight = cardElement.transformations.height.get()
-                        if (elementHeight == 0f) elementHeight = textMeasurer.measure(wrappedText, style).size.height.toFloat()
+                        if (elementHeight == 0f) elementHeight =
+                            textMeasurer.measure(wrappedText, style).size.height.toFloat()
 
-                        if (cardElement.transformations.width.get() == 0f) elementWidth = textMeasurer.measure(wrappedText, style).size.width.toFloat()
+                        if (cardElement.transformations.width.get() == 0f) elementWidth =
+                            textMeasurer.measure(wrappedText, style).size.width.toFloat()
 
                         val offset = getOffset(
                             cardElement.transformations.anchor.value,
