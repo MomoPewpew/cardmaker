@@ -112,6 +112,8 @@ fun CardPreview(modifier: Modifier = Modifier, textMeasurer: TextMeasurer) {
                         var elementHeight = cardElement.transformations.height.get()
                         if (elementHeight == 0f) elementHeight = textMeasurer.measure(wrappedText, style).size.height.toFloat()
 
+                        if (cardElement.transformations.width.get() == 0f) elementWidth = textMeasurer.measure(wrappedText, style).size.width.toFloat()
+
                         val offset = getOffset(
                             cardElement.transformations.anchor.value,
                             cardElement.transformations.offsetX.get(),
