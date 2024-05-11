@@ -14,9 +14,9 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.text.TextMeasurer
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.drawText
 import com.momo.cardmaker.*
-import kotlin.math.max
 
 /** Build composables for previewing cards. */
 @Composable
@@ -50,37 +50,82 @@ fun CardPreview(modifier: Modifier = Modifier, textMeasurer: TextMeasurer) {
             pivot = Offset(0f, 0f)
         ) {
             CardState.card.value.cardElements.value.asReversed().forEach { cardElement ->
+                val (maxAvailableWidth, maxAvailableHeight) = getAvailableSpace(cardElement.transformations)
+
                 when (cardElement) {
                     is RichTextElement -> {
                         val text = cardElement.text.richTextState.annotatedString
                         val style = TextStyle.Default
 
-                        val width = textMeasurer.measure(text, style).size.width.toFloat()
-                        val height = textMeasurer.measure(text, style).size.height.toFloat()
+                        var elementWidth = cardElement.transformations.width.get()
+
+                        if (elementWidth == 0f) elementWidth = maxAvailableWidth
+
+                        // Find line break spots for wrapping
+                        val lineBreaks = mutableListOf<Int>()
+
+                        var currentStartIndex = 0
+                        while (currentStartIndex < text.length) {
+                            var lastIndex = text.length
+                            var spacesOnly = true
+
+                            while (textMeasurer.measure(
+                                    text.subSequence(currentStartIndex, lastIndex),
+                                    style
+                                ).size.width > elementWidth
+                            ) {
+                                if (spacesOnly) {
+                                    val lastSpaceIndex = text.subSequence(currentStartIndex, lastIndex)
+                                        .lastIndexOf(" ") + currentStartIndex
+                                    if (lastSpaceIndex > currentStartIndex) {
+                                        lastIndex = lastSpaceIndex
+                                    } else {
+                                        lastIndex = text.length
+                                        spacesOnly = false
+                                    }
+                                } else {
+                                    if (lastIndex > currentStartIndex + 1) lastIndex--
+                                    else break
+                                }
+                            }
+
+                            lineBreaks.add(lastIndex)
+                            currentStartIndex = lastIndex
+                        }
+
+                        // Apply the found line breaks
+                        val wrappedText = buildAnnotatedString {
+                            var startIndex = 0
+                            for (breakIndex in lineBreaks) {
+                                if (text.subSequence(startIndex, breakIndex).text.startsWith(" ")) startIndex++
+
+                                append(text.subSequence(startIndex, breakIndex))
+                                startIndex = breakIndex
+                            }
+                            if (startIndex < text.length) {
+                                if (text.subSequence(startIndex, text.length).text.startsWith(" ")) startIndex++
+
+                                append(text.subSequence(startIndex, text.length))
+                            }
+                        }
+
+                        var elementHeight = cardElement.transformations.height.get()
+                        if (elementHeight == 0f) elementHeight = textMeasurer.measure(wrappedText, style).size.height.toFloat()
 
                         val offset = getOffset(
                             cardElement.transformations.anchor.value,
                             cardElement.transformations.offsetX.get(),
-                            width,
+                            elementWidth,
                             cardElement.transformations.offsetY.get(),
-                            height
+                            elementHeight
                         )
 
                         drawText(
                             textMeasurer = textMeasurer,
-                            text = text,
+                            text = wrappedText,
                             style = style,
                             topLeft = offset,
-                            size = Size(
-                                if (cardElement.transformations.width.get() > 0) (cardElement.transformations).width.get() else max(
-                                    (CardState.card.value.dpi.value * CardState.card.value.resolutionHoriz.value) - cardElement.transformations.offsetX.get(),
-                                    0f
-                                ),
-                                if ((cardElement.transformations).height.get() > 0) (cardElement.transformations).height.get() else max(
-                                    (CardState.card.value.dpi.value * CardState.card.value.resolutionVert.value) - cardElement.transformations.offsetY.get(),
-                                    0f
-                                )
-                            )
+                            size = Size(elementWidth, elementHeight)
                         )
                     }
 
@@ -89,49 +134,42 @@ fun CardPreview(modifier: Modifier = Modifier, textMeasurer: TextMeasurer) {
                             val imageWidth = cardElement.imageBitmap.value!!.width.toFloat()
                             val imageHeight = cardElement.imageBitmap.value!!.height.toFloat()
 
-                            val maxAvailableWidth =
-                                (CardState.card.value.dpi.value * CardState.card.value.resolutionHoriz.value) - cardElement.transformations.offsetX.get()
-                            val maxAvailableHeight =
-                                (CardState.card.value.dpi.value * CardState.card.value.resolutionVert.value) - cardElement.transformations.offsetY.get()
+                            var elementWidth = cardElement.transformations.width.get()
+                            var elementHeight = cardElement.transformations.height.get()
 
-                            if (maxAvailableWidth > 0 && maxAvailableHeight > 0) {
-                                var elementWidth = cardElement.transformations.width.get()
-                                var elementHeight = cardElement.transformations.height.get()
+                            if (elementWidth == 0f) {
+                                if (elementHeight == 0f) {
+                                    val widthRatio = maxAvailableWidth / imageWidth
+                                    val heightRatio = maxAvailableHeight / imageHeight
 
-                                if (elementWidth == 0f) {
-                                    if (elementHeight == 0f) {
-                                        val widthRatio = maxAvailableWidth / imageWidth
-                                        val heightRatio = maxAvailableHeight / imageHeight
-
-                                        if (widthRatio > heightRatio) {
-                                            elementWidth = imageWidth * heightRatio
-                                            elementHeight = imageHeight * heightRatio
-                                        } else {
-                                            elementWidth = imageWidth * widthRatio
-                                            elementHeight = imageHeight * widthRatio
-                                        }
+                                    if (widthRatio > heightRatio) {
+                                        elementWidth = imageWidth * heightRatio
+                                        elementHeight = imageHeight * heightRatio
                                     } else {
-                                        elementWidth = imageWidth * (elementHeight / imageHeight)
+                                        elementWidth = imageWidth * widthRatio
+                                        elementHeight = imageHeight * widthRatio
                                     }
-                                } else if (elementHeight == 0f) {
-                                    elementHeight = imageHeight * (elementWidth / imageWidth)
+                                } else {
+                                    elementWidth = imageWidth * (elementHeight / imageHeight)
                                 }
+                            } else if (elementHeight == 0f) {
+                                elementHeight = imageHeight * (elementWidth / imageWidth)
+                            }
 
-                                val offset = getOffset(
-                                    cardElement.transformations.anchor.value,
-                                    cardElement.transformations.offsetX.get(),
-                                    elementWidth,
-                                    cardElement.transformations.offsetY.get(),
-                                    elementHeight
-                                )
+                            val offset = getOffset(
+                                cardElement.transformations.anchor.value,
+                                cardElement.transformations.offsetX.get(),
+                                elementWidth,
+                                cardElement.transformations.offsetY.get(),
+                                elementHeight
+                            )
 
-                                scale(
-                                    scaleX = (elementWidth / imageWidth),
-                                    scaleY = (elementHeight / imageHeight),
-                                    pivot = offset
-                                ) {
-                                    drawImage(image = cardElement.imageBitmap.value!!, topLeft = offset)
-                                }
+                            scale(
+                                scaleX = (elementWidth / imageWidth),
+                                scaleY = (elementHeight / imageHeight),
+                                pivot = offset
+                            ) {
+                                drawImage(image = cardElement.imageBitmap.value!!, topLeft = offset)
                             }
                         }
                     }
@@ -188,8 +226,42 @@ fun CardPreview(modifier: Modifier = Modifier, textMeasurer: TextMeasurer) {
     }
 }
 
+fun getAvailableSpace(transformations: CardElementTransformations): Pair<Float, Float> {
+    val cardWidth = CardState.card.value.dpi.value * CardState.card.value.resolutionHoriz.value
+    val cardHeight = CardState.card.value.dpi.value * CardState.card.value.resolutionVert.value
+
+    return when (transformations.anchor.value) {
+        Anchor.TOP_LEFT -> {
+            Pair(cardWidth - transformations.offsetX.get(), cardHeight + transformations.offsetY.get())
+        }
+
+        Anchor.TOP_RIGHT -> {
+            Pair(transformations.offsetX.get(), cardHeight + transformations.offsetY.get())
+        }
+
+        Anchor.BOTTOM_LEFT -> {
+            Pair(cardWidth - transformations.offsetX.get(), -transformations.offsetY.get())
+        }
+
+        Anchor.BOTTOM_RIGHT -> {
+            Pair(transformations.offsetX.get(), -transformations.offsetY.get())
+        }
+
+        Anchor.CENTER -> {
+            Pair(
+                if (transformations.offsetX.get() * 2 > cardWidth) ((cardWidth - transformations.offsetX.get()) * 2) else (transformations.offsetX.get() * 2),
+                if (-transformations.offsetY.get() * 2 > cardHeight) ((cardHeight + transformations.offsetY.get()) * 2) else (-transformations.offsetY.get() * 2)
+            )
+        }
+    }
+}
+
 fun getOffset(anchor: Anchor, offsetX: Float, width: Float, offsetY: Float, height: Float): Offset {
     val (anchorOffsetX, anchorOffsetY) = when (anchor) {
+        Anchor.TOP_LEFT -> {
+            Pair(0f, 0f)
+        }
+
         Anchor.TOP_RIGHT -> {
             Pair(-width, 0f)
         }
@@ -204,10 +276,6 @@ fun getOffset(anchor: Anchor, offsetX: Float, width: Float, offsetY: Float, heig
 
         Anchor.CENTER -> {
             Pair(-width / 2, -height / 2)
-        }
-
-        else -> {
-            Pair(0f, 0f)
         }
     }
 
