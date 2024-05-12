@@ -63,12 +63,11 @@ abstract class CardElement(
     @Composable
     fun buildElements() {
         var foldedRemember by remember { mutableStateOf(folded) }
-        val me = mutableStateOf(this)
         Row(modifier = Modifier
             .padding(horizontal = 30.dp)
-            .clickable { ElementState.toggleSelect(me.value) }
+            .clickable { ElementState.toggleSelect(this@CardElement) }
             .background(
-                if (ElementState.selectedElement.value?.equals(me.value) == true) Color(0xFF013220).copy(
+                if (ElementState.selectedElement.value?.equals(this@CardElement) == true) Color(0xFF013220).copy(
                     alpha = 0.1f
                 ) else Color.Transparent
             )
@@ -99,7 +98,7 @@ abstract class CardElement(
                         .matchParentSize()
                         .clickable {
                             if (ClickState.state.value == ClickState.States.RENAMING) {
-                                RenameState.rename(me.value)
+                                RenameState.rename(this@CardElement)
                                 ClickState.off()
                             } else {
                                 folded = !folded
@@ -217,7 +216,7 @@ abstract class CardElement(
                         IconButton(modifier = Modifier
                             .fillMaxSize(),
                             onClick = {
-                                CardState.card.value.moveElementUp(me.value)
+                                CardState.card.value.moveElementUp(this@CardElement)
                             }) {
                             Icon(imageVector = Icons.Filled.ArrowUpward, contentDescription = "Move Up")
                         }
@@ -227,7 +226,7 @@ abstract class CardElement(
                         IconButton(modifier = Modifier
                             .fillMaxSize(),
                             onClick = {
-                                CardState.card.value.moveElementDown(me.value)
+                                CardState.card.value.moveElementDown(this@CardElement)
                             }) {
                             Icon(imageVector = Icons.Filled.ArrowDownward, contentDescription = "Move Down")
                         }
@@ -237,7 +236,7 @@ abstract class CardElement(
                         IconButton(modifier = Modifier
                             .fillMaxSize(),
                             onClick = {
-                                DeleteState.confirmDelete(me.value)
+                                DeleteState.confirmDelete(this@CardElement)
                             }) {
                             Icon(imageVector = Icons.Filled.Delete, contentDescription = "Delete")
                         }
