@@ -22,6 +22,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.drawText
 import com.momo.cardmaker.*
+import kotlin.math.abs
 
 object ElementState {
     val selectedElement: MutableState<CardElement?> = mutableStateOf(null)
@@ -157,7 +158,7 @@ fun CardPreview(textMeasurer: TextMeasurer) {
                         val text = cardElement.text.richTextState.annotatedString
                         val style = TextStyle.Default
 
-                        elementWidth = cardElement.transformations.width.get()
+                        elementWidth = abs(cardElement.transformations.width.get())
 
                         if (elementWidth == 0f) elementWidth = maxAvailableWidth
 
@@ -209,7 +210,7 @@ fun CardPreview(textMeasurer: TextMeasurer) {
                             }
                         }
 
-                        elementHeight = cardElement.transformations.height.get()
+                        elementHeight = abs(cardElement.transformations.height.get())
                         if (elementHeight == 0f) elementHeight =
                             textMeasurer.measure(wrappedText, style).size.height.toFloat()
 

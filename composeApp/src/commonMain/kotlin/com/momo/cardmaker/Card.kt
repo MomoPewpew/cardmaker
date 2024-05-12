@@ -21,6 +21,7 @@ import com.momo.cardmaker.components.ElementState
 import com.momo.cardmaker.components.getAvailableSpace
 import com.momo.cardmaker.components.getOffset
 import org.jetbrains.skia.Bitmap
+import kotlin.math.abs
 
 data class Card(
     val cardElements: MutableState<MutableList<CardElement>> = mutableStateOf(mutableListOf()),
@@ -92,7 +93,7 @@ data class Card(
                         val text = cardElement.text.richTextState.annotatedString
                         val style = TextStyle.Default
 
-                        elementWidth = cardElement.transformations.width.get()
+                        elementWidth = abs(cardElement.transformations.width.get())
 
                         if (elementWidth == 0f) elementWidth = maxAvailableWidth
 
@@ -144,7 +145,7 @@ data class Card(
                             }
                         }
 
-                        elementHeight = cardElement.transformations.height.get()
+                        elementHeight = abs(cardElement.transformations.height.get())
                         if (elementHeight == 0f) elementHeight =
                             textMeasurer.measure(wrappedText, style).size.height.toFloat()
 
