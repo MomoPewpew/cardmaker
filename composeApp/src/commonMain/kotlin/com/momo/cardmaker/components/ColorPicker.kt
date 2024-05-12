@@ -118,11 +118,13 @@ fun ColorPickerWindow() {
                                     .fillMaxHeight(),
                                     onClick = {
                                         try {
-                                            val intValue = if (colorString.value.startsWith("0x")) {
+                                            var intValue = if (colorString.value.startsWith("0x")) {
                                                 colorString.value.substring(2)
                                             } else {
                                                 colorString.value
                                             }
+                                            if (intValue.length == 6) intValue = "FF${colorString.value}"
+
                                             newColor.value = intValue.toLong(16)
                                         } catch (_: NumberFormatException) {
                                         }

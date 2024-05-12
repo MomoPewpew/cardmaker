@@ -2,12 +2,8 @@ package com.momo.cardmaker
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Canvas
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.asSkiaBitmap
+import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.CanvasDrawScope
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
@@ -38,19 +34,19 @@ data class Card(
     }
 
     fun addElement(element: CardElement) {
-        val cardElements = cardElements.value
-        cardElements.add(element)
+        val elements = cardElements.value.toMutableList()
+        elements.add(element)
 
-        CardState.card.value = CardState.card.value.copy(cardElements = mutableStateOf(cardElements))
+        cardElements.value = elements
     }
 
     fun removeElement(element: CardElement) {
-        val cardElements = cardElements.value
-        cardElements.remove(element)
+        val elements = cardElements.value.toMutableList()
+        elements.remove(element)
 
         if (ElementState.selectedElement.value?.equals(element) == true) ElementState.selectedElement.value = null
 
-        CardState.card.value = CardState.card.value.copy(cardElements = mutableStateOf(cardElements))
+        cardElements.value = elements
     }
 
     fun moveElementUp(element: CardElement) {
@@ -171,9 +167,9 @@ data class Card(
                     }
 
                     is ImageElement -> {
-                        if (cardElement.imageBitmap.value != null) {
-                            val imageWidth = cardElement.imageBitmap.value!!.width.toFloat()
-                            val imageHeight = cardElement.imageBitmap.value!!.height.toFloat()
+                        if (cardElement.image.imageBitmap.value != null) {
+                            val imageWidth = cardElement.image.imageBitmap.value!!.width.toFloat()
+                            val imageHeight = cardElement.image.imageBitmap.value!!.height.toFloat()
 
                             elementWidth = cardElement.transformations.width.get()
                             elementHeight = cardElement.transformations.height.get()
@@ -210,7 +206,20 @@ data class Card(
                                 scaleY = (elementHeight / imageHeight),
                                 pivot = topLeft
                             ) {
-                                drawImage(image = cardElement.imageBitmap.value!!, topLeft = topLeft)
+                                drawImage(
+                                    image = cardElement.image.imageBitmap.value!!,
+                                    topLeft = topLeft
+                                )
+                                for (mask in cardElement.masks.value) {
+                                    if (mask.imageBitmap.value == null) continue
+
+                                    drawImage(
+                                        image = mask.imageBitmap.value!!,
+                                        topLeft = topLeft,
+                                        colorFilter = ColorFilter.tint(color = Color(mask.color.value)),
+                                        blendMode = BlendMode.Color
+                                    )
+                                }
                             }
                         }
                     }

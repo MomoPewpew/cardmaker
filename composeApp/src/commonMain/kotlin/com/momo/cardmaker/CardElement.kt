@@ -17,15 +17,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.asComposeImageBitmap
 import androidx.compose.ui.unit.dp
-import coil3.annotation.ExperimentalCoilApi
-import coil3.request.ImageRequest
-import com.momo.cardmaker.components.DeleteState
-import com.momo.cardmaker.components.ElementState
-import com.momo.cardmaker.components.RenameState
-import com.momo.cardmaker.components.RichTextStyleButton
+import com.momo.cardmaker.components.*
 
 /** A card element can be subclassed into all the elements that are added to cards, such as text or images. */
 abstract class CardElement(
@@ -74,8 +67,12 @@ abstract class CardElement(
         Row(modifier = Modifier
             .padding(horizontal = 30.dp)
             .clickable { ElementState.toggleSelect(me.value) }
-            .background(if (ElementState.selectedElement.value?.equals(me.value) == true) Color(0xFF013220).copy(alpha = 0.1f) else Color.Transparent)
-        ){
+            .background(
+                if (ElementState.selectedElement.value?.equals(me.value) == true) Color(0xFF013220).copy(
+                    alpha = 0.1f
+                ) else Color.Transparent
+            )
+        ) {
             // Clickable name text
             Column(
                 modifier = Modifier
@@ -124,6 +121,39 @@ abstract class CardElement(
                         .align(Alignment.End),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
+                    // Element-specific buttons
+                    if (this@CardElement is ImageElement) {
+                        item {
+                            IconButton(modifier = Modifier,
+                                onClick = {
+                                    val list = this@CardElement.masks.value.toMutableList()
+                                    list.add(
+                                        MaskParameter(
+                                            defaultName = "Mask URL",
+                                            defaultExpression = "",
+                                            imageElement = this@CardElement
+                                        )
+                                    )
+
+                                    this@CardElement.masks.value = list
+                                }) {
+                                Icon(
+                                    imageVector = Icons.Outlined.Palette,
+                                    contentDescription = "Add Mask"
+                                )
+                            }
+                        }
+
+                        item {
+                            Box(
+                                Modifier
+                                    .height(24.dp)
+                                    .width(1.dp)
+                                    .background(Color(0xFF393B3D))
+                            )
+                        }
+                    }
+
                     item {
                         RichTextStyleButton(
                             onClick = {
@@ -300,36 +330,27 @@ class RichTextElement(
 class ImageElement(
     defaultName: String = "Image Element"
 ) : CardElement(defaultName) {
-    var uri = UriParameter(defaultName = "URL", defaultExpression = "", imageElement = this)
-    var imageBitmap: MutableState<ImageBitmap?> = mutableStateOf(null)
-    var uriChanged = true
-
-    @OptIn(ExperimentalCoilApi::class)
-    fun downloadImage() {
-        if (!uriChanged || uri.get().isEmpty()) return
-        uriChanged = false
-
-        val request = ImageRequest.Builder(context)
-            .data(uri.get())
-            .target(
-                onSuccess = { result ->
-                    imageBitmap.value = result.toBitmap().asComposeImageBitmap()
-                }
-            ).build()
-
-        imageLoader.enqueue(request)
-    }
+    var image = ImageParameter(defaultName = "Image URL", defaultExpression = "")
+    var masks: MutableState<MutableList<MaskParameter>> = mutableStateOf(mutableListOf())
 
     @Composable
     override fun buildSpecificElements() {
-        uri.buildElements(modifier = Modifier, mutableStateOf("URL"))
+        image.buildElements(modifier = Modifier, mutableStateOf("URL"))
+        for (mask in masks.value) mask.buildElements(modifier = Modifier, mutableStateOf("Mask URL"))
     }
 
     @Composable
     override fun buildPinnedElements() {
-        uri.let {
+        image.let {
             if (it.isPinned.value) {
                 it.buildElements(modifier = Modifier, label = it.name)
+            }
+        }
+        for (mask in masks.value) {
+            mask.let {
+                if (it.isPinned.value) {
+                    it.buildElements(modifier = Modifier, label = it.name)
+                }
             }
         }
         super.buildPinnedElements()

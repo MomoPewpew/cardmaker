@@ -7,17 +7,24 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDownward
 import androidx.compose.material.icons.filled.ArrowUpward
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.outlined.Palette
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusEvent
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asComposeImageBitmap
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import coil3.annotation.ExperimentalCoilApi
+import coil3.request.ImageRequest
 import com.mohamedrejeb.richeditor.model.RichTextState
 import com.mohamedrejeb.richeditor.ui.material.OutlinedRichTextEditor
+import com.momo.cardmaker.components.ColorPickerState
 import com.momo.cardmaker.components.PopupState
 import com.momo.cardmaker.components.RenameState
 import com.momo.cardmaker.components.RichTextStyleRow
@@ -200,8 +207,8 @@ abstract class Parameter<T>(
     }
 }
 
-class IntParameter(defaultName: String, defaultExpression: String, isHighlighted: Boolean = false) :
-    Parameter<Int>(defaultName, defaultExpression, isHighlighted) {
+class IntParameter(defaultName: String, defaultExpression: String, isPinnedDefault: Boolean = false) :
+    Parameter<Int>(defaultName, defaultExpression, isPinnedDefault) {
     @Composable
     override fun buildElements(modifier: Modifier, label: MutableState<String>) {
         Box {
@@ -299,8 +306,8 @@ class IntParameter(defaultName: String, defaultExpression: String, isHighlighted
     }
 }
 
-class FloatParameter(defaultName: String, defaultExpression: String, isHighlighted: Boolean = false) :
-    Parameter<Float>(defaultName, defaultExpression, isHighlighted) {
+class FloatParameter(defaultName: String, defaultExpression: String, isPinnedDefault: Boolean = false) :
+    Parameter<Float>(defaultName, defaultExpression, isPinnedDefault) {
     @Composable
     override fun buildElements(modifier: Modifier, label: MutableState<String>) {
         Box {
@@ -400,8 +407,8 @@ class FloatParameter(defaultName: String, defaultExpression: String, isHighlight
     }
 }
 
-class RichTextParameter(defaultName: String, defaultExpression: String, isHighlighted: Boolean = false) :
-    Parameter<String>(defaultName, defaultExpression, isHighlighted) {
+class RichTextParameter(defaultName: String, defaultExpression: String, isPinnedDefault: Boolean = false) :
+    Parameter<String>(defaultName, defaultExpression, isPinnedDefault) {
     val richTextState = RichTextState().setMarkdown(expression.value)
     private val color: MutableState<Long> = mutableStateOf(0xFFFF0000)
 
@@ -478,13 +485,11 @@ class RichTextParameter(defaultName: String, defaultExpression: String, isHighli
 }
 
 
-class UriParameter(
-    defaultName: String,
-    defaultExpression: String,
-    isHighlighted: Boolean = false,
-    val imageElement: ImageElement
-) :
-    Parameter<String>(defaultName, defaultExpression, isHighlighted) {
+open class ImageParameter(defaultName: String, defaultExpression: String, isPinnedDefault: Boolean = false) :
+    Parameter<String>(defaultName, defaultExpression, isPinnedDefault) {
+    var imageBitmap: MutableState<ImageBitmap?> = mutableStateOf(null)
+    var uriChanged = true
+
     @Composable
     override fun buildElements(modifier: Modifier, label: MutableState<String>) {
         Box {
@@ -517,10 +522,10 @@ class UriParameter(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(vertical = 8.dp)
-                            .onFocusEvent { if (!it.isFocused) imageElement.downloadImage() }
+                            .onFocusEvent { if (!it.isFocused) downloadImage() }
                             .onKeyEvent {
                                 if (it.key.equals(Key.Enter)) {
-                                    imageElement.downloadImage()
+                                    downloadImage()
                                     true
                                 } else false
                             },
@@ -528,7 +533,7 @@ class UriParameter(
                         value = expression.value,
                         onValueChange = {
                             expression.value = it
-                            imageElement.uriChanged = true
+                            uriChanged = true
                         },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri)
                     )
@@ -555,5 +560,116 @@ class UriParameter(
 
     override fun get(): String {
         return expression.value
+    }
+
+    @OptIn(ExperimentalCoilApi::class)
+    fun downloadImage() {
+        if (!uriChanged || get().isEmpty()) return
+        uriChanged = false
+
+        val request = ImageRequest.Builder(context)
+            .data(get())
+            .target(
+                onSuccess = { result ->
+                    imageBitmap.value = result.toBitmap().asComposeImageBitmap()
+                }
+            ).build()
+
+        imageLoader.enqueue(request)
+    }
+}
+
+class MaskParameter(defaultName: String, defaultExpression: String, val imageElement: ImageElement) :
+    ImageParameter(defaultName, defaultExpression) {
+    val color = mutableStateOf(0xFF000000)
+
+    @Composable
+    override fun buildElements(modifier: Modifier, label: MutableState<String>) {
+        Box {
+            Row(
+                modifier = Modifier
+                    .padding(
+                        horizontal = 16.dp
+                    )
+            ) {
+                if (label.value.isNotEmpty()) {
+                    Column(
+                        modifier = Modifier
+                            .weight(1f)
+                            .align(Alignment.CenterVertically)
+                    ) {
+                        Text(
+                            text = label.value,
+                            modifier = Modifier
+                                .align(Alignment.CenterHorizontally),
+                            style = MaterialTheme.typography.h5
+                        )
+                    }
+                }
+
+                TextField(
+                    modifier = Modifier
+                        .weight(3f)
+                        .padding(vertical = 8.dp)
+                        .onFocusEvent { if (!it.isFocused) downloadImage() }
+                        .onKeyEvent {
+                            if (it.key.equals(Key.Enter)) {
+                                downloadImage()
+                                true
+                            } else false
+                        },
+                    maxLines = 1,
+                    value = expression.value,
+                    onValueChange = {
+                        expression.value = it
+                        uriChanged = true
+                    },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri)
+                )
+
+                IconButton(modifier = Modifier
+                    .weight(0.5f)
+                    .align(Alignment.CenterVertically),
+                    onClick = {
+                        ColorPickerState.pick(color)
+                    }) {
+                    Icon(
+                        imageVector = Icons.Outlined.Palette,
+                        contentDescription = "Mask Color Picker"
+                    )
+                }
+
+                IconButton(modifier = Modifier
+                    .weight(0.5f)
+                    .align(Alignment.CenterVertically),
+                    onClick = {
+                        val list = imageElement.masks.value.toMutableList()
+                        list.remove(this@MaskParameter)
+
+                        imageElement.masks.value = list
+                    }) {
+                    Icon(
+                        imageVector = Icons.Filled.Delete,
+                        contentDescription = "Remove Mask"
+                    )
+                }
+            }
+
+            // Clickable overlay
+            if (ClickState.state.value != ClickState.States.NONE) {
+                Box(modifier = Modifier
+                    .matchParentSize()
+                    .clickable {
+                        when (ClickState.state.value) {
+                            ClickState.States.PINNING -> isPinned.value = !isPinned.value
+                            ClickState.States.RENAMING -> RenameState.rename(name)
+
+                            else -> {}
+                        }
+                        ClickState.off()
+                    }
+                )
+            }
+        }
     }
 }
