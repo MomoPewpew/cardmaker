@@ -1,5 +1,6 @@
 package com.momo.cardmaker
 
+import FontInfo
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
@@ -411,6 +412,7 @@ class RichTextParameter(defaultName: String, defaultExpression: String, isPinned
     Parameter<String>(defaultName, defaultExpression, isPinnedDefault) {
     val richTextState = RichTextState().setMarkdown(expression.value)
     private val color: MutableState<Long> = mutableStateOf(0xFFFF0000)
+    private val fontInfo: MutableState<FontInfo?> = mutableStateOf(null)
 
     @Composable
     override fun buildElements(modifier: Modifier, label: MutableState<String>) {
@@ -449,6 +451,7 @@ class RichTextParameter(defaultName: String, defaultExpression: String, isPinned
                     RichTextStyleRow(
                         state = richTextState,
                         color = color,
+                        fontInfo = fontInfo,
                         modifier = Modifier
                             .fillMaxWidth()
                     )

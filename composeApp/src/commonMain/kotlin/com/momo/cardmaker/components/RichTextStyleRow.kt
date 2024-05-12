@@ -1,5 +1,7 @@
 package com.momo.cardmaker.components
 
+import FontDropdownMenu
+import FontInfo
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.height
@@ -10,15 +12,16 @@ import androidx.compose.material.icons.automirrored.outlined.FormatAlignLeft
 import androidx.compose.material.icons.automirrored.outlined.FormatAlignRight
 import androidx.compose.material.icons.automirrored.outlined.FormatListBulleted
 import androidx.compose.material.icons.filled.Circle
-import androidx.compose.material.icons.outlined.Palette
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.ParagraphStyle
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -26,13 +29,22 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mohamedrejeb.richeditor.model.RichTextState
+import fontList
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.Font
+import org.jetbrains.compose.resources.FontResource
 
+@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun RichTextStyleRow(
     modifier: Modifier = Modifier,
     state: RichTextState,
-    color: MutableState<Long>
+    color: MutableState<Long>,
+    fontInfo: MutableState<FontInfo?>
 ) {
+    val fontFamily: MutableState<FontFamily?> =
+        mutableStateOf(if (fontInfo.value == null) null else FontFamily(Font(resource = FontResource(fontInfo.value!!.filename))))
+
     LazyRow(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
@@ -175,6 +187,38 @@ fun RichTextStyleRow(
                 },
                 isSelected = false,
                 icon = Icons.Outlined.Palette
+            )
+        }
+
+        item {
+            Box(
+                Modifier
+                    .height(24.dp)
+                    .width(1.dp)
+                    .background(Color(0xFF393B3D))
+            )
+        }
+
+        item {
+            RichTextStyleButton(
+                onClick = {
+                    if (fontFamily.value == null) return@RichTextStyleButton
+                    state.toggleSpanStyle(
+                        SpanStyle(fontFamily = fontFamily.value)
+                    )
+                },
+                isSelected = fontFamily.value != null && state.currentSpanStyle.fontFamily == fontFamily.value,
+                icon = Icons.Outlined.FontDownload
+            )
+        }
+
+        item {
+            FontDropdownMenu(
+                fontList = fontList,
+                onFontSelected = { font ->
+                    fontInfo.value = font
+                },
+                selectedFont = fontInfo.value
             )
         }
 
