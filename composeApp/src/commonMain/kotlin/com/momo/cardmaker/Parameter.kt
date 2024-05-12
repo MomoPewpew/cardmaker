@@ -78,7 +78,7 @@ abstract class Parameter<T>(
     }
 
     /** Gets the last integer value in the expression string. */
-    fun addToConstant(add: Double) {
+    fun addToConstant(add: Float) {
         try {
             // Confirm that the expression can be parsed
             evaluate()
@@ -238,7 +238,7 @@ class IntParameter(defaultName: String, defaultExpression: String, isHighlighted
                             Button(modifier = Modifier
                                 .fillMaxSize(),
                                 onClick = {
-                                    addToConstant(1.0)
+                                    addToConstant(1.0f)
                                     expression.value = expression.value
                                 }) {
                                 Icon(imageVector = Icons.Filled.ArrowUpward, contentDescription = "Increase")
@@ -265,7 +265,7 @@ class IntParameter(defaultName: String, defaultExpression: String, isHighlighted
                     Button(modifier = Modifier
                         .fillMaxSize(),
                         onClick = {
-                            addToConstant(-1.0)
+                            addToConstant(-1.0f)
                             expression.value = expression.value
                         }) {
                         Icon(imageVector = Icons.Filled.ArrowDownward, contentDescription = "Decrease")
@@ -338,7 +338,7 @@ class FloatParameter(defaultName: String, defaultExpression: String, isHighlight
                             Button(modifier = Modifier
                                 .fillMaxSize(),
                                 onClick = {
-                                    addToConstant(0.05)
+                                    addToConstant(1.0f)
                                     expression.value = expression.value
                                 }) {
                                 Icon(imageVector = Icons.Filled.ArrowUpward, contentDescription = "Increase")
@@ -365,7 +365,7 @@ class FloatParameter(defaultName: String, defaultExpression: String, isHighlight
                     Button(modifier = Modifier
                         .fillMaxSize(),
                         onClick = {
-                            addToConstant(-0.05)
+                            addToConstant(1.0f)
                             expression.value = expression.value
                         }) {
                         Icon(imageVector = Icons.Filled.ArrowDownward, contentDescription = "Decrease")

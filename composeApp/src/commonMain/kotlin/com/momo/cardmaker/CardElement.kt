@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import coil3.annotation.ExperimentalCoilApi
 import coil3.request.ImageRequest
 import com.momo.cardmaker.components.DeleteState
+import com.momo.cardmaker.components.ElementState
 import com.momo.cardmaker.components.RenameState
 import com.momo.cardmaker.components.RichTextStyleButton
 
@@ -31,6 +32,10 @@ abstract class CardElement(
     defaultName: String
 ) {
     val transformations = CardElementTransformations()
+
+    var realWidth = 0.0f
+    var realHeight = 0.0f
+
     val name = mutableStateOf("")
     private var folded = false
 
@@ -66,7 +71,11 @@ abstract class CardElement(
     fun buildElements() {
         var foldedRemember by remember { mutableStateOf(folded) }
         val me = mutableStateOf(this)
-        Row(modifier = Modifier) {
+        Row(modifier = Modifier
+            .padding(horizontal = 30.dp)
+            .clickable { ElementState.toggleSelect(me.value) }
+            .background(if (ElementState.selectedElement.value?.equals(me.value) == true) Color(0xFF013220).copy(alpha = 0.1f) else Color.Transparent)
+        ){
             // Clickable name text
             Column(
                 modifier = Modifier
@@ -77,7 +86,7 @@ abstract class CardElement(
                         Icon(
                             modifier = Modifier
                                 .align(Alignment.CenterVertically)
-                                .padding(start = 30.dp, top = 8.dp),
+                                .padding(top = 8.dp),
                             imageVector = if (folded) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore,
                             contentDescription = if (folded) "Folded" else "Expanded"
                         )
@@ -112,7 +121,6 @@ abstract class CardElement(
             ) {
                 LazyRow(
                     modifier = Modifier
-                        .padding(end = 31.dp)
                         .align(Alignment.End),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
@@ -249,10 +257,12 @@ abstract class CardElement(
     }
 
     /** Get the value of one of this card's properties by name. Used in expression replacement. */
-    fun getPropertyValueByName(name: String): Double? {
+    fun getPropertyValueByName(name: String): Float? {
         return when (name) {
-            "offsetX" -> transformations.offsetX.get().toDouble()
-            "offsetY" -> transformations.offsetY.get().toDouble()
+            "offsetX" -> transformations.offsetX.get()
+            "offsetY" -> transformations.offsetY.get()
+            "width" -> realWidth
+            "height" -> realHeight
             else -> null
         }
     }

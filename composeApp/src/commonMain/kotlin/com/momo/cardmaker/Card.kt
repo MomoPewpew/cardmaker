@@ -17,10 +17,10 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
+import com.momo.cardmaker.components.ElementState
 import com.momo.cardmaker.components.getAvailableSpace
 import com.momo.cardmaker.components.getOffset
 import org.jetbrains.skia.Bitmap
-import kotlin.math.max
 
 data class Card(
     val cardElements: MutableState<MutableList<CardElement>> = mutableStateOf(mutableListOf()),
@@ -45,6 +45,8 @@ data class Card(
     fun removeElement(element: CardElement) {
         val cardElements = cardElements.value
         cardElements.remove(element)
+
+        if (ElementState.selectedElement.value?.equals(element) == true) ElementState.selectedElement.value = null
 
         CardState.card.value = CardState.card.value.copy(cardElements = mutableStateOf(cardElements))
     }
@@ -82,13 +84,15 @@ data class Card(
         val bitmap = drawScope.asBitmap(size) {
             CardState.card.value.cardElements.value.asReversed().forEach { cardElement ->
                 val (maxAvailableWidth, maxAvailableHeight) = getAvailableSpace(cardElement.transformations)
+                var elementWidth = 0.0f
+                var elementHeight = 0.0f
 
                 when (cardElement) {
                     is RichTextElement -> {
                         val text = cardElement.text.richTextState.annotatedString
                         val style = TextStyle.Default
 
-                        var elementWidth = cardElement.transformations.width.get()
+                        elementWidth = cardElement.transformations.width.get()
 
                         if (elementWidth == 0f) elementWidth = maxAvailableWidth
 
@@ -140,13 +144,14 @@ data class Card(
                             }
                         }
 
-                        var elementHeight = cardElement.transformations.height.get()
+                        elementHeight = cardElement.transformations.height.get()
                         if (elementHeight == 0f) elementHeight =
                             textMeasurer.measure(wrappedText, style).size.height.toFloat()
 
-                        if (cardElement.transformations.width.get() == 0f) elementWidth = textMeasurer.measure(wrappedText, style).size.width.toFloat()
+                        if (cardElement.transformations.width.get() == 0f) elementWidth =
+                            textMeasurer.measure(wrappedText, style).size.width.toFloat()
 
-                        val offset = getOffset(
+                        val topLeft = getOffset(
                             cardElement.transformations.anchor.value,
                             cardElement.transformations.offsetX.get(),
                             elementWidth,
@@ -158,7 +163,7 @@ data class Card(
                             textMeasurer = textMeasurer,
                             text = wrappedText,
                             style = style,
-                            topLeft = offset,
+                            topLeft = topLeft,
                             size = Size(elementWidth, elementHeight)
                         )
                     }
@@ -168,8 +173,8 @@ data class Card(
                             val imageWidth = cardElement.imageBitmap.value!!.width.toFloat()
                             val imageHeight = cardElement.imageBitmap.value!!.height.toFloat()
 
-                            var elementWidth = cardElement.transformations.width.get()
-                            var elementHeight = cardElement.transformations.height.get()
+                            elementWidth = cardElement.transformations.width.get()
+                            elementHeight = cardElement.transformations.height.get()
 
                             if (elementWidth == 0f) {
                                 if (elementHeight == 0f) {
@@ -190,7 +195,7 @@ data class Card(
                                 elementHeight = imageHeight * (elementWidth / imageWidth)
                             }
 
-                            val offset = getOffset(
+                            val topLeft = getOffset(
                                 cardElement.transformations.anchor.value,
                                 cardElement.transformations.offsetX.get(),
                                 elementWidth,
@@ -201,9 +206,9 @@ data class Card(
                             scale(
                                 scaleX = (elementWidth / imageWidth),
                                 scaleY = (elementHeight / imageHeight),
-                                pivot = offset
+                                pivot = topLeft
                             ) {
-                                drawImage(image = cardElement.imageBitmap.value!!, topLeft = offset)
+                                drawImage(image = cardElement.imageBitmap.value!!, topLeft = topLeft)
                             }
                         }
                     }
