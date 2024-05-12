@@ -92,13 +92,15 @@ fun CardPreview(textMeasurer: TextMeasurer) {
                                         moveX = true
                                     }
                                     resizeX = -1
-                                    if (selectedElement.transformations.width.get() == 0f) selectedElement.transformations.width.expression.value = selectedElement.realWidth.toString()
+                                    if (selectedElement.transformations.width.get() == 0f) selectedElement.transformations.width.expression.value =
+                                        selectedElement.realWidth.toString()
                                 } else if (widthPercent > 0.8f) {
                                     if (selectedElement.transformations.anchor.value == Anchor.TOP_RIGHT || selectedElement.transformations.anchor.value == Anchor.BOTTOM_RIGHT) {
                                         moveX = true
                                     }
                                     resizeX = 1
-                                    if (selectedElement.transformations.width.get() == 0f) selectedElement.transformations.width.expression.value = selectedElement.realWidth.toString()
+                                    if (selectedElement.transformations.width.get() == 0f) selectedElement.transformations.width.expression.value =
+                                        selectedElement.realWidth.toString()
                                 }
 
                                 if (heightPercent < 0.2f) {
@@ -106,13 +108,15 @@ fun CardPreview(textMeasurer: TextMeasurer) {
                                         moveY = true
                                     }
                                     resizeY = 1
-                                    if (selectedElement.transformations.height.get() == 0f) selectedElement.transformations.height.expression.value = selectedElement.realHeight.toString()
+                                    if (selectedElement.transformations.height.get() == 0f) selectedElement.transformations.height.expression.value =
+                                        selectedElement.realHeight.toString()
                                 } else if (heightPercent > 0.8f) {
                                     if (selectedElement.transformations.anchor.value == Anchor.BOTTOM_LEFT || selectedElement.transformations.anchor.value == Anchor.BOTTOM_RIGHT) {
                                         moveY = true
                                     }
                                     resizeY = -1
-                                    if (selectedElement.transformations.height.get() == 0f) selectedElement.transformations.height.expression.value = selectedElement.realHeight.toString()
+                                    if (selectedElement.transformations.height.get() == 0f) selectedElement.transformations.height.expression.value =
+                                        selectedElement.realHeight.toString()
                                 }
 
                                 if (selectedElement.transformations.anchor.value == Anchor.CENTER) {
@@ -293,41 +297,11 @@ fun CardPreview(textMeasurer: TextMeasurer) {
 
                 drawRect(
                     color = color,
-                    topLeft = Offset.Zero,
                     size = Size(
-                        width = CardState.card.value.dpi.value * CardState.card.value.resolutionHoriz.value,
-                        height = bleedThickness
-                    )
-                )
-                drawRect(
-                    color = color,
-                    topLeft = Offset.Zero,
-                    size = Size(
-                        width = bleedThickness,
-                        height = CardState.card.value.dpi.value * CardState.card.value.resolutionVert.value
-                    )
-                )
-                drawRect(
-                    color = color,
-                    topLeft = Offset(
-                        0f,
-                        CardState.card.value.dpi.value * CardState.card.value.resolutionVert.value - bleedThickness
+                        CardState.card.value.dpi.value * CardState.card.value.resolutionHoriz.value,
+                        CardState.card.value.dpi.value * CardState.card.value.resolutionVert.value
                     ),
-                    size = Size(
-                        width = CardState.card.value.dpi.value * CardState.card.value.resolutionHoriz.value,
-                        height = bleedThickness
-                    )
-                )
-                drawRect(
-                    color = color,
-                    topLeft = Offset(
-                        CardState.card.value.dpi.value * CardState.card.value.resolutionHoriz.value - bleedThickness,
-                        0f
-                    ),
-                    size = Size(
-                        width = bleedThickness,
-                        height = CardState.card.value.dpi.value * CardState.card.value.resolutionVert.value
-                    )
+                    style = Stroke(width = bleedThickness * 2)
                 )
             }
 

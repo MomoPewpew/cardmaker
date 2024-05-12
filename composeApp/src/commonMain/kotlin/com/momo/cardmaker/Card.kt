@@ -10,6 +10,7 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asSkiaBitmap
 import androidx.compose.ui.graphics.drawscope.CanvasDrawScope
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.text.TextMeasurer
 import androidx.compose.ui.text.TextStyle
@@ -225,41 +226,11 @@ data class Card(
 
                 drawRect(
                     color = color,
-                    topLeft = Offset.Zero,
                     size = Size(
-                        width = CardState.card.value.dpi.value * CardState.card.value.resolutionHoriz.value,
-                        height = bleedThickness
-                    )
-                )
-                drawRect(
-                    color = color,
-                    topLeft = Offset.Zero,
-                    size = Size(
-                        width = bleedThickness,
-                        height = CardState.card.value.dpi.value * CardState.card.value.resolutionVert.value
-                    )
-                )
-                drawRect(
-                    color = color,
-                    topLeft = Offset(
-                        0f,
-                        CardState.card.value.dpi.value * CardState.card.value.resolutionVert.value - bleedThickness
+                        CardState.card.value.dpi.value * CardState.card.value.resolutionHoriz.value,
+                        CardState.card.value.dpi.value * CardState.card.value.resolutionVert.value
                     ),
-                    size = Size(
-                        width = CardState.card.value.dpi.value * CardState.card.value.resolutionHoriz.value,
-                        height = bleedThickness
-                    )
-                )
-                drawRect(
-                    color = color,
-                    topLeft = Offset(
-                        CardState.card.value.dpi.value * CardState.card.value.resolutionHoriz.value - bleedThickness,
-                        0f
-                    ),
-                    size = Size(
-                        width = bleedThickness,
-                        height = CardState.card.value.dpi.value * CardState.card.value.resolutionVert.value
-                    )
+                    style = Stroke(width = bleedThickness * 2)
                 )
             }
         }
