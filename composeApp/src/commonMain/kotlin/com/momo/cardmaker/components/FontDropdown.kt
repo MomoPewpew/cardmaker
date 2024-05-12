@@ -8,6 +8,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.focusProperties
 
 @Composable
 fun FontDropdownMenu(
@@ -21,6 +22,7 @@ fun FontDropdownMenu(
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
+                .focusProperties { canFocus = false }
                 .fillMaxWidth()
                 .clickable { expanded = !expanded })
         {
@@ -28,6 +30,8 @@ fun FontDropdownMenu(
             Icon(Icons.Filled.ArrowDropDown, contentDescription = "Font Selection")
         }
         DropdownMenu(
+            modifier = Modifier
+                .focusProperties { canFocus = false },
             expanded = expanded,
             onDismissRequest = { expanded = false }
         ) {
