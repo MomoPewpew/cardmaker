@@ -7,6 +7,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.put
 
 enum class Anchor {
     TOP_LEFT,
@@ -24,6 +27,17 @@ data class CardElementTransformations(
     val height: FloatParameter = FloatParameter(defaultName = "Height", defaultExpression = "0.0"),
     val anchor: MutableState<Anchor> = mutableStateOf(Anchor.TOP_LEFT)
 ) {
+    /** Serialize this object into a Json string. */
+    fun toJson(): JsonObject {
+        return buildJsonObject {
+            put("offsetX", offsetX.toJson())
+            put("offsetY", offsetY.toJson())
+            put("width", width.toJson())
+            put("height", height.toJson())
+            put("anchor", anchor.value.name)
+        }
+    }
+
     /** Build the default transformation segment. */
     @Composable
     fun buildElements() {

@@ -19,6 +19,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.momo.cardmaker.components.*
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.putJsonArray
 
 /** A card element can be subclassed into all the elements that are added to cards, such as text or images. */
 abstract class CardElement(
@@ -34,6 +37,13 @@ abstract class CardElement(
 
     init {
         rename(defaultName)
+    }
+
+    /** Serialize this object into a Json string. */
+    open fun toJson(): JsonObject {
+        return buildJsonObject {
+            put("transformations", transformations.toJson())
+        }
     }
 
     /** Updates this elements name. If the name is already in use, add an index to it. */
@@ -303,6 +313,15 @@ class RichTextElement(
 ) : CardElement(defaultName) {
     var text = RichTextParameter(defaultName = "Text", defaultExpression = "")
 
+    override fun toJson(): JsonObject {
+        return buildJsonObject {
+            super.toJson().forEach {
+                put(it.key, it.value)
+            }
+            put("text", text.toJson())
+        }
+    }
+
     @Composable
     override fun buildSpecificElements() {
         Row(
@@ -331,6 +350,20 @@ class ImageElement(
 ) : CardElement(defaultName) {
     var image = ImageParameter(defaultName = "Image URL", defaultExpression = "")
     var masks: MutableState<MutableList<MaskParameter>> = mutableStateOf(mutableListOf())
+
+    override fun toJson(): JsonObject {
+        return buildJsonObject {
+            super.toJson().forEach {
+                put(it.key, it.value)
+            }
+            put("image", image.toJson())
+            putJsonArray("masks") {
+                masks.value.forEach {
+                    add(it.toJson())
+                }
+            }
+        }
+    }
 
     @Composable
     override fun buildSpecificElements() {

@@ -33,6 +33,9 @@ import com.notkamui.keval.Keval
 import com.notkamui.keval.KevalInvalidExpressionException
 import com.notkamui.keval.KevalInvalidSymbolException
 import com.notkamui.keval.KevalZeroDivisionException
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.put
 import kotlin.math.round
 import kotlin.math.roundToInt
 
@@ -44,6 +47,15 @@ abstract class Parameter<T>(
     var name = mutableStateOf(defaultName)
     var expression = mutableStateOf(defaultExpression)
     var isPinned = mutableStateOf(isPinnedDefault)
+
+    /** Serialize this object into a Json string. */
+    fun toJson(): JsonObject {
+        return buildJsonObject {
+            put("name", name.value)
+            put("expression", expression.value)
+            put("isPinned", isPinned.value)
+        }
+    }
 
     @Composable
     abstract fun buildElements(modifier: Modifier, label: MutableState<String>)

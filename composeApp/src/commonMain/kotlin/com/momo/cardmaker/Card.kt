@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import com.momo.cardmaker.components.ElementState
 import com.momo.cardmaker.components.getAvailableSpace
 import com.momo.cardmaker.components.getOffset
+import kotlinx.serialization.json.*
 import org.jetbrains.skia.Bitmap
 import kotlin.math.abs
 
@@ -27,10 +28,20 @@ data class Card(
     val dpi: MutableState<Int> = mutableStateOf(300),
     val bleedColor: MutableState<Long> = mutableStateOf(0)
 ) {
-    fun toCsv(): String {
-        var csv = ""
+    /** Serialize this object into a Json string. */
+    fun toJson(): JsonObject {
+        return buildJsonObject {
+            put("dpi", dpi.value)
+            put("resolutionHoriz", resolutionHoriz.value)
+            put("resolutionVert", resolutionVert.value)
+            put("bleedColor", bleedColor.value)
+            putJsonArray("cardElements") {
+                cardElements.value.forEach {
+                    add(it.toJson())
+                }
+            }
+        }
 
-        return csv
     }
 
     fun addElement(element: CardElement) {
@@ -248,7 +259,7 @@ data class Card(
     }
 
     companion object {
-        fun fromCsv(csv: String): Card {
+        fun fromJson(json: String): Card {
             val card = Card()
 
             return card

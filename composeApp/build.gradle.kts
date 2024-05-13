@@ -44,6 +44,7 @@ kotlin {
             implementation("io.ktor:ktor-client-core:3.0.0-wasm2")
             implementation("io.coil-kt.coil3:coil-network-ktor:3.0.0-alpha06")
             implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.3.8")
+            implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
