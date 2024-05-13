@@ -259,8 +259,21 @@ data class Card(
     }
 
     companion object {
-        fun fromJson(json: String): Card {
+        /** Create a new object from a Json object. */
+        fun fromJson(json: JsonObject): Card {
             val card = Card()
+
+            card.dpi.value = json["dpi"]?.toString()?.toInt() ?: card.dpi.value
+            card.resolutionHoriz.value = json["resolutionHoriz"]?.toString()?.toFloat() ?: card.resolutionHoriz.value
+            card.resolutionVert.value = json["resolutionVert"]?.toString()?.toFloat() ?: card.resolutionVert.value
+            card.bleedColor.value = json["bleedColor"]?.toString()?.toLong() ?: card.bleedColor.value
+
+            val cardElementsList: MutableList<CardElement> = mutableListOf()
+            json["cardElements"]?.jsonArray?.forEach {
+                val cardElement = CardElement.fromJson(it.jsonObject)
+                if (cardElement != null) cardElementsList.add(cardElement)
+            }
+            card.cardElements.value = cardElementsList
 
             return card
         }

@@ -19,15 +19,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.momo.cardmaker.components.*
-import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.buildJsonObject
-import kotlinx.serialization.json.putJsonArray
+import kotlinx.serialization.json.*
 
 /** A card element can be subclassed into all the elements that are added to cards, such as text or images. */
 abstract class CardElement(
     defaultName: String
 ) {
-    val transformations = CardElementTransformations()
+    var transformations = CardElementTransformations()
 
     var realWidth = 0.0f
     var realHeight = 0.0f
@@ -42,6 +40,11 @@ abstract class CardElement(
     /** Serialize this object into a Json string. */
     open fun toJson(): JsonObject {
         return buildJsonObject {
+            when (this@CardElement) {
+                is RichTextElement -> put("type", "richText")
+                is ImageElement -> put("type", "image")
+                else -> {}
+            }
             put("transformations", transformations.toJson())
         }
     }
@@ -305,6 +308,30 @@ abstract class CardElement(
             else -> null
         }
     }
+
+    /** Read from a json objects the properties that are specific to this type. */
+    abstract fun fromJsonSpecific(json: JsonObject)
+
+    companion object {
+        /** Create a new object from a Json object. */
+        fun fromJson(json: JsonObject): CardElement? {
+            val type = json["type"].toString()
+            val cardElement = when (type) {
+                "richText" -> RichTextElement()
+                "image" -> ImageElement()
+                else -> null
+            }
+
+            val transformationsObject = json["transformations"]?.jsonObject
+
+            if (transformationsObject != null) cardElement?.transformations =
+                CardElementTransformations.fromJson(transformationsObject)
+
+            cardElement?.fromJsonSpecific(json)
+
+            return cardElement
+        }
+    }
 }
 
 /** Textbox element to add text to the card. */
@@ -320,6 +347,11 @@ class RichTextElement(
             }
             put("text", text.toJson())
         }
+    }
+
+    override fun fromJsonSpecific(json: JsonObject) {
+        val textObject = json["text"]?.jsonObject
+        if (textObject != null) text = Parameter.fromJson(textObject) as RichTextParameter
     }
 
     @Composable
@@ -363,6 +395,18 @@ class ImageElement(
                 }
             }
         }
+    }
+
+    override fun fromJsonSpecific(json: JsonObject) {
+        val imageObject = json["image"]?.jsonObject
+        if (imageObject != null) image = Parameter.fromJson(imageObject) as ImageParameter
+
+        val masksList: MutableList<MaskParameter> = mutableListOf()
+        json["masks"]?.jsonArray?.forEach {
+            val mask = Parameter.fromJson(it.jsonObject) as MaskParameter
+            masksList.add(mask)
+        }
+        masks.value = masksList
     }
 
     @Composable

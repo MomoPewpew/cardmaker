@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.put
 
 enum class Anchor {
@@ -21,11 +22,11 @@ enum class Anchor {
 
 /** This class holds all the transformation data of a card element. */
 data class CardElementTransformations(
-    val offsetX: FloatParameter = FloatParameter(defaultName = "Offset X", defaultExpression = "0.0"),
-    val offsetY: FloatParameter = FloatParameter(defaultName = "Offset Y", defaultExpression = "0.0"),
-    val width: FloatParameter = FloatParameter(defaultName = "Width", defaultExpression = "0.0"),
-    val height: FloatParameter = FloatParameter(defaultName = "Height", defaultExpression = "0.0"),
-    val anchor: MutableState<Anchor> = mutableStateOf(Anchor.TOP_LEFT)
+    var offsetX: FloatParameter = FloatParameter(defaultName = "Offset X", defaultExpression = "0.0"),
+    var offsetY: FloatParameter = FloatParameter(defaultName = "Offset Y", defaultExpression = "0.0"),
+    var width: FloatParameter = FloatParameter(defaultName = "Width", defaultExpression = "0.0"),
+    var height: FloatParameter = FloatParameter(defaultName = "Height", defaultExpression = "0.0"),
+    var anchor: MutableState<Anchor> = mutableStateOf(Anchor.TOP_LEFT)
 ) {
     /** Serialize this object into a Json string. */
     fun toJson(): JsonObject {
@@ -97,6 +98,32 @@ data class CardElementTransformations(
                 it.buildElements(modifier = Modifier, label = it.name)
                 Spacer(modifier = Modifier.height(8.dp))
             }
+        }
+    }
+
+    companion object {
+        /** Create a new object from a Json object. */
+        fun fromJson(json: JsonObject): CardElementTransformations {
+            val transformations = CardElementTransformations()
+
+            val offsetXObject = json["offsetX"]?.jsonObject
+            if (offsetXObject != null) transformations.offsetX = Parameter.fromJson(offsetXObject) as FloatParameter
+
+            val offsetYObject = json["offsetY"]?.jsonObject
+            if (offsetYObject != null) transformations.offsetY = Parameter.fromJson(offsetYObject) as FloatParameter
+
+            val widthObject = json["width"]?.jsonObject
+            if (widthObject != null) transformations.width = Parameter.fromJson(widthObject) as FloatParameter
+
+            val heightObject = json["height"]?.jsonObject
+            if (heightObject != null) transformations.height = Parameter.fromJson(heightObject) as FloatParameter
+
+            try {
+                transformations.anchor.value = Anchor.valueOf(json["anchor"].toString())
+            } catch (_: Exception) {
+            }
+
+            return transformations
         }
     }
 }

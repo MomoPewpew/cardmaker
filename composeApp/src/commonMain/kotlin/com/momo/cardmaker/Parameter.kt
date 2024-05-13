@@ -51,9 +51,18 @@ abstract class Parameter<T>(
     /** Serialize this object into a Json string. */
     fun toJson(): JsonObject {
         return buildJsonObject {
+            when (this@Parameter) {
+                is IntParameter -> put("type", "int")
+                is FloatParameter -> put("type", "float")
+                is RichTextParameter -> put("type", "richText")
+                is ImageParameter -> put("type", "image")
+                is MaskParameter -> put("type", "mask")
+                else -> {}
+            }
             put("name", name.value)
             put("expression", expression.value)
             put("isPinned", isPinned.value)
+            if (this@Parameter is MaskParameter) put("color", color.value)
         }
     }
 
@@ -216,6 +225,50 @@ abstract class Parameter<T>(
                     return
                 }
             }
+        }
+    }
+
+    companion object {
+        /** Create a new object from a Json object. */
+        fun fromJson(json: JsonObject, imageElement: ImageElement? = null): Parameter<out Comparable<*>>? {
+            val type = json["type"].toString()
+            val name = json["name"].toString()
+            val expression = json["expression"].toString()
+            val isPinned = json["isPinned"].toString().toBoolean()
+
+            val parameter = when (type) {
+                "int" -> IntParameter(defaultName = name, defaultExpression = expression, isPinnedDefault = isPinned)
+                "float" -> FloatParameter(
+                    defaultName = name,
+                    defaultExpression = expression,
+                    isPinnedDefault = isPinned
+                )
+
+                "richText" -> RichTextParameter(
+                    defaultName = name,
+                    defaultExpression = expression,
+                    isPinnedDefault = isPinned
+                )
+
+                "image" -> ImageParameter(
+                    defaultName = name,
+                    defaultExpression = expression,
+                    isPinnedDefault = isPinned
+                )
+
+                "mask" -> MaskParameter(
+                    defaultName = name,
+                    defaultExpression = expression,
+                    isPinnedDefault = isPinned,
+                    imageElement = imageElement
+                )
+
+                else -> null
+            }
+
+            if (parameter is MaskParameter) parameter.color.value = json["color"].toString().toLong()
+
+            return parameter
         }
     }
 }
@@ -594,8 +647,13 @@ open class ImageParameter(defaultName: String, defaultExpression: String, isPinn
     }
 }
 
-class MaskParameter(defaultName: String, defaultExpression: String, val imageElement: ImageElement) :
-    ImageParameter(defaultName, defaultExpression) {
+class MaskParameter(
+    defaultName: String,
+    defaultExpression: String,
+    isPinnedDefault: Boolean = false,
+    val imageElement: ImageElement?
+) :
+    ImageParameter(defaultName, defaultExpression, isPinnedDefault) {
     val color = mutableStateOf(0xFF000000)
 
     @Composable
@@ -658,10 +716,12 @@ class MaskParameter(defaultName: String, defaultExpression: String, val imageEle
                     .weight(0.5f)
                     .align(Alignment.CenterVertically),
                     onClick = {
-                        val list = imageElement.masks.value.toMutableList()
-                        list.remove(this@MaskParameter)
+                        val list = imageElement?.masks?.value?.toMutableList()
+                        list?.remove(this@MaskParameter)
 
-                        imageElement.masks.value = list
+                        if (list != null) {
+                            imageElement?.masks?.value = list
+                        }
                     }) {
                     Icon(
                         imageVector = Icons.Filled.Delete,
