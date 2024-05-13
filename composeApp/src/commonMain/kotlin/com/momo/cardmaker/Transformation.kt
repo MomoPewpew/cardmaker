@@ -119,8 +119,8 @@ data class CardElementTransformations(
             if (heightObject != null) transformations.height = Parameter.fromJson(heightObject) as FloatParameter
 
             try {
-                transformations.anchor.value = Anchor.valueOf(json["anchor"].toString())
-            } catch (_: Exception) {
+                transformations.anchor.value = Anchor.valueOf(json["anchor"].toString().trim('\"'))
+            } catch (_: IllegalArgumentException) {
             }
 
             return transformations

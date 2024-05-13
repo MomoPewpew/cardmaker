@@ -122,7 +122,7 @@ fun App() {
                             )
                         )
                 ) {
-                    var advancedFolded by remember { mutableStateOf(false) }
+                    var advancedFolded by remember { mutableStateOf(true) }
 
                     // Main button row
                     Row(
@@ -445,16 +445,13 @@ fun App() {
                         // Export
                         Button(
                             onClick = {
-                                val bitmap = CardState.card.value.drawToBitmap(textMeasurer)
-                                val viewModel = ViewModel()
-
-                                viewModel.triggerSaveImage(bitmap, "card.png")
+                                ImportExportState.show()
                             },
                             modifier = Modifier
                                 .weight(1f, fill = false)
                                 .padding(horizontal = 16.dp)
                         ) {
-                            Text("Export")
+                            Text("Import/Export")
                         }
                         // Toggle Border
                         Button(
@@ -500,6 +497,9 @@ fun App() {
 
             // Color picker
             ColorPickerWindow()
+
+            // Import/export sub menu
+            ImportExport(textMeasurer)
         }
     }
 }

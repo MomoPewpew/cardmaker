@@ -45,6 +45,7 @@ abstract class CardElement(
                 is ImageElement -> put("type", "image")
                 else -> {}
             }
+            put("name", name.value)
             put("transformations", transformations.toJson())
         }
     }
@@ -315,10 +316,11 @@ abstract class CardElement(
     companion object {
         /** Create a new object from a Json object. */
         fun fromJson(json: JsonObject): CardElement? {
-            val type = json["type"].toString()
+            val type = json["type"].toString().trim('\"')
+            val name = json["name"].toString().trim('\"')
             val cardElement = when (type) {
-                "richText" -> RichTextElement()
-                "image" -> ImageElement()
+                "richText" -> RichTextElement(name)
+                "image" -> ImageElement(name)
                 else -> null
             }
 
@@ -399,12 +401,16 @@ class ImageElement(
 
     override fun fromJsonSpecific(json: JsonObject) {
         val imageObject = json["image"]?.jsonObject
-        if (imageObject != null) image = Parameter.fromJson(imageObject) as ImageParameter
+        if (imageObject != null) {
+            image = Parameter.fromJson(imageObject) as ImageParameter
+            image.downloadImage()
+        }
 
         val masksList: MutableList<MaskParameter> = mutableListOf()
         json["masks"]?.jsonArray?.forEach {
-            val mask = Parameter.fromJson(it.jsonObject) as MaskParameter
+            val mask = Parameter.fromJson(it.jsonObject, this) as MaskParameter
             masksList.add(mask)
+            mask.downloadImage()
         }
         masks.value = masksList
     }

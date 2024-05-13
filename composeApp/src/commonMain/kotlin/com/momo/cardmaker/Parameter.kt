@@ -55,8 +55,8 @@ abstract class Parameter<T>(
                 is IntParameter -> put("type", "int")
                 is FloatParameter -> put("type", "float")
                 is RichTextParameter -> put("type", "richText")
-                is ImageParameter -> put("type", "image")
                 is MaskParameter -> put("type", "mask")
+                is ImageParameter -> put("type", "image")
                 else -> {}
             }
             put("name", name.value)
@@ -231,9 +231,9 @@ abstract class Parameter<T>(
     companion object {
         /** Create a new object from a Json object. */
         fun fromJson(json: JsonObject, imageElement: ImageElement? = null): Parameter<out Comparable<*>>? {
-            val type = json["type"].toString()
-            val name = json["name"].toString()
-            val expression = json["expression"].toString()
+            val type = json["type"].toString().trim('\"')
+            val name = json["name"].toString().trim('\"')
+            val expression = json["expression"].toString().trim('\"')
             val isPinned = json["isPinned"].toString().toBoolean()
 
             val parameter = when (type) {
@@ -475,7 +475,7 @@ class FloatParameter(defaultName: String, defaultExpression: String, isPinnedDef
 
 class RichTextParameter(defaultName: String, defaultExpression: String, isPinnedDefault: Boolean = false) :
     Parameter<String>(defaultName, defaultExpression, isPinnedDefault) {
-    val richTextState = RichTextState().setMarkdown(expression.value)
+    val richTextState = RichTextState().setHtml(expression.value)
     private val color: MutableState<Long> = mutableStateOf(0xFFFF0000)
     private val fontInfo: MutableState<FontInfo?> = mutableStateOf(null)
 
@@ -507,11 +507,11 @@ class RichTextParameter(defaultName: String, defaultExpression: String, isPinned
                     modifier = Modifier
                         .weight(4f)
                 ) {
-                    val markDown by remember(richTextState.annotatedString) {
-                        mutableStateOf(richTextState.toMarkdown())
+                    val html by remember(richTextState.annotatedString) {
+                        mutableStateOf(richTextState.toHtml())
                     }
 
-                    expression.value = markDown
+                    expression.value = html
 
                     RichTextStyleRow(
                         state = richTextState,
