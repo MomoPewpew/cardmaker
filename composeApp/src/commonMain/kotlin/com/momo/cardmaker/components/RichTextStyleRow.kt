@@ -2,11 +2,14 @@ package com.momo.cardmaker.components
 
 import FontDropdownMenu
 import FontInfo
+import FontSizeDropdownMenu
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.FormatAlignLeft
 import androidx.compose.material.icons.automirrored.outlined.FormatAlignRight
@@ -26,6 +29,7 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mohamedrejeb.richeditor.model.RichTextState
@@ -200,6 +204,28 @@ fun RichTextStyleRow(
         }
 
         item {
+            Icon(modifier = Modifier.padding(horizontal = 4.dp), imageVector = Icons.Outlined.FormatSize, contentDescription = "Font Size Icon")
+        }
+
+        item {
+            FontSizeDropdownMenu(
+                onSizeSelected = { size ->
+                    state.addSpanStyle(SpanStyle(fontSize = size.sp))
+                },
+                selectedSize = if (state.currentSpanStyle.fontSize == TextUnit.Unspecified) 14f else state.currentSpanStyle.fontSize.value
+            )
+        }
+
+        item {
+            Box(
+                Modifier
+                    .height(24.dp)
+                    .width(1.dp)
+                    .background(Color(0xFF393B3D))
+            )
+        }
+
+        item {
             RichTextStyleButton(
                 onClick = {
                     if (fontFamily.value == null) return@RichTextStyleButton
@@ -219,47 +245,6 @@ fun RichTextStyleRow(
                     fontInfo.value = font
                 },
                 selectedFont = fontInfo.value
-            )
-        }
-
-        item {
-            Box(
-                Modifier
-                    .height(24.dp)
-                    .width(1.dp)
-                    .background(Color(0xFF393B3D))
-            )
-        }
-
-        item {
-            RichTextStyleButton(
-                onClick = {
-                    var currentSize = state.currentSpanStyle.fontSize.value
-                    if (currentSize.isNaN()) currentSize = 14f
-                    state.addSpanStyle(
-                        SpanStyle(
-                            fontSize = (currentSize - 2f).sp
-                        )
-                    )
-                },
-                isSelected = false,
-                icon = Icons.Outlined.TextFields
-            )
-        }
-
-        item {
-            RichTextStyleButton(
-                onClick = {
-                    var currentSize = state.currentSpanStyle.fontSize.value
-                    if (currentSize.isNaN()) currentSize = 14f
-                    state.addSpanStyle(
-                        SpanStyle(
-                            fontSize = (currentSize + 2f).sp
-                        )
-                    )
-                },
-                isSelected = false,
-                icon = Icons.Outlined.FormatSize
             )
         }
 
