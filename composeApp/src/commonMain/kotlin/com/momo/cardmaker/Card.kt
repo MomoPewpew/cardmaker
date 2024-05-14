@@ -264,13 +264,14 @@ data class Card(
             val card = Card()
 
             card.dpi.value = json["dpi"]?.jsonPrimitive?.intOrNull ?: card.dpi.value
-            card.resolutionHoriz.value = json["resolutionHoriz"]?.jsonPrimitive?.floatOrNull ?: card.resolutionHoriz.value
+            card.resolutionHoriz.value =
+                json["resolutionHoriz"]?.jsonPrimitive?.floatOrNull ?: card.resolutionHoriz.value
             card.resolutionVert.value = json["resolutionVert"]?.jsonPrimitive?.floatOrNull ?: card.resolutionVert.value
             card.bleedColor.value = json["bleedColor"]?.jsonPrimitive?.longOrNull ?: card.bleedColor.value
 
             val cardElementsList: MutableList<CardElement> = mutableListOf()
             json["cardElements"]?.jsonArray?.forEach {
-                val cardElement = CardElement.fromJson(it.jsonObject)
+                val cardElement = CardElement.fromJson(it.jsonObject, card)
                 if (cardElement != null) cardElementsList.add(cardElement)
             }
             card.cardElements.value = cardElementsList

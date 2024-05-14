@@ -23,7 +23,8 @@ import kotlinx.serialization.json.*
 
 /** A card element can be subclassed into all the elements that are added to cards, such as text or images. */
 abstract class CardElement(
-    defaultName: String
+    defaultName: String,
+    val card: Card = CardState.card.value
 ) {
     var transformations = CardElementTransformations()
 
@@ -60,7 +61,7 @@ abstract class CardElement(
 
         while (nameInUse) {
             nameInUse = false
-            for (cardElement in CardState.card.value.cardElements.value) {
+            for (cardElement in card.cardElements.value) {
                 if (cardElement.name.value == modifiedName) {
                     nameInUse = true
                     index++
@@ -315,12 +316,12 @@ abstract class CardElement(
 
     companion object {
         /** Create a new object from a Json object. */
-        fun fromJson(json: JsonObject): CardElement? {
+        fun fromJson(json: JsonObject, card: Card): CardElement? {
             val type = json["type"]?.jsonPrimitive?.content
             val name = json["name"]?.jsonPrimitive?.content ?: ""
             val cardElement = when (type) {
-                "richText" -> RichTextElement(name)
-                "image" -> ImageElement(name)
+                "richText" -> RichTextElement(name, card)
+                "image" -> ImageElement(name, card)
                 else -> null
             }
 
@@ -338,8 +339,9 @@ abstract class CardElement(
 
 /** Textbox element to add text to the card. */
 class RichTextElement(
-    defaultName: String = "Text Element"
-) : CardElement(defaultName) {
+    defaultName: String = "Text Element",
+    card: Card = CardState.card.value
+) : CardElement(defaultName, card) {
     var text = RichTextParameter(defaultName = "Text", defaultExpression = "")
 
     override fun toJson(): JsonObject {
@@ -380,8 +382,9 @@ class RichTextElement(
 
 /** Image element to add images to the card. */
 class ImageElement(
-    defaultName: String = "Image Element"
-) : CardElement(defaultName) {
+    defaultName: String = "Image Element",
+    card: Card = CardState.card.value
+) : CardElement(defaultName, card) {
     var image = ImageParameter(defaultName = "Image URL", defaultExpression = "")
     var masks: MutableState<MutableList<MaskParameter>> = mutableStateOf(mutableListOf())
 

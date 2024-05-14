@@ -12,8 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextMeasurer
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import com.momo.cardmaker.CardState
-import com.momo.cardmaker.ViewModel
+import com.momo.cardmaker.*
 import com.momo.cardmaker.components.ImportExportState.importMode
 import com.momo.cardmaker.components.ImportExportState.showWindow
 import com.momo.cardmaker.components.ImportExportState.textFieldValue
@@ -81,7 +80,8 @@ fun ImportExport(textMeasurer: TextMeasurer) {
                             .padding(horizontal = 16.dp)
                             .fillMaxWidth(),
                         onClick = {
-
+                            importMode.value = ImportMode.PINNED_ONLY
+                            textFieldValue.value = ""
                         }
                     ) {
                         Text("Import Json (pinned parameters only)")
@@ -116,11 +116,47 @@ fun ImportExport(textMeasurer: TextMeasurer) {
 
                                 when (importMode.value) {
                                     ImportMode.REGULAR -> {
-                                        CardState.card.value = com.momo.cardmaker.Card.fromJson(json)
+                                        CardState.card.value = Card.fromJson(json)
                                     }
 
                                     ImportMode.PINNED_ONLY -> {
+                                        val card = Card.fromJson(json)
 
+                                        CardState.card.value.cardElements.value.forEach { cardElement ->
+                                            val importElement =
+                                                card.cardElements.value.find { it.name.value == cardElement.name.value && it::class == cardElement::class }
+
+                                            if (importElement == null) return@forEach
+
+                                            if (cardElement.transformations.offsetX.isSimilar(importElement.transformations.offsetX)) cardElement.transformations.offsetY =
+                                                importElement.transformations.offsetX
+                                            if (cardElement.transformations.offsetY.isSimilar(importElement.transformations.offsetY)) cardElement.transformations.offsetY =
+                                                importElement.transformations.offsetY
+                                            if (cardElement.transformations.width.isSimilar(importElement.transformations.width)) cardElement.transformations.width =
+                                                importElement.transformations.width
+                                            if (cardElement.transformations.height.isSimilar(importElement.transformations.height)) cardElement.transformations.offsetY =
+                                                importElement.transformations.height
+
+                                            when (cardElement) {
+                                                is RichTextElement -> {
+                                                    importElement as RichTextElement
+                                                    if (cardElement.text.isSimilar(importElement.text)) cardElement.text =
+                                                        importElement.text
+                                                }
+
+                                                is ImageElement -> {
+                                                    importElement as ImageElement
+                                                    if (cardElement.image.isSimilar(importElement.image)) cardElement.image =
+                                                        importElement.image
+                                                    for (i in 0..<cardElement.masks.value.size) {
+                                                        val importMask =
+                                                            importElement.masks.value.getOrNull(i) ?: continue
+                                                        if (cardElement.masks.value[i].isSimilar(importMask)) cardElement.masks.value[i] =
+                                                            importMask
+                                                    }
+                                                }
+                                            }
+                                        }
                                     }
 
                                     else -> {}
@@ -136,4 +172,8 @@ fun ImportExport(textMeasurer: TextMeasurer) {
             }
         }
     }
+}
+
+private fun <T> Parameter<T>.isSimilar(parameter: Parameter<T>): Boolean {
+    return (isPinned.value && parameter.isPinned.value && name.value == parameter.name.value)
 }
