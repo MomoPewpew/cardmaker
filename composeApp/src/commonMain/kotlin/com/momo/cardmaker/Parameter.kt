@@ -264,7 +264,8 @@ abstract class Parameter<T>(
                 else -> null
             }
 
-            if (parameter is MaskParameter) parameter.color.value = json["color"]?.jsonPrimitive?.intOrNull?.toLong() ?: parameter.color.value
+            if (parameter is MaskParameter) parameter.color.value =
+                json["color"]?.jsonPrimitive?.intOrNull?.toLong() ?: parameter.color.value
 
             return parameter
         }
@@ -475,7 +476,6 @@ class RichTextParameter(defaultName: String, defaultExpression: String, isPinned
     Parameter<String>(defaultName, defaultExpression, isPinnedDefault) {
     val richTextState = RichTextState().setHtml(expression.value)
     private val color: MutableState<Long> = mutableStateOf(0xFFFF0000)
-    private val fontInfo: MutableState<FontInfo?> = mutableStateOf(null)
 
     @Composable
     override fun buildElements(modifier: Modifier, label: MutableState<String>) {
@@ -514,7 +514,6 @@ class RichTextParameter(defaultName: String, defaultExpression: String, isPinned
                     RichTextStyleRow(
                         state = richTextState,
                         color = color,
-                        fontInfo = fontInfo,
                         modifier = Modifier
                             .fillMaxWidth()
                     )

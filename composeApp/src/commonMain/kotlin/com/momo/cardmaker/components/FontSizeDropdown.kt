@@ -6,6 +6,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.outlined.FormatSize
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.focusProperties
@@ -19,19 +20,27 @@ fun FontSizeDropdownMenu(
 ) {
     var expanded by remember { mutableStateOf(false) }
 
-    Column(modifier = Modifier.width(75.dp)) {
+    Column(modifier = Modifier.width(100.dp)) {
         Row(
-            horizontalArrangement = Arrangement.End,
             modifier = Modifier
                 .focusProperties { canFocus = false }
                 .fillMaxWidth()
                 .clickable { expanded = !expanded })
         {
+            Icon(
+                modifier = Modifier.padding(horizontal = 4.dp).width(30.dp),
+                imageVector = Icons.Outlined.FormatSize,
+                contentDescription = "Font Size Icon"
+            )
+
             Text(
+                modifier = Modifier.weight(1f),
                 text = selectedSize.toInt().toString(),
                 textAlign = TextAlign.End
             )
+
             Icon(
+                modifier = Modifier.width(30.dp),
                 imageVector = Icons.Filled.ArrowDropDown,
                 contentDescription = "Font Selection"
             )

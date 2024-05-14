@@ -1,15 +1,13 @@
 package com.momo.cardmaker.components
 
 import FontDropdownMenu
-import FontInfo
+import FontDropdownState
 import FontSizeDropdownMenu
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.FormatAlignLeft
 import androidx.compose.material.icons.automirrored.outlined.FormatAlignRight
@@ -18,13 +16,11 @@ import androidx.compose.material.icons.filled.Circle
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.ParagraphStyle
 import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -35,20 +31,14 @@ import androidx.compose.ui.unit.sp
 import com.mohamedrejeb.richeditor.model.RichTextState
 import fontList
 import org.jetbrains.compose.resources.ExperimentalResourceApi
-import org.jetbrains.compose.resources.Font
-import org.jetbrains.compose.resources.FontResource
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
 fun RichTextStyleRow(
     modifier: Modifier = Modifier,
     state: RichTextState,
-    color: MutableState<Long>,
-    fontInfo: MutableState<FontInfo?>
+    color: MutableState<Long>
 ) {
-    val fontFamily: MutableState<FontFamily?> =
-        mutableStateOf(if (fontInfo.value == null) null else FontFamily(Font(resource = FontResource(fontInfo.value!!.filename))))
-
     LazyRow(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
@@ -204,10 +194,6 @@ fun RichTextStyleRow(
         }
 
         item {
-            Icon(modifier = Modifier.padding(horizontal = 4.dp), imageVector = Icons.Outlined.FormatSize, contentDescription = "Font Size Icon")
-        }
-
-        item {
             FontSizeDropdownMenu(
                 onSizeSelected = { size ->
                     state.addSpanStyle(SpanStyle(fontSize = size.sp))
@@ -226,25 +212,14 @@ fun RichTextStyleRow(
         }
 
         item {
-            RichTextStyleButton(
-                onClick = {
-                    if (fontFamily.value == null) return@RichTextStyleButton
-                    state.toggleSpanStyle(
-                        SpanStyle(fontFamily = fontFamily.value)
-                    )
-                },
-                isSelected = fontFamily.value != null && state.currentSpanStyle.fontFamily == fontFamily.value,
-                icon = Icons.Outlined.FontDownload
-            )
-        }
-
-        item {
             FontDropdownMenu(
                 fontList = fontList,
-                onFontSelected = { font ->
-                    fontInfo.value = font
+                onFontSelected = { fontFamily ->
+                    if (fontFamily == null) state.removeSpanStyle(SpanStyle(fontFamily = state.currentSpanStyle.fontFamily))
+                    else state.addSpanStyle(SpanStyle(fontFamily = fontFamily))
                 },
-                selectedFont = fontInfo.value
+                selectedFont = FontDropdownState.fontFamilyMap.entries.find { it.value == state.currentSpanStyle.fontFamily }?.key
+                    ?: "Font Selection"
             )
         }
 
