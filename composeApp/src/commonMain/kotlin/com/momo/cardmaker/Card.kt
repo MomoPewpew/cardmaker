@@ -263,10 +263,10 @@ data class Card(
         fun fromJson(json: JsonObject): Card {
             val card = Card()
 
-            card.dpi.value = json["dpi"]?.toString()?.toInt() ?: card.dpi.value
-            card.resolutionHoriz.value = json["resolutionHoriz"]?.toString()?.toFloat() ?: card.resolutionHoriz.value
-            card.resolutionVert.value = json["resolutionVert"]?.toString()?.toFloat() ?: card.resolutionVert.value
-            card.bleedColor.value = json["bleedColor"]?.toString()?.toLong() ?: card.bleedColor.value
+            card.dpi.value = json["dpi"]?.jsonPrimitive?.intOrNull ?: card.dpi.value
+            card.resolutionHoriz.value = json["resolutionHoriz"]?.jsonPrimitive?.floatOrNull ?: card.resolutionHoriz.value
+            card.resolutionVert.value = json["resolutionVert"]?.jsonPrimitive?.floatOrNull ?: card.resolutionVert.value
+            card.bleedColor.value = json["bleedColor"]?.jsonPrimitive?.longOrNull ?: card.bleedColor.value
 
             val cardElementsList: MutableList<CardElement> = mutableListOf()
             json["cardElements"]?.jsonArray?.forEach {

@@ -7,10 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.buildJsonObject
-import kotlinx.serialization.json.jsonObject
-import kotlinx.serialization.json.put
+import kotlinx.serialization.json.*
 
 enum class Anchor {
     TOP_LEFT,
@@ -119,7 +116,7 @@ data class CardElementTransformations(
             if (heightObject != null) transformations.height = Parameter.fromJson(heightObject) as FloatParameter
 
             try {
-                transformations.anchor.value = Anchor.valueOf(json["anchor"].toString().trim('\"'))
+                transformations.anchor.value = Anchor.valueOf(json["anchor"]?.jsonPrimitive.toString())
             } catch (_: IllegalArgumentException) {
             }
 

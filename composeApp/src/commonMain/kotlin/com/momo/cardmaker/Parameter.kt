@@ -33,9 +33,7 @@ import com.notkamui.keval.Keval
 import com.notkamui.keval.KevalInvalidExpressionException
 import com.notkamui.keval.KevalInvalidSymbolException
 import com.notkamui.keval.KevalZeroDivisionException
-import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.buildJsonObject
-import kotlinx.serialization.json.put
+import kotlinx.serialization.json.*
 import kotlin.math.round
 import kotlin.math.roundToInt
 
@@ -231,10 +229,10 @@ abstract class Parameter<T>(
     companion object {
         /** Create a new object from a Json object. */
         fun fromJson(json: JsonObject, imageElement: ImageElement? = null): Parameter<out Comparable<*>>? {
-            val type = json["type"].toString().trim('\"')
-            val name = json["name"].toString().trim('\"')
-            val expression = json["expression"].toString().trim('\"')
-            val isPinned = json["isPinned"].toString().toBoolean()
+            val type = json["type"]?.jsonPrimitive?.content
+            val name = json["name"]?.jsonPrimitive?.content ?: ""
+            val expression = json["expression"]?.jsonPrimitive?.content ?: ""
+            val isPinned = json["isPinned"]?.jsonPrimitive?.boolean ?: false
 
             val parameter = when (type) {
                 "int" -> IntParameter(defaultName = name, defaultExpression = expression, isPinnedDefault = isPinned)
@@ -266,7 +264,7 @@ abstract class Parameter<T>(
                 else -> null
             }
 
-            if (parameter is MaskParameter) parameter.color.value = json["color"].toString().toLong()
+            if (parameter is MaskParameter) parameter.color.value = json["color"]?.jsonPrimitive?.intOrNull?.toLong() ?: parameter.color.value
 
             return parameter
         }

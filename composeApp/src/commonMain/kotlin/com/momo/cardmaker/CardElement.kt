@@ -316,8 +316,8 @@ abstract class CardElement(
     companion object {
         /** Create a new object from a Json object. */
         fun fromJson(json: JsonObject): CardElement? {
-            val type = json["type"].toString().trim('\"')
-            val name = json["name"].toString().trim('\"')
+            val type = json["type"]?.jsonPrimitive?.content
+            val name = json["name"]?.jsonPrimitive?.content ?: ""
             val cardElement = when (type) {
                 "richText" -> RichTextElement(name)
                 "image" -> ImageElement(name)
