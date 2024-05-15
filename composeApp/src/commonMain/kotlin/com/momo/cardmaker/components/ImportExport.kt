@@ -128,13 +128,13 @@ fun ImportExport(textMeasurer: TextMeasurer) {
 
                                             if (importElement == null) return@forEach
 
-                                            if (cardElement.transformations.offsetX.isSimilar(importElement.transformations.offsetX)) cardElement.transformations.offsetY =
+                                            if (cardElement.transformations.offsetX.isSimilar(importElement.transformations.offsetX)) cardElement.transformations.offsetX =
                                                 importElement.transformations.offsetX
                                             if (cardElement.transformations.offsetY.isSimilar(importElement.transformations.offsetY)) cardElement.transformations.offsetY =
                                                 importElement.transformations.offsetY
                                             if (cardElement.transformations.width.isSimilar(importElement.transformations.width)) cardElement.transformations.width =
                                                 importElement.transformations.width
-                                            if (cardElement.transformations.height.isSimilar(importElement.transformations.height)) cardElement.transformations.offsetY =
+                                            if (cardElement.transformations.height.isSimilar(importElement.transformations.height)) cardElement.transformations.height =
                                                 importElement.transformations.height
 
                                             when (cardElement) {
