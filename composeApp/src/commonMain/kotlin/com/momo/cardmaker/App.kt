@@ -11,6 +11,7 @@ import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.UnfoldMore
 import androidx.compose.material.icons.outlined.PushPin
+import androidx.compose.material.icons.outlined.QuestionMark
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -202,6 +203,32 @@ fun App() {
                             ),
                         ) {
                             Icon(imageVector = Icons.Outlined.PushPin, contentDescription = "Pin")
+                        }
+
+                        // Vertical Line
+                        Canvas(
+                            modifier = Modifier
+                                .fillMaxHeight()
+                                .padding(horizontal = 16.dp)
+                        ) {
+                            drawLine(
+                                start = Offset(x = 0f, y = 0f),
+                                end = Offset(x = 0f, y = size.height),
+                                color = Color.Black.copy(alpha = 0.6f),
+                                strokeWidth = 1f
+                            )
+                        }
+
+                        // Help Window
+                        Button(
+                            onClick = {
+                                HelpState.show()
+                            },
+                            modifier = Modifier
+                                .fillMaxHeight()
+                                .padding(horizontal = 16.dp)
+                        ) {
+                            Icon(imageVector = Icons.Outlined.QuestionMark, contentDescription = "Help")
                         }
                     }
 
@@ -500,6 +527,9 @@ fun App() {
 
             // Import/export sub menu
             ImportExport(textMeasurer)
+
+            // Help Window
+            HelpWindow()
         }
     }
 }
