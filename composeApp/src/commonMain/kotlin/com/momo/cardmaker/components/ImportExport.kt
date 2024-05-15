@@ -128,31 +128,26 @@ fun ImportExport(textMeasurer: TextMeasurer) {
 
                                             if (importElement == null) return@forEach
 
-                                            if (cardElement.transformations.offsetX.isSimilar(importElement.transformations.offsetX)) cardElement.transformations.offsetX =
-                                                importElement.transformations.offsetX
-                                            if (cardElement.transformations.offsetY.isSimilar(importElement.transformations.offsetY)) cardElement.transformations.offsetY =
-                                                importElement.transformations.offsetY
-                                            if (cardElement.transformations.width.isSimilar(importElement.transformations.width)) cardElement.transformations.width =
-                                                importElement.transformations.width
-                                            if (cardElement.transformations.height.isSimilar(importElement.transformations.height)) cardElement.transformations.height =
-                                                importElement.transformations.height
+                                            cardElement.transformations.offsetX.overrideIfSimilar(importElement.transformations.offsetX)
+                                            cardElement.transformations.offsetY.overrideIfSimilar(importElement.transformations.offsetY)
+                                            cardElement.transformations.width.overrideIfSimilar(importElement.transformations.width)
+                                            cardElement.transformations.height.overrideIfSimilar(importElement.transformations.height)
 
                                             when (cardElement) {
                                                 is RichTextElement -> {
                                                     importElement as RichTextElement
-                                                    if (cardElement.text.isSimilar(importElement.text)) cardElement.text =
-                                                        importElement.text
+                                                    cardElement.text.overrideIfSimilar(importElement.text)
                                                 }
 
                                                 is ImageElement -> {
                                                     importElement as ImageElement
-                                                    if (cardElement.image.isSimilar(importElement.image)) cardElement.image =
-                                                        importElement.image
+                                                    cardElement.image.overrideIfSimilar(importElement.image)
                                                     for (i in 0..<cardElement.masks.value.size) {
                                                         val importMask =
                                                             importElement.masks.value.getOrNull(i) ?: continue
-                                                        if (cardElement.masks.value[i].isSimilar(importMask)) cardElement.masks.value[i] =
-                                                            importMask
+
+                                                        if (cardElement.masks.value[i].overrideIfSimilar(importMask)) cardElement.masks.value[i].color.value =
+                                                            importMask.color.value
                                                     }
                                                 }
                                             }
@@ -174,6 +169,10 @@ fun ImportExport(textMeasurer: TextMeasurer) {
     }
 }
 
-private fun <T> Parameter<T>.isSimilar(parameter: Parameter<T>): Boolean {
-    return (isPinned.value && parameter.isPinned.value && name.value == parameter.name.value)
+private fun <T> Parameter<T>.overrideIfSimilar(parameter: Parameter<T>): Boolean {
+    if (isPinned.value && parameter.isPinned.value && name.value == parameter.name.value) {
+        expression.value = parameter.expression.value
+        return true
+    }
+    return false
 }
