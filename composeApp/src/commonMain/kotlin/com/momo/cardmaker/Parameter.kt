@@ -149,11 +149,10 @@ abstract class Parameter<T>(
                     )
                     return
                 } else {
-                    newConstantString =
-                        constantString.replace(
-                            match2.value,
-                            (((match2.value.toDouble() - add) * 10000.0).roundToInt() / 10000.0).toString()
-                        )
+                    var newValueString = (((match2.value.toFloat() - add) * 10000f).roundToInt() / 10000f).toString()
+                    if (newValueString.contains("E")) newValueString = "0.0"
+
+                    newConstantString = constantString.replace(match2.value, newValueString)
 
                     // Handle double negatives on a negative to positive flip
                     val regex3 = Regex("- *-")
@@ -181,11 +180,10 @@ abstract class Parameter<T>(
                     )
                     return
                 } else {
-                    newConstantString =
-                        constantString.replace(
-                            match2.value,
-                            (((match2.value.toDouble() + add) * 10000.0).roundToInt() / 10000.0).toString()
-                        )
+                    var newValueString = (((match2.value.toFloat() + add) * 10000f).roundToInt() / 10000f).toString()
+                    if (newValueString.contains("E")) newValueString = "0.0"
+
+                    newConstantString = constantString.replace(match2.value, newValueString)
 
                     // Handle redundant plus signs on a positive to negative flip
                     val regex3 = Regex("[+] *-")
@@ -437,7 +435,7 @@ class FloatParameter(defaultName: String, defaultExpression: String, isPinnedDef
                     Button(modifier = Modifier
                         .fillMaxSize(),
                         onClick = {
-                            addToConstant(1.0f)
+                            addToConstant(-1.0f)
                             expression.value = expression.value
                         }) {
                         Icon(imageVector = Icons.Filled.ArrowDownward, contentDescription = "Decrease")
