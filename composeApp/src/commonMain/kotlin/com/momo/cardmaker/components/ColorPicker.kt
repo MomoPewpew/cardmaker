@@ -73,7 +73,7 @@ fun ColorPickerWindow() {
                             modifier = Modifier
                                 .padding(horizontal = 16.dp)
                                 .fillMaxWidth()
-                                .weight(4f, fill = false),
+                                .weight(3f, fill = false),
                             maxLines = 1,
                             value = colorString.value,
                             onValueChange = {
