@@ -65,7 +65,7 @@ abstract class Parameter<T>(
     }
 
     @Composable
-    abstract fun buildElements(modifier: Modifier, label: MutableState<String>)
+    abstract fun buildElements(modifier: Modifier, label: MutableState<String>, isPinnedElements: Boolean)
 
     abstract fun get(): T
 
@@ -275,7 +275,7 @@ abstract class Parameter<T>(
 class IntParameter(defaultName: String, defaultExpression: String, isPinnedDefault: Boolean = false) :
     Parameter<Int>(defaultName, defaultExpression, isPinnedDefault) {
     @Composable
-    override fun buildElements(modifier: Modifier, label: MutableState<String>) {
+    override fun buildElements(modifier: Modifier, label: MutableState<String>, isPinnedElements: Boolean) {
         Box {
             Row(
                 modifier = Modifier
@@ -374,7 +374,7 @@ class IntParameter(defaultName: String, defaultExpression: String, isPinnedDefau
 class FloatParameter(defaultName: String, defaultExpression: String, isPinnedDefault: Boolean = false) :
     Parameter<Float>(defaultName, defaultExpression, isPinnedDefault) {
     @Composable
-    override fun buildElements(modifier: Modifier, label: MutableState<String>) {
+    override fun buildElements(modifier: Modifier, label: MutableState<String>, isPinnedElements: Boolean) {
         Box {
             Row(
                 modifier = Modifier
@@ -478,7 +478,7 @@ class RichTextParameter(defaultName: String, defaultExpression: String, isPinned
     private val color: MutableState<Long> = mutableStateOf(0xFFFF0000)
 
     @Composable
-    override fun buildElements(modifier: Modifier, label: MutableState<String>) {
+    override fun buildElements(modifier: Modifier, label: MutableState<String>, isPinnedElements: Boolean) {
         Box {
             Row(
                 modifier = Modifier
@@ -556,7 +556,7 @@ open class ImageParameter(defaultName: String, defaultExpression: String, isPinn
     var uriChanged = true
 
     @Composable
-    override fun buildElements(modifier: Modifier, label: MutableState<String>) {
+    override fun buildElements(modifier: Modifier, label: MutableState<String>, isPinnedElements: Boolean) {
         Box {
             Row(
                 modifier = Modifier
@@ -654,7 +654,7 @@ class MaskParameter(
     val color = mutableStateOf(0xFF000000)
 
     @Composable
-    override fun buildElements(modifier: Modifier, label: MutableState<String>) {
+    override fun buildElements(modifier: Modifier, label: MutableState<String>, isPinnedElements: Boolean) {
         Box {
             Row(
                 modifier = Modifier
@@ -698,7 +698,7 @@ class MaskParameter(
                 )
 
                 IconButton(modifier = Modifier
-                    .weight(0.5f)
+                    .weight(if (isPinnedElements) 1f else 0.5f)
                     .align(Alignment.CenterVertically),
                     onClick = {
                         ColorPickerState.pick(color)
@@ -709,21 +709,23 @@ class MaskParameter(
                     )
                 }
 
-                IconButton(modifier = Modifier
-                    .weight(0.5f)
-                    .align(Alignment.CenterVertically),
-                    onClick = {
-                        val list = imageElement?.masks?.value?.toMutableList()
-                        list?.remove(this@MaskParameter)
+                if (!isPinnedElements) {
+                    IconButton(modifier = Modifier
+                        .weight(0.5f)
+                        .align(Alignment.CenterVertically),
+                        onClick = {
+                            val list = imageElement?.masks?.value?.toMutableList()
+                            list?.remove(this@MaskParameter)
 
-                        if (list != null) {
-                            imageElement?.masks?.value = list
-                        }
-                    }) {
-                    Icon(
-                        imageVector = Icons.Filled.Delete,
-                        contentDescription = "Remove Mask"
-                    )
+                            if (list != null) {
+                                imageElement?.masks?.value = list
+                            }
+                        }) {
+                        Icon(
+                            imageVector = Icons.Filled.Delete,
+                            contentDescription = "Remove Mask"
+                        )
+                    }
                 }
             }
 

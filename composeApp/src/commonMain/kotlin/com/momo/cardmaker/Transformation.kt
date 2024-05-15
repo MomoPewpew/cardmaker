@@ -44,13 +44,13 @@ data class CardElementTransformations(
                 modifier = Modifier.weight(1f)
                     .align(Alignment.CenterVertically)
             ) {
-                offsetX.buildElements(modifier = Modifier, mutableStateOf("Offset X"))
+                offsetX.buildElements(modifier = Modifier, mutableStateOf("Offset X"), isPinnedElements = false)
             }
             Column(
                 modifier = Modifier.weight(1f)
                     .align(Alignment.CenterVertically)
             ) {
-                width.buildElements(modifier = Modifier, mutableStateOf("Width"))
+                width.buildElements(modifier = Modifier, mutableStateOf("Width"), isPinnedElements = false)
             }
         }
         Row(modifier = Modifier.padding(bottom = 16.dp)) {
@@ -58,13 +58,13 @@ data class CardElementTransformations(
                 modifier = Modifier.weight(1f)
                     .align(Alignment.CenterVertically)
             ) {
-                offsetY.buildElements(modifier = Modifier, mutableStateOf("Offset Y"))
+                offsetY.buildElements(modifier = Modifier, mutableStateOf("Offset Y"), isPinnedElements = false)
             }
             Column(
                 modifier = Modifier.weight(1f)
                     .align(Alignment.CenterVertically)
             ) {
-                height.buildElements(modifier = Modifier, mutableStateOf("Height"))
+                height.buildElements(modifier = Modifier, mutableStateOf("Height"), isPinnedElements = false)
             }
         }
     }
@@ -74,25 +74,25 @@ data class CardElementTransformations(
     fun buildPinnedElements() {
         offsetX.let {
             if (it.isPinned.value) {
-                it.buildElements(modifier = Modifier, label = it.name)
+                it.buildElements(modifier = Modifier, label = it.name, isPinnedElements = true)
                 Spacer(modifier = Modifier.height(8.dp))
             }
         }
         offsetY.let {
             if (it.isPinned.value) {
-                it.buildElements(modifier = Modifier, label = it.name)
+                it.buildElements(modifier = Modifier, label = it.name, isPinnedElements = true)
                 Spacer(modifier = Modifier.height(8.dp))
             }
         }
         width.let {
             if (it.isPinned.value) {
-                it.buildElements(modifier = Modifier, label = it.name)
+                it.buildElements(modifier = Modifier, label = it.name, isPinnedElements = true)
                 Spacer(modifier = Modifier.height(8.dp))
             }
         }
         height.let {
             if (it.isPinned.value) {
-                it.buildElements(modifier = Modifier, label = it.name)
+                it.buildElements(modifier = Modifier, label = it.name, isPinnedElements = true)
                 Spacer(modifier = Modifier.height(8.dp))
             }
         }

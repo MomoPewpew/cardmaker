@@ -364,7 +364,7 @@ class RichTextElement(
             modifier = Modifier
                 .padding(bottom = 16.dp)
         ) {
-            text.buildElements(modifier = Modifier, mutableStateOf(""))
+            text.buildElements(modifier = Modifier, mutableStateOf(""), isPinnedElements = false)
         }
     }
 
@@ -372,7 +372,7 @@ class RichTextElement(
     override fun buildPinnedElements() {
         text.let {
             if (it.isPinned.value) {
-                it.buildElements(modifier = Modifier, label = it.name)
+                it.buildElements(modifier = Modifier, label = it.name, isPinnedElements = true)
                 Spacer(modifier = Modifier.height(8.dp))
             }
         }
@@ -420,21 +420,27 @@ class ImageElement(
 
     @Composable
     override fun buildSpecificElements() {
-        image.buildElements(modifier = Modifier, mutableStateOf("URL"))
-        for (mask in masks.value) mask.buildElements(modifier = Modifier, mutableStateOf("Mask URL"))
+        image.buildElements(modifier = Modifier, mutableStateOf("URL"), isPinnedElements = false)
+        masks.value.forEach {
+            it.buildElements(
+                modifier = Modifier,
+                mutableStateOf("Mask URL"),
+                isPinnedElements = false
+            )
+        }
     }
 
     @Composable
     override fun buildPinnedElements() {
         image.let {
             if (it.isPinned.value) {
-                it.buildElements(modifier = Modifier, label = it.name)
+                it.buildElements(modifier = Modifier, label = it.name, isPinnedElements = true)
             }
         }
-        for (mask in masks.value) {
-            mask.let {
+        masks.value.forEach {
+            it.let {
                 if (it.isPinned.value) {
-                    it.buildElements(modifier = Modifier, label = it.name)
+                    it.buildElements(modifier = Modifier, label = it.name, isPinnedElements = true)
                 }
             }
         }
