@@ -101,7 +101,7 @@ abstract class Parameter<T>(
             }
         }
 
-        return Keval.eval(s).coerceIn(-30000.0, 30000.0)
+        return Keval.eval(s)
     }
 
     /** Gets the last integer value in the expression string. */

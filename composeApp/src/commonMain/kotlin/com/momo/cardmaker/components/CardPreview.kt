@@ -161,7 +161,7 @@ fun CardPreview(textMeasurer: TextMeasurer) {
                         val text = cardElement.text.richTextState.annotatedString
                         val style = TextStyle.Default
 
-                        elementWidth = abs(cardElement.transformations.width.get())
+                        elementWidth = abs(cardElement.transformations.width.get().coerceIn(-30000f, 30000f))
 
                         if (elementWidth == 0f) elementWidth = maxAvailableWidth
 
@@ -213,7 +213,7 @@ fun CardPreview(textMeasurer: TextMeasurer) {
                             }
                         }
 
-                        elementHeight = abs(cardElement.transformations.height.get())
+                        elementHeight = abs(cardElement.transformations.height.get().coerceIn(-30000f, 30000f))
                         if (elementHeight == 0f) elementHeight =
                             textMeasurer.measure(wrappedText, style).size.height.toFloat()
 
