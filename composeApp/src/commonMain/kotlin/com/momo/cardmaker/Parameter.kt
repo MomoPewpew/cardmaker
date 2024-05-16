@@ -730,7 +730,7 @@ open class ImageParameter(
                             .padding(vertical = 8.dp)
                             .onFocusEvent { if (!it.isFocused) downloadImage() }
                             .onKeyEvent {
-                                if (it.key.equals(Key.Enter)) {
+                                if (it.key == Key.Enter) {
                                     downloadImage()
                                     true
                                 } else false
@@ -834,7 +834,7 @@ class MaskParameter(
                         .padding(vertical = 8.dp)
                         .onFocusEvent { if (!it.isFocused) downloadImage() }
                         .onKeyEvent {
-                            if (it.key.equals(Key.Enter)) {
+                            if (it.key == Key.Enter) {
                                 downloadImage()
                                 true
                             } else false

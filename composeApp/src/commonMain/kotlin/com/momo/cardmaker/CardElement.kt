@@ -18,7 +18,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.momo.cardmaker.components.*
+import com.momo.cardmaker.components.DeleteState
+import com.momo.cardmaker.components.ElementState
+import com.momo.cardmaker.components.RenameState
+import com.momo.cardmaker.components.RichTextStyleButton
 import kotlinx.serialization.json.*
 
 /**
@@ -30,7 +33,7 @@ abstract class CardElement(
     defaultName: String,
     val card: Card = CardState.card.value
 ) {
-    var transformations = CardElementTransformations(this)
+    var transformations = CardElementTransformations(cardElement = this)
 
     var realWidth = 0.0f
     var realHeight = 0.0f

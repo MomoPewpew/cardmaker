@@ -113,7 +113,7 @@ data class Card(
 
     /**
      * Runs the same render code that is used for Previewing, but return it as a skia Bitmap.
-     * @param textMeasurer A TextMeasurer. This is passed in as a a parameter, because TextMeasurers must be created in a composable context and this is not that.
+     * @param textMeasurer A TextMeasurer. This is passed in as a parameter, because TextMeasurers must be created in a composable context and this is not that.
      * @return The rendered skia Bitmap.
      */
     fun drawToBitmap(textMeasurer: TextMeasurer): Bitmap {

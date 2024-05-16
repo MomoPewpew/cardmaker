@@ -4,11 +4,12 @@ import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import com.momo.cardmaker.components.PopupState.text
 import com.momo.cardmaker.components.PopupState.title
 
-/** The state holder that is used for showing alerts.. */
+/** The state holder that is used for showing alerts. */
 object PopupState {
     var title = mutableStateOf("")
     var text = mutableStateOf("")
