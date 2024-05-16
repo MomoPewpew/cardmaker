@@ -38,7 +38,7 @@ import kotlin.math.roundToInt
 
 object EvaluateState {
     val referenceTree = mutableStateMapOf<CardElement, MutableList<CardElement>>()
-    private val visitedElements = mutableSetOf<CardElement>()
+    var visitedElements = mutableSetOf<CardElement>()
     var stopReplacements = false
 
     fun walkReferenceTree(motherElement: CardElement, cardElement: CardElement): Boolean {
@@ -122,6 +122,7 @@ abstract class Parameter<T>(
                         if (cardElement != null) {
                             list!!.add(cardElement)
 
+                            EvaluateState.visitedElements = mutableSetOf()
                             if (EvaluateState.walkReferenceTree(
                                     this.cardElement,
                                     cardElement
