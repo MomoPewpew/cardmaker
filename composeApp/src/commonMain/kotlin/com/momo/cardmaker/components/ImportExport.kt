@@ -55,9 +55,9 @@ fun ImportExport(textMeasurer: TextMeasurer) {
                             .fillMaxWidth(),
                         onClick = {
                             val bitmap = CardState.card.value.drawToBitmap(textMeasurer)
-                            val viewModel = ViewModel()
+                            val imageSaveManager = ImageSaveManager()
 
-                            viewModel.triggerSaveImage(bitmap, "card.png")
+                            imageSaveManager.triggerSaveImage(bitmap, "card.png")
                         }
                     ) {
                         Text("Export PNG")
