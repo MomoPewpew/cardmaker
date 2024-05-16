@@ -1,6 +1,5 @@
 package com.momo.cardmaker
 
-import FontInfo
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
@@ -37,9 +36,33 @@ import kotlinx.serialization.json.*
 import kotlin.math.round
 import kotlin.math.roundToInt
 
+object EvaluateState {
+    val referenceTree = mutableStateMapOf<CardElement, MutableList<CardElement>>()
+    private val visitedElements = mutableSetOf<CardElement>()
+    var stopReplacements = false
+
+    fun walkReferenceTree(motherElement: CardElement, cardElement: CardElement): Boolean {
+        if (visitedElements.contains(cardElement)) return false
+
+        visitedElements.add(cardElement) // Mark element as visited
+
+        referenceTree[cardElement]?.forEach {
+            if (it == motherElement) {
+                return true // Cycle detected
+            } else {
+                val hasCycle = walkReferenceTree(motherElement, it)
+                if (hasCycle) return true
+            }
+        }
+        visitedElements.remove(cardElement) // Remove from visited after traversal
+        return false
+    }
+}
+
 abstract class Parameter<T>(
     defaultName: String,
     defaultExpression: String,
+    val cardElement: CardElement,
     isPinnedDefault: Boolean = false
 ) {
     var name = mutableStateOf(defaultName)
@@ -72,6 +95,9 @@ abstract class Parameter<T>(
     fun evaluate(): Double {
         var s = expression.value
 
+        EvaluateState.referenceTree[cardElement] = mutableListOf()
+        val list = EvaluateState.referenceTree[cardElement]
+
         val regex = Regex("\\{([^}]*)}")
 
         val matches = regex.findAll(s)
@@ -79,22 +105,42 @@ abstract class Parameter<T>(
         for (match in matches) {
             val content = match.groups[1]?.value
             if (content != null) {
-                val lastDotIndex = content.lastIndexOf('.')
+                if (EvaluateState.stopReplacements) {
+                    s = s.replace("{$content}", "0")
+                } else {
+                    val lastDotIndex = content.lastIndexOf('.')
 
-                if (lastDotIndex != -1) {
-                    val cardElementName = content.substring(0, lastDotIndex)
-                    val propertyValueName = content.substring(lastDotIndex + 1)
+                    if (lastDotIndex != -1) {
+                        val cardElementName = content.substring(0, lastDotIndex)
+                        val propertyValueName = content.substring(lastDotIndex + 1)
 
-                    if (cardElementName.isEmpty() || propertyValueName.isEmpty()) continue
+                        if (cardElementName.isEmpty() || propertyValueName.isEmpty()) continue
 
-                    val cardElement =
-                        CardState.card.value.cardElements.value.find { it.name.value == cardElementName }
+                        val cardElement =
+                            CardState.card.value.cardElements.value.find { it.name.value == cardElementName }
 
-                    if (cardElement != null) {
-                        val propertyValue = cardElement.getPropertyValueByName(propertyValueName)
+                        if (cardElement != null) {
+                            list!!.add(cardElement)
 
-                        if (propertyValue != null) {
-                            s = s.replace("{$content}", propertyValue.toString())
+                            if (EvaluateState.walkReferenceTree(
+                                    this.cardElement,
+                                    cardElement
+                                )
+                            ) {
+                                PopupState.popup(
+                                    "Circular reference error",
+                                    "A circular reference has been detected in your expressions.\n\n" +
+                                            "Until you resolve this circular reference, all references will be treated as value 0."
+                                )
+                                s = s.replace("{$content}", "0")
+                                EvaluateState.stopReplacements = true
+                            } else {
+                                val propertyValue = cardElement.getPropertyValueByName(propertyValueName)
+
+                                if (propertyValue != null) {
+                                    s = s.replace("{$content}", propertyValue.toString())
+                                }
+                            }
                         }
                     }
                 }
@@ -226,37 +272,49 @@ abstract class Parameter<T>(
 
     companion object {
         /** Create a new object from a Json object. */
-        fun fromJson(json: JsonObject, imageElement: ImageElement? = null): Parameter<out Comparable<*>>? {
+        fun fromJson(
+            json: JsonObject,
+            cardElement: CardElement
+        ): Parameter<out Comparable<*>>? {
             val type = json["type"]?.jsonPrimitive?.content
             val name = json["name"]?.jsonPrimitive?.content ?: ""
             val expression = json["expression"]?.jsonPrimitive?.content ?: ""
             val isPinned = json["isPinned"]?.jsonPrimitive?.boolean ?: false
 
             val parameter = when (type) {
-                "int" -> IntParameter(defaultName = name, defaultExpression = expression, isPinnedDefault = isPinned)
+                "int" -> IntParameter(
+                    defaultName = name,
+                    defaultExpression = expression,
+                    cardElement = cardElement,
+                    isPinnedDefault = isPinned
+                )
+
                 "float" -> FloatParameter(
                     defaultName = name,
                     defaultExpression = expression,
+                    cardElement = cardElement,
                     isPinnedDefault = isPinned
                 )
 
                 "richText" -> RichTextParameter(
                     defaultName = name,
                     defaultExpression = expression,
+                    cardElement = cardElement as RichTextElement,
                     isPinnedDefault = isPinned
                 )
 
                 "image" -> ImageParameter(
                     defaultName = name,
                     defaultExpression = expression,
+                    cardElement = cardElement as ImageElement,
                     isPinnedDefault = isPinned
                 )
 
                 "mask" -> MaskParameter(
                     defaultName = name,
                     defaultExpression = expression,
-                    isPinnedDefault = isPinned,
-                    imageElement = imageElement
+                    cardElement = cardElement as ImageElement,
+                    isPinnedDefault = isPinned
                 )
 
                 else -> null
@@ -270,8 +328,13 @@ abstract class Parameter<T>(
     }
 }
 
-class IntParameter(defaultName: String, defaultExpression: String, isPinnedDefault: Boolean = false) :
-    Parameter<Int>(defaultName, defaultExpression, isPinnedDefault) {
+class IntParameter(
+    defaultName: String,
+    defaultExpression: String,
+    cardElement: CardElement,
+    isPinnedDefault: Boolean = false
+) :
+    Parameter<Int>(defaultName, defaultExpression, cardElement, isPinnedDefault) {
     @Composable
     override fun buildElements(modifier: Modifier, label: MutableState<String>, isPinnedElements: Boolean) {
         Box {
@@ -322,6 +385,7 @@ class IntParameter(defaultName: String, defaultExpression: String, isPinnedDefau
                                 maxLines = 1,
                                 value = expression.value,
                                 onValueChange = { newValue ->
+                                    EvaluateState.stopReplacements = false
                                     expression.value = newValue
                                 },
                                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
@@ -369,8 +433,13 @@ class IntParameter(defaultName: String, defaultExpression: String, isPinnedDefau
     }
 }
 
-class FloatParameter(defaultName: String, defaultExpression: String, isPinnedDefault: Boolean = false) :
-    Parameter<Float>(defaultName, defaultExpression, isPinnedDefault) {
+class FloatParameter(
+    defaultName: String,
+    cardElement: CardElement,
+    defaultExpression: String,
+    isPinnedDefault: Boolean = false
+) :
+    Parameter<Float>(defaultName, defaultExpression, cardElement, isPinnedDefault) {
     @Composable
     override fun buildElements(modifier: Modifier, label: MutableState<String>, isPinnedElements: Boolean) {
         Box {
@@ -422,6 +491,7 @@ class FloatParameter(defaultName: String, defaultExpression: String, isPinnedDef
                                 maxLines = 1,
                                 value = expression.value,
                                 onValueChange = { newValue ->
+                                    EvaluateState.stopReplacements = false
                                     expression.value = newValue
                                 },
                                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
@@ -470,8 +540,13 @@ class FloatParameter(defaultName: String, defaultExpression: String, isPinnedDef
     }
 }
 
-class RichTextParameter(defaultName: String, defaultExpression: String, isPinnedDefault: Boolean = false) :
-    Parameter<String>(defaultName, defaultExpression, isPinnedDefault) {
+class RichTextParameter(
+    defaultName: String,
+    defaultExpression: String,
+    cardElement: RichTextElement,
+    isPinnedDefault: Boolean = false
+) :
+    Parameter<String>(defaultName, defaultExpression, cardElement, isPinnedDefault) {
     val richTextState = RichTextState().setHtml(expression.value)
     private val color: MutableState<Long> = mutableStateOf(0xFFFF0000)
 
@@ -548,8 +623,13 @@ class RichTextParameter(defaultName: String, defaultExpression: String, isPinned
 }
 
 
-open class ImageParameter(defaultName: String, defaultExpression: String, isPinnedDefault: Boolean = false) :
-    Parameter<String>(defaultName, defaultExpression, isPinnedDefault) {
+open class ImageParameter(
+    defaultName: String,
+    defaultExpression: String,
+    cardElement: ImageElement,
+    isPinnedDefault: Boolean = false
+) :
+    Parameter<String>(defaultName, defaultExpression, cardElement, isPinnedDefault) {
     var imageBitmap: MutableState<ImageBitmap?> = mutableStateOf(null)
     var uriChanged = true
 
@@ -645,10 +725,10 @@ open class ImageParameter(defaultName: String, defaultExpression: String, isPinn
 class MaskParameter(
     defaultName: String,
     defaultExpression: String,
-    isPinnedDefault: Boolean = false,
-    val imageElement: ImageElement?
+    cardElement: ImageElement,
+    isPinnedDefault: Boolean = false
 ) :
-    ImageParameter(defaultName, defaultExpression, isPinnedDefault) {
+    ImageParameter(defaultName, defaultExpression, cardElement, isPinnedDefault) {
     val color = mutableStateOf(0xFF000000)
 
     @Composable
@@ -712,12 +792,10 @@ class MaskParameter(
                         .weight(0.5f)
                         .align(Alignment.CenterVertically),
                         onClick = {
-                            val list = imageElement?.masks?.value?.toMutableList()
-                            list?.remove(this@MaskParameter)
+                            val list = (cardElement as ImageElement).masks.value.toMutableList()
+                            list.remove(this@MaskParameter)
 
-                            if (list != null) {
-                                imageElement?.masks?.value = list
-                            }
+                            cardElement.masks.value = list
                         }) {
                         Icon(
                             imageVector = Icons.Filled.Delete,

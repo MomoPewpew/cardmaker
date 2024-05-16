@@ -19,10 +19,27 @@ enum class Anchor {
 
 /** This class holds all the transformation data of a card element. */
 data class CardElementTransformations(
-    var offsetX: FloatParameter = FloatParameter(defaultName = "Offset X", defaultExpression = "0.0"),
-    var offsetY: FloatParameter = FloatParameter(defaultName = "Offset Y", defaultExpression = "0.0"),
-    var width: FloatParameter = FloatParameter(defaultName = "Width", defaultExpression = "0.0"),
-    var height: FloatParameter = FloatParameter(defaultName = "Height", defaultExpression = "0.0"),
+    val cardElement: CardElement,
+    var offsetX: FloatParameter = FloatParameter(
+        defaultName = "Offset X",
+        defaultExpression = "0.0",
+        cardElement = cardElement
+    ),
+    var offsetY: FloatParameter = FloatParameter(
+        defaultName = "Offset Y",
+        defaultExpression = "0.0",
+        cardElement = cardElement
+    ),
+    var width: FloatParameter = FloatParameter(
+        defaultName = "Width",
+        defaultExpression = "0.0",
+        cardElement = cardElement
+    ),
+    var height: FloatParameter = FloatParameter(
+        defaultName = "Height",
+        defaultExpression = "0.0",
+        cardElement = cardElement
+    ),
     var anchor: MutableState<Anchor> = mutableStateOf(Anchor.TOP_LEFT)
 ) {
     /** Serialize this object into a Json string. */
@@ -100,20 +117,24 @@ data class CardElementTransformations(
 
     companion object {
         /** Create a new object from a Json object. */
-        fun fromJson(json: JsonObject): CardElementTransformations {
-            val transformations = CardElementTransformations()
+        fun fromJson(json: JsonObject, cardElement: CardElement): CardElementTransformations {
+            val transformations = CardElementTransformations(cardElement)
 
             val offsetXObject = json["offsetX"]?.jsonObject
-            if (offsetXObject != null) transformations.offsetX = Parameter.fromJson(offsetXObject) as FloatParameter
+            if (offsetXObject != null) transformations.offsetX =
+                Parameter.fromJson(offsetXObject, cardElement) as FloatParameter
 
             val offsetYObject = json["offsetY"]?.jsonObject
-            if (offsetYObject != null) transformations.offsetY = Parameter.fromJson(offsetYObject) as FloatParameter
+            if (offsetYObject != null) transformations.offsetY =
+                Parameter.fromJson(offsetYObject, cardElement) as FloatParameter
 
             val widthObject = json["width"]?.jsonObject
-            if (widthObject != null) transformations.width = Parameter.fromJson(widthObject) as FloatParameter
+            if (widthObject != null) transformations.width =
+                Parameter.fromJson(widthObject, cardElement) as FloatParameter
 
             val heightObject = json["height"]?.jsonObject
-            if (heightObject != null) transformations.height = Parameter.fromJson(heightObject) as FloatParameter
+            if (heightObject != null) transformations.height =
+                Parameter.fromJson(heightObject, cardElement) as FloatParameter
 
             try {
                 transformations.anchor.value = Anchor.valueOf(json["anchor"]?.jsonPrimitive.toString())

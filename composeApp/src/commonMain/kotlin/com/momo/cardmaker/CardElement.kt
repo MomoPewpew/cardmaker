@@ -26,7 +26,7 @@ abstract class CardElement(
     defaultName: String,
     val card: Card = CardState.card.value
 ) {
-    var transformations = CardElementTransformations()
+    var transformations = CardElementTransformations(this)
 
     var realWidth = 0.0f
     var realHeight = 0.0f
@@ -145,7 +145,7 @@ abstract class CardElement(
                                         MaskParameter(
                                             defaultName = "Mask URL",
                                             defaultExpression = "",
-                                            imageElement = this@CardElement
+                                            cardElement = this@CardElement
                                         )
                                     )
 
@@ -322,15 +322,15 @@ abstract class CardElement(
             val cardElement = when (type) {
                 "richText" -> RichTextElement(name, card)
                 "image" -> ImageElement(name, card)
-                else -> null
+                else -> return null
             }
 
             val transformationsObject = json["transformations"]?.jsonObject
 
-            if (transformationsObject != null) cardElement?.transformations =
-                CardElementTransformations.fromJson(transformationsObject)
+            if (transformationsObject != null) cardElement.transformations =
+                CardElementTransformations.fromJson(transformationsObject, cardElement)
 
-            cardElement?.fromJsonSpecific(json)
+            cardElement.fromJsonSpecific(json)
 
             return cardElement
         }
@@ -342,7 +342,7 @@ class RichTextElement(
     defaultName: String = "Text Element",
     card: Card = CardState.card.value
 ) : CardElement(defaultName, card) {
-    var text = RichTextParameter(defaultName = "Text", defaultExpression = "")
+    var text = RichTextParameter(defaultName = "Text", defaultExpression = "", this)
 
     override fun toJson(): JsonObject {
         return buildJsonObject {
@@ -355,7 +355,7 @@ class RichTextElement(
 
     override fun fromJsonSpecific(json: JsonObject) {
         val textObject = json["text"]?.jsonObject
-        if (textObject != null) text = Parameter.fromJson(textObject) as RichTextParameter
+        if (textObject != null) text = Parameter.fromJson(textObject, this) as RichTextParameter
     }
 
     @Composable
@@ -385,7 +385,7 @@ class ImageElement(
     defaultName: String = "Image Element",
     card: Card = CardState.card.value
 ) : CardElement(defaultName, card) {
-    var image = ImageParameter(defaultName = "Image URL", defaultExpression = "")
+    var image = ImageParameter(defaultName = "Image URL", defaultExpression = "", this)
     var masks: MutableState<MutableList<MaskParameter>> = mutableStateOf(mutableListOf())
 
     override fun toJson(): JsonObject {
@@ -405,7 +405,7 @@ class ImageElement(
     override fun fromJsonSpecific(json: JsonObject) {
         val imageObject = json["image"]?.jsonObject
         if (imageObject != null) {
-            image = Parameter.fromJson(imageObject) as ImageParameter
+            image = Parameter.fromJson(json, this) as ImageParameter
             image.downloadImage()
         }
 
