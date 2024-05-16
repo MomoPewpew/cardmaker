@@ -13,6 +13,7 @@ import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
+/** The composable dropdown that's used for font size selection in the RichTextStyleRow. */
 @Composable
 fun FontSizeDropdownMenu(
     onSizeSelected: (Float) -> Unit,

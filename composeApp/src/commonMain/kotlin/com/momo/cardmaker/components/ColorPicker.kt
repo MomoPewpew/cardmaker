@@ -21,6 +21,7 @@ import com.momo.cardmaker.components.ColorPickerState.colorString
 import com.momo.cardmaker.components.ColorPickerState.newColor
 import com.momo.cardmaker.components.ColorPickerState.showWindow
 
+/** The state manager that's used for color picking. */
 object ColorPickerState {
     var color: MutableState<Long>? = null
     val newColor: MutableState<Long> = mutableStateOf(0)
@@ -35,6 +36,7 @@ object ColorPickerState {
     }
 }
 
+/** The composable dialog that's used to pick colors. */
 @Composable
 fun ColorPickerWindow() {
     if (showWindow.value) {

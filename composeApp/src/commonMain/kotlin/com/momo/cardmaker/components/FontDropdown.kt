@@ -1,4 +1,7 @@
-import FontDropdownState.fontFamilyMap
+package com.momo.cardmaker.components
+
+import FontInfo
+import com.momo.cardmaker.components.FontDropdownState.fontFamilyMap
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -14,6 +17,7 @@ import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.FontResource
 
+/** The state manager for the map of FontFamilies. We cache these, since a font family has to be created in a composable context. */
 object FontDropdownState {
     val fontFamilyMap: MutableMap<String, FontFamily?> = mutableMapOf(
         Pair("Default", null),
@@ -24,6 +28,7 @@ object FontDropdownState {
     )
 }
 
+/** The composable dropdown that's used for font family selection in the RichTextStyleRow. */
 @OptIn(ExperimentalResourceApi::class)
 @Composable
 fun FontDropdownMenu(

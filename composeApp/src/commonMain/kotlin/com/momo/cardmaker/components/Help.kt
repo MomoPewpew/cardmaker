@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.momo.cardmaker.components.HelpState.showWindow
 
+/** The state holder that is used for showing the help window. */
 object HelpState {
     val showWindow = mutableStateOf(false)
 
@@ -25,6 +26,7 @@ object HelpState {
     }
 }
 
+/** The composable dialog that's used to show in-client documentation. */
 @Composable
 fun HelpWindow() {
     if (showWindow.value) {

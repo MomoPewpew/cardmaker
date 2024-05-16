@@ -42,7 +42,10 @@ data class CardElementTransformations(
     ),
     var anchor: MutableState<Anchor> = mutableStateOf(Anchor.TOP_LEFT)
 ) {
-    /** Serialize this object into a Json string. */
+    /**
+     * Serialize this transformation set to a Json object.
+     * @return The serialized Json object.
+     * */
     fun toJson(): JsonObject {
         return buildJsonObject {
             put("offsetX", offsetX.toJson())
@@ -61,13 +64,13 @@ data class CardElementTransformations(
                 modifier = Modifier.weight(1f)
                     .align(Alignment.CenterVertically)
             ) {
-                offsetX.buildElements(modifier = Modifier, mutableStateOf("Offset X"), isPinnedElements = false)
+                offsetX.buildElements(mutableStateOf("Offset X"), isPinnedElements = false)
             }
             Column(
                 modifier = Modifier.weight(1f)
                     .align(Alignment.CenterVertically)
             ) {
-                width.buildElements(modifier = Modifier, mutableStateOf("Width"), isPinnedElements = false)
+                width.buildElements(mutableStateOf("Width"), isPinnedElements = false)
             }
         }
         Row(modifier = Modifier.padding(bottom = 16.dp)) {
@@ -75,13 +78,13 @@ data class CardElementTransformations(
                 modifier = Modifier.weight(1f)
                     .align(Alignment.CenterVertically)
             ) {
-                offsetY.buildElements(modifier = Modifier, mutableStateOf("Offset Y"), isPinnedElements = false)
+                offsetY.buildElements(mutableStateOf("Offset Y"), isPinnedElements = false)
             }
             Column(
                 modifier = Modifier.weight(1f)
                     .align(Alignment.CenterVertically)
             ) {
-                height.buildElements(modifier = Modifier, mutableStateOf("Height"), isPinnedElements = false)
+                height.buildElements(mutableStateOf("Height"), isPinnedElements = false)
             }
         }
     }
@@ -91,32 +94,37 @@ data class CardElementTransformations(
     fun buildPinnedElements() {
         offsetX.let {
             if (it.isPinned.value) {
-                it.buildElements(modifier = Modifier, label = it.name, isPinnedElements = true)
+                it.buildElements(label = it.name, isPinnedElements = true)
                 Spacer(modifier = Modifier.height(8.dp))
             }
         }
         offsetY.let {
             if (it.isPinned.value) {
-                it.buildElements(modifier = Modifier, label = it.name, isPinnedElements = true)
+                it.buildElements(label = it.name, isPinnedElements = true)
                 Spacer(modifier = Modifier.height(8.dp))
             }
         }
         width.let {
             if (it.isPinned.value) {
-                it.buildElements(modifier = Modifier, label = it.name, isPinnedElements = true)
+                it.buildElements(label = it.name, isPinnedElements = true)
                 Spacer(modifier = Modifier.height(8.dp))
             }
         }
         height.let {
             if (it.isPinned.value) {
-                it.buildElements(modifier = Modifier, label = it.name, isPinnedElements = true)
+                it.buildElements(label = it.name, isPinnedElements = true)
                 Spacer(modifier = Modifier.height(8.dp))
             }
         }
     }
 
     companion object {
-        /** Create a new object from a Json object. */
+        /**
+         * Create a new transformation set from a serialized Json object.
+         * @param json The object that holds the serialized transformation values.
+         * @param cardElement The card element that will hold the new transformation values.
+         * @return A new CardElementTransformations object made from the serialized Json object.
+         * */
         fun fromJson(json: JsonObject, cardElement: CardElement): CardElementTransformations {
             val transformations = CardElementTransformations(cardElement)
 

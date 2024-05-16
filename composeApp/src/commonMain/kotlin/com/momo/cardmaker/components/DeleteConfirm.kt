@@ -9,6 +9,7 @@ import com.momo.cardmaker.CardElement
 import com.momo.cardmaker.CardState
 import com.momo.cardmaker.components.DeleteState.cardElement
 
+/** The state holder that is used for element deletion confirmation. */
 object DeleteState {
     var cardElement: MutableState<CardElement?> = mutableStateOf(null)
 
@@ -17,6 +18,7 @@ object DeleteState {
     }
 }
 
+/** The composable dialog that's used to confirm element deletion. */
 @Composable
 fun DeleteConfirm() {
     if (cardElement.value != null) {

@@ -21,6 +21,14 @@ import kotlinx.serialization.json.*
 import org.jetbrains.skia.Bitmap
 import kotlin.math.abs
 
+/**
+ * A Card that represents the layout of the created image.
+ * @param cardElements The list of all CardElements in this Card.
+ * @param resolutionHoriz The horizontal resolution of this Card, in inches.
+ * @param resolutionVert The vertical resolution of this Card, in inches.
+ * @param dpi The Dots per Inch resolution of this Card.
+ * @param bleedColor The Long value that represents this Cards bleed zone color.
+ * */
 data class Card(
     val cardElements: MutableState<MutableList<CardElement>> = mutableStateOf(mutableListOf()),
     val resolutionHoriz: MutableState<Float> = mutableStateOf(2.5f),
@@ -28,7 +36,10 @@ data class Card(
     val dpi: MutableState<Int> = mutableStateOf(300),
     val bleedColor: MutableState<Long> = mutableStateOf(0)
 ) {
-    /** Serialize this object into a Json string. */
+    /**
+     * Serialize this Card to a Json object.
+     * @return The serialized Json object.
+     * */
     fun toJson(): JsonObject {
         return buildJsonObject {
             put("dpi", dpi.value)
@@ -44,6 +55,10 @@ data class Card(
 
     }
 
+    /**
+     * Adds a new CardElement to this Card in a way that will trigger recomposition.
+     * @param element The CardElement that should be added.
+     */
     fun addElement(element: CardElement) {
         val elements = cardElements.value.toMutableList()
         elements.add(element)
@@ -51,6 +66,10 @@ data class Card(
         cardElements.value = elements
     }
 
+    /**
+     * Removes a CardElement from this Card in a way that will trigger recomposition. Also unselects this CardElement if it was selected.
+     * @param element The CardElement that should be added.
+     */
     fun removeElement(element: CardElement) {
         val elements = cardElements.value.toMutableList()
         elements.remove(element)
@@ -60,30 +79,43 @@ data class Card(
         cardElements.value = elements
     }
 
+    /**
+     * Reorganizes this Cards element list in a way that triggers recomposition.
+     * @param element The element that should be moved up in the list.
+     */
     fun moveElementUp(element: CardElement) {
-        val cardElements = cardElements.value
-        val currentIndex = cardElements.indexOf(element)
+        val elements = cardElements.value.toMutableList()
+        val currentIndex = elements.indexOf(element)
         if (currentIndex > 0) {
-            val temp = cardElements[currentIndex]
-            cardElements[currentIndex] = cardElements[currentIndex - 1]
-            cardElements[currentIndex - 1] = temp
+            val temp = elements[currentIndex]
+            elements[currentIndex] = elements[currentIndex - 1]
+            elements[currentIndex - 1] = temp
         }
 
-        CardState.card.value = CardState.card.value.copy(cardElements = mutableStateOf(cardElements))
+        cardElements.value = elements
     }
 
+    /**
+     * Reorganizes this Cards element list in a way that triggers recomposition.
+     * @param element The element that should be moved down in the list.
+     */
     fun moveElementDown(element: CardElement) {
-        val cardElements = cardElements.value
-        val currentIndex = cardElements.indexOf(element)
-        if (currentIndex < cardElements.lastIndex) {
-            val temp = cardElements[currentIndex]
-            cardElements[currentIndex] = cardElements[currentIndex + 1]
-            cardElements[currentIndex + 1] = temp
+        val elements = cardElements.value.toMutableList()
+        val currentIndex = elements.indexOf(element)
+        if (currentIndex < elements.lastIndex) {
+            val temp = elements[currentIndex]
+            elements[currentIndex] = elements[currentIndex + 1]
+            elements[currentIndex + 1] = temp
         }
 
-        CardState.card.value = CardState.card.value.copy(cardElements = mutableStateOf(cardElements))
+        cardElements.value = elements
     }
 
+    /**
+     * Runs the same render code that is used for Previewing, but return it as a skia Bitmap.
+     * @param textMeasurer A TextMeasurer. This is passed in as a a parameter, because TextMeasurers must be created in a composable context and this is not that.
+     * @return The rendered skia Bitmap.
+     */
     fun drawToBitmap(textMeasurer: TextMeasurer): Bitmap {
         val drawScope = CanvasDrawScope()
         val size = Size(
@@ -161,10 +193,8 @@ data class Card(
                             textMeasurer.measure(wrappedText, style).size.width.toFloat()
 
                         val topLeft = getOffset(
-                            cardElement.transformations.anchor.value,
-                            cardElement.transformations.offsetX.get(),
+                            cardElement.transformations,
                             elementWidth,
-                            cardElement.transformations.offsetY.get(),
                             elementHeight
                         )
 
@@ -205,10 +235,8 @@ data class Card(
                             }
 
                             val topLeft = getOffset(
-                                cardElement.transformations.anchor.value,
-                                cardElement.transformations.offsetX.get(),
+                                cardElement.transformations,
                                 elementWidth,
-                                cardElement.transformations.offsetY.get(),
                                 elementHeight
                             )
 
@@ -259,7 +287,11 @@ data class Card(
     }
 
     companion object {
-        /** Create a new object from a Json object. */
+        /**
+         * Create a new Card from a serialized Json object.
+         * @param json The serialized Json object.
+         * @return The new Card.
+         * */
         fun fromJson(json: JsonObject): Card {
             val card = Card()
 
@@ -278,11 +310,16 @@ data class Card(
 
             return card
         }
-
-        fun CanvasDrawScope.asBitmap(size: Size, onDraw: DrawScope.() -> Unit): ImageBitmap {
-            val bitmap = ImageBitmap(size.width.toInt(), size.height.toInt())
-            draw(Density(1f), LayoutDirection.Ltr, Canvas(bitmap), size) { onDraw() }
-            return bitmap
-        }
     }
+}
+
+/**
+ * Convert this CanvasDrawScope into a Compose Bitmap.
+ * @param size The dimensions of the canvas.
+ * @param onDraw The drawable context that will be rendered into a Compose Bitmap.
+ */
+fun CanvasDrawScope.asBitmap(size: Size, onDraw: DrawScope.() -> Unit): ImageBitmap {
+    val bitmap = ImageBitmap(size.width.toInt(), size.height.toInt())
+    draw(Density(1f), LayoutDirection.Ltr, Canvas(bitmap), size) { onDraw() }
+    return bitmap
 }

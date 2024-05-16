@@ -32,7 +32,10 @@ object ElementState {
     }
 }
 
-/** Build composables for previewing cards. */
+/**
+ * Build composables for previewing cards.
+ * @param textMeasurer A TextMeasurer object. We pass this in so that we only have to make one of them. Which we want because a TextMeasurer object can only be made in a composable context.
+ * */
 @Composable
 fun CardPreview(textMeasurer: TextMeasurer) {
     Canvas(
@@ -66,10 +69,8 @@ fun CardPreview(textMeasurer: TextMeasurer) {
                             CardState.card.value.dpi.value * CardState.card.value.resolutionHoriz.value / size.width
 
                         val topLeft = getOffset(
-                            selectedElement.transformations.anchor.value,
-                            selectedElement.transformations.offsetX.get(),
+                            selectedElement.transformations,
                             selectedElement.realWidth,
-                            selectedElement.transformations.offsetY.get(),
                             selectedElement.realHeight
                         )
 
@@ -221,10 +222,8 @@ fun CardPreview(textMeasurer: TextMeasurer) {
                             textMeasurer.measure(wrappedText, style).size.width.toFloat()
 
                         val topLeft = getOffset(
-                            cardElement.transformations.anchor.value,
-                            cardElement.transformations.offsetX.get(),
+                            cardElement.transformations,
                             elementWidth,
-                            cardElement.transformations.offsetY.get(),
                             elementHeight
                         )
 
@@ -265,10 +264,8 @@ fun CardPreview(textMeasurer: TextMeasurer) {
                             }
 
                             val topLeft = getOffset(
-                                cardElement.transformations.anchor.value,
-                                cardElement.transformations.offsetX.get(),
+                                cardElement.transformations,
                                 elementWidth,
-                                cardElement.transformations.offsetY.get(),
                                 elementHeight
                             )
 
@@ -321,10 +318,8 @@ fun CardPreview(textMeasurer: TextMeasurer) {
             val selectedElement = ElementState.selectedElement.value
             if (selectedElement != null) {
                 val topLeft = getOffset(
-                    selectedElement.transformations.anchor.value,
-                    selectedElement.transformations.offsetX.get(),
+                    selectedElement.transformations,
                     selectedElement.realWidth,
-                    selectedElement.transformations.offsetY.get(),
                     selectedElement.realHeight
                 )
 
@@ -353,6 +348,11 @@ fun CardPreview(textMeasurer: TextMeasurer) {
     }
 }
 
+/**
+ * Gets the maximum available space that an automatically scaling element could expand into.
+ * @param transformations The transformation set of the Card Element that we are evaluating.
+ * @return A pair of floats, <Width, Height>
+ */
 fun getAvailableSpace(transformations: CardElementTransformations): Pair<Float, Float> {
     val cardWidth = CardState.card.value.dpi.value * CardState.card.value.resolutionHoriz.value
     val cardHeight = CardState.card.value.dpi.value * CardState.card.value.resolutionVert.value
@@ -383,7 +383,18 @@ fun getAvailableSpace(transformations: CardElementTransformations): Pair<Float, 
     }
 }
 
-fun getOffset(anchor: Anchor, offsetX: Float, width: Float, offsetY: Float, height: Float): Offset {
+/**
+ * Gets the coordinates of the top-left corner of the evaluated element.
+ * @param transformations The transformation set of the Card Element that we are evaluating.
+ * @param width The real width of the rendered element.
+ * @param height The real height of the rendered element.
+ * @return The offset value of the Top Left corner that should be used with these transformations and dimensions.
+ */
+fun getOffset(transformations: CardElementTransformations, width: Float, height: Float): Offset {
+    val anchor = transformations.anchor.value
+    val offsetX = transformations.offsetX.get()
+    val offsetY = transformations.offsetY.get()
+
     val (anchorOffsetX, anchorOffsetY) = when (anchor) {
         Anchor.TOP_LEFT -> {
             Pair(0f, 0f)

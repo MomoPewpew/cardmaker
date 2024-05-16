@@ -21,7 +21,11 @@ import androidx.compose.ui.unit.dp
 import com.momo.cardmaker.components.*
 import kotlinx.serialization.json.*
 
-/** A card element can be subclassed into all the elements that are added to cards, such as text or images. */
+/**
+ * A card element can be subclassed into all the elements that are added to cards, such as text or images.
+ * @param defaultName The starting name of this Card Element. If a duplicate exists, an index will be added to it.
+ * @param card The Card that will hold this CardElement.
+ * */
 abstract class CardElement(
     defaultName: String,
     val card: Card = CardState.card.value
@@ -38,7 +42,10 @@ abstract class CardElement(
         rename(defaultName)
     }
 
-    /** Serialize this object into a Json string. */
+    /**
+     * Serialize this Card Element to a Json object.
+     * @return The serialized Json object.
+     * */
     open fun toJson(): JsonObject {
         return buildJsonObject {
             when (this@CardElement) {
@@ -51,7 +58,10 @@ abstract class CardElement(
         }
     }
 
-    /** Updates this elements name. If the name is already in use, add an index to it. */
+    /**
+     * Updates this elements name. If the name is already in use, add an index to it.
+     * @param newName The suggested new name. If there are duplicates within this Card, an index will be added to the name.
+     * */
     fun rename(newName: String) {
         if (name.value == newName) return
 
@@ -74,7 +84,9 @@ abstract class CardElement(
         name.value = modifiedName
     }
 
-    /** Build the expandable segment, and fills it with the elements that are specific to this element type. */
+    /**
+     * Build the expandable segment, and fills it with the elements that are specific to this element type.
+     * */
     @Composable
     fun buildElements() {
         var foldedRemember by remember { mutableStateOf(folded) }
@@ -278,7 +290,7 @@ abstract class CardElement(
             if (!foldedRemember) {
                 Column(modifier = Modifier.fillMaxWidth()) {
                     buildSpecificElements()
-                    buildTransformationElements()
+                    transformations.buildElements()
                 }
             }
         }
@@ -294,13 +306,10 @@ abstract class CardElement(
         transformations.buildPinnedElements()
     }
 
-    /** Build the transformation segment. */
-    @Composable
-    fun buildTransformationElements() {
-        transformations.buildElements()
-    }
-
-    /** Get the value of one of this card's properties by name. Used in expression replacement. */
+    /** Get the value of one of this card's properties by name. Used in expression replacement.
+     * @param name The name of the property that we are getting.
+     * @return The Float value of the named property, or null.
+     * */
     fun getPropertyValueByName(name: String): Float? {
         return when (name) {
             "offsetX" -> transformations.offsetX.get()
@@ -315,7 +324,12 @@ abstract class CardElement(
     abstract fun fromJsonSpecific(json: JsonObject)
 
     companion object {
-        /** Create a new object from a Json object. */
+        /**
+         * Create a new CardElement from a serialized Json object.
+         * @param json The serialized Json object.
+         * @param card The card that will hold this CardElement.
+         * @return The new Card Element, or null.
+         * */
         fun fromJson(json: JsonObject, card: Card): CardElement? {
             val type = json["type"]?.jsonPrimitive?.content
             val name = json["name"]?.jsonPrimitive?.content ?: ""
@@ -337,7 +351,10 @@ abstract class CardElement(
     }
 }
 
-/** Textbox element to add text to the card. */
+/** Textbox element to add rich text to the card.
+ * @param defaultName The starting name of this Card Element. If a duplicate exists, an index will be added to it.
+ * @param card The Card that will hold this CardElement.
+ * */
 class RichTextElement(
     defaultName: String = "Text Element",
     card: Card = CardState.card.value
@@ -364,7 +381,7 @@ class RichTextElement(
             modifier = Modifier
                 .padding(bottom = 16.dp)
         ) {
-            text.buildElements(modifier = Modifier, mutableStateOf(""), isPinnedElements = false)
+            text.buildElements(mutableStateOf(""), isPinnedElements = false)
         }
     }
 
@@ -372,7 +389,7 @@ class RichTextElement(
     override fun buildPinnedElements() {
         text.let {
             if (it.isPinned.value) {
-                it.buildElements(modifier = Modifier, label = it.name, isPinnedElements = true)
+                it.buildElements(label = it.name, isPinnedElements = true)
                 Spacer(modifier = Modifier.height(8.dp))
             }
         }
@@ -380,7 +397,10 @@ class RichTextElement(
     }
 }
 
-/** Image element to add images to the card. */
+/** Image element to add images to the card.
+ * @param defaultName The starting name of this Card Element. If a duplicate exists, an index will be added to it.
+ * @param card The Card that will hold this CardElement.
+ * */
 class ImageElement(
     defaultName: String = "Image Element",
     card: Card = CardState.card.value
@@ -420,10 +440,9 @@ class ImageElement(
 
     @Composable
     override fun buildSpecificElements() {
-        image.buildElements(modifier = Modifier, mutableStateOf("URL"), isPinnedElements = false)
+        image.buildElements(mutableStateOf("URL"), isPinnedElements = false)
         masks.value.forEach {
             it.buildElements(
-                modifier = Modifier,
                 mutableStateOf("Mask URL"),
                 isPinnedElements = false
             )
@@ -434,13 +453,13 @@ class ImageElement(
     override fun buildPinnedElements() {
         image.let {
             if (it.isPinned.value) {
-                it.buildElements(modifier = Modifier, label = it.name, isPinnedElements = true)
+                it.buildElements(label = it.name, isPinnedElements = true)
             }
         }
         masks.value.forEach {
             it.let {
                 if (it.isPinned.value) {
-                    it.buildElements(modifier = Modifier, label = it.name, isPinnedElements = true)
+                    it.buildElements(label = it.name, isPinnedElements = true)
                 }
             }
         }

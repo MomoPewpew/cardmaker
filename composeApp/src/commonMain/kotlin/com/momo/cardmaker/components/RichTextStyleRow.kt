@@ -1,7 +1,5 @@
 package com.momo.cardmaker.components
 
-import FontDropdownMenu
-import FontDropdownState
 import FontSizeDropdownMenu
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -30,9 +28,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mohamedrejeb.richeditor.model.RichTextState
 import fontList
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 
-@OptIn(ExperimentalResourceApi::class)
+/** A composable object to render the buttons for formatting a Rich Text parameter. */
 @Composable
 fun RichTextStyleRow(
     modifier: Modifier = Modifier,

@@ -36,11 +36,18 @@ import kotlinx.serialization.json.*
 import kotlin.math.round
 import kotlin.math.roundToInt
 
+/** This object maintains a tree of all card elements that reference other card elements. */
 object EvaluateState {
     val referenceTree = mutableStateMapOf<CardElement, MutableList<CardElement>>()
     var visitedElements = mutableSetOf<CardElement>()
     var stopReplacements = false
 
+    /**
+     * Walk the reference tree to ensure that you don't end up back at the starting element.
+     * @param motherElement This is the card element that holds the reference that we are evaluating.
+     * @param cardElement This is the card element that is referenced by the mother element, and also the starting point of the walk.
+     * @return A boolean that represent whether a cyclical reference occurred.
+     * */
     fun walkReferenceTree(motherElement: CardElement, cardElement: CardElement): Boolean {
         if (visitedElements.contains(cardElement)) return false
 
@@ -59,6 +66,13 @@ object EvaluateState {
     }
 }
 
+/**
+ * Parameters represent the user-configurable parts of a CardElement.
+ * @param defaultName The default name for this parameter.
+ * @param defaultExpression The default value for this parameter. All parameters are stored as Strings which makes for easy Json serialization. Numeric parameters are evaluated as mathematical expressions.
+ * @param cardElement The CardElement object that holds this Parameter.
+ * @param isPinnedDefault Whether this Parameter should start out as pinned.
+ */
 abstract class Parameter<T>(
     defaultName: String,
     defaultExpression: String,
@@ -69,7 +83,10 @@ abstract class Parameter<T>(
     var expression = mutableStateOf(defaultExpression)
     var isPinned = mutableStateOf(isPinnedDefault)
 
-    /** Serialize this object into a Json string. */
+    /**
+     * Serialize this object to a Json object.
+     * @return A Json object that holds the serialized Parameter.
+     * */
     fun toJson(): JsonObject {
         return buildJsonObject {
             when (this@Parameter) {
@@ -87,11 +104,24 @@ abstract class Parameter<T>(
         }
     }
 
+    /**
+     * Build the composable elements that are needed to change this Parameter
+     * @param label The name of the Parameter as shown in the UI.
+     * @param isPinnedElements Whether the element render is happening in the Pinned submenu.
+     */
     @Composable
-    abstract fun buildElements(modifier: Modifier, label: MutableState<String>, isPinnedElements: Boolean)
+    abstract fun buildElements(label: MutableState<String>, isPinnedElements: Boolean)
 
+    /**
+     * Evaluate the outcome of this Parameter.
+     * @return The evaluated outcome of this Parameter.
+     */
     abstract fun get(): T
 
+    /**
+     * Evaluate references, and then evaluate this Parameter as a mathematical expression.
+     * @return The evaluated result, or 0 if the expression is invalid.
+     */
     fun evaluate(): Double {
         var s = expression.value
 
@@ -151,7 +181,10 @@ abstract class Parameter<T>(
         return Keval.eval(s)
     }
 
-    /** Gets the last integer value in the expression string. */
+    /**
+     * Add to the last constant value in the expression string.
+     * @param add The amount that should be added.
+     */
     fun addToConstant(add: Float) {
         try {
             // Confirm that the expression can be parsed
@@ -272,7 +305,12 @@ abstract class Parameter<T>(
     }
 
     companion object {
-        /** Create a new object from a Json object. */
+        /**
+         * Create a new Parameter from a serialized Json object.
+         * @param json The serialized Json object.
+         * @param cardElement The CardElement that the new Parameter will belong to.
+         * @return The newly created Parameter.
+         */
         fun fromJson(
             json: JsonObject,
             cardElement: CardElement
@@ -329,15 +367,21 @@ abstract class Parameter<T>(
     }
 }
 
+/**
+ * A parameter that holds Int values.
+ * @param defaultName The default name for this parameter.
+ * @param defaultExpression The default value for this parameter. All parameters are stored as Strings which makes for easy Json serialization. Numeric parameters are evaluated as mathematical expressions.
+ * @param cardElement The CardElement object that holds this Parameter.
+ * @param isPinnedDefault Whether this Parameter should start out as pinned.
+ */
 class IntParameter(
     defaultName: String,
     defaultExpression: String,
     cardElement: CardElement,
     isPinnedDefault: Boolean = false
-) :
-    Parameter<Int>(defaultName, defaultExpression, cardElement, isPinnedDefault) {
+) : Parameter<Int>(defaultName, defaultExpression, cardElement, isPinnedDefault) {
     @Composable
-    override fun buildElements(modifier: Modifier, label: MutableState<String>, isPinnedElements: Boolean) {
+    override fun buildElements(label: MutableState<String>, isPinnedElements: Boolean) {
         Box {
             Row(
                 modifier = Modifier
@@ -434,15 +478,21 @@ class IntParameter(
     }
 }
 
+/**
+ * A parameter that holds Float values.
+ * @param defaultName The default name for this parameter.
+ * @param defaultExpression The default value for this parameter. All parameters are stored as Strings which makes for easy Json serialization. Numeric parameters are evaluated as mathematical expressions.
+ * @param cardElement The CardElement object that holds this Parameter.
+ * @param isPinnedDefault Whether this Parameter should start out as pinned.
+ */
 class FloatParameter(
     defaultName: String,
     cardElement: CardElement,
     defaultExpression: String,
     isPinnedDefault: Boolean = false
-) :
-    Parameter<Float>(defaultName, defaultExpression, cardElement, isPinnedDefault) {
+) : Parameter<Float>(defaultName, defaultExpression, cardElement, isPinnedDefault) {
     @Composable
-    override fun buildElements(modifier: Modifier, label: MutableState<String>, isPinnedElements: Boolean) {
+    override fun buildElements(label: MutableState<String>, isPinnedElements: Boolean) {
         Box {
             Row(
                 modifier = Modifier
@@ -541,18 +591,24 @@ class FloatParameter(
     }
 }
 
+/**
+ * A parameter that holds Rich Text.
+ * @param defaultName The default name for this parameter.
+ * @param defaultExpression The default value for this parameter. All parameters are stored as Strings which makes for easy Json serialization. Numeric parameters are evaluated as mathematical expressions.
+ * @param cardElement The CardElement object that holds this Parameter.
+ * @param isPinnedDefault Whether this Parameter should start out as pinned.
+ */
 class RichTextParameter(
     defaultName: String,
     defaultExpression: String,
     cardElement: RichTextElement,
     isPinnedDefault: Boolean = false
-) :
-    Parameter<String>(defaultName, defaultExpression, cardElement, isPinnedDefault) {
+) : Parameter<String>(defaultName, defaultExpression, cardElement, isPinnedDefault) {
     val richTextState = RichTextState().setHtml(expression.value)
     private val color: MutableState<Long> = mutableStateOf(0xFFFF0000)
 
     @Composable
-    override fun buildElements(modifier: Modifier, label: MutableState<String>, isPinnedElements: Boolean) {
+    override fun buildElements(label: MutableState<String>, isPinnedElements: Boolean) {
         Box {
             Row(
                 modifier = Modifier
@@ -623,7 +679,13 @@ class RichTextParameter(
     }
 }
 
-
+/**
+ * A parameter that holds an image URI and the image that was downloaded from it.
+ * @param defaultName The default name for this parameter.
+ * @param defaultExpression The default value for this parameter. All parameters are stored as Strings which makes for easy Json serialization. Numeric parameters are evaluated as mathematical expressions.
+ * @param cardElement The CardElement object that holds this Parameter.
+ * @param isPinnedDefault Whether this Parameter should start out as pinned.
+ */
 open class ImageParameter(
     defaultName: String,
     defaultExpression: String,
@@ -635,7 +697,7 @@ open class ImageParameter(
     var uriChanged = true
 
     @Composable
-    override fun buildElements(modifier: Modifier, label: MutableState<String>, isPinnedElements: Boolean) {
+    override fun buildElements(label: MutableState<String>, isPinnedElements: Boolean) {
         Box {
             Row(
                 modifier = Modifier
@@ -706,6 +768,9 @@ open class ImageParameter(
         return expression.value
     }
 
+    /**
+     * Attempt to download the image that is hosted at the provided URL.
+     */
     @OptIn(ExperimentalCoilApi::class)
     fun downloadImage() {
         if (!uriChanged || get().isEmpty()) return
@@ -723,6 +788,13 @@ open class ImageParameter(
     }
 }
 
+/**
+ * A parameter that holds a mask image URI and the mask image that was downloaded from it.
+ * @param defaultName The default name for this parameter.
+ * @param defaultExpression The default value for this parameter. All parameters are stored as Strings which makes for easy Json serialization. Numeric parameters are evaluated as mathematical expressions.
+ * @param cardElement The CardElement object that holds this Parameter.
+ * @param isPinnedDefault Whether this Parameter should start out as pinned.
+ */
 class MaskParameter(
     defaultName: String,
     defaultExpression: String,
@@ -733,7 +805,7 @@ class MaskParameter(
     val color = mutableStateOf(0xFF000000)
 
     @Composable
-    override fun buildElements(modifier: Modifier, label: MutableState<String>, isPinnedElements: Boolean) {
+    override fun buildElements(label: MutableState<String>, isPinnedElements: Boolean) {
         Box {
             Row(
                 modifier = Modifier

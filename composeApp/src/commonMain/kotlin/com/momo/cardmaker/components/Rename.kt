@@ -14,6 +14,7 @@ import com.momo.cardmaker.components.RenameState.isOpen
 import com.momo.cardmaker.components.RenameState.name
 import com.momo.cardmaker.components.RenameState.newName
 
+/** The state holder that is used for renaming elements and parameters. */
 object RenameState {
     var name = mutableStateOf("")
     var cardElement: MutableState<CardElement>? = null
@@ -35,6 +36,7 @@ object RenameState {
     }
 }
 
+/** The composable dialog that's used to rename elements and parameters. */
 @Composable
 fun Rename() {
     if (isOpen.value) {

@@ -32,6 +32,7 @@ import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import kotlin.math.max
 
+/** This object will direct what should happen when the client clicks a CardElement name or Parameter elements. */
 object ClickState {
     enum class States {
         NONE,
@@ -41,10 +42,12 @@ object ClickState {
 
     val state = mutableStateOf(States.NONE)
 
+    /** Turn off the special click response. */
     fun off() {
         state.value = States.NONE
     }
 
+    /** Toggle the click response to and from "Pinning" behavior. */
     fun togglePinning() {
         if (state.value == States.PINNING) {
             state.value = States.NONE
@@ -53,6 +56,7 @@ object ClickState {
         }
     }
 
+    /** Toggle the click response to and from "Renaming" behavior. */
     fun toggleRenaming() {
         if (state.value == States.RENAMING) {
             state.value = States.NONE
@@ -62,6 +66,7 @@ object ClickState {
     }
 }
 
+/** The state holder that holds the Card object. */
 object CardState {
     var card = mutableStateOf(Card())
 }
@@ -72,6 +77,7 @@ var imageUtils: ImageUtils? = null
 val context = PlatformContext.INSTANCE
 val imageLoader = ImageLoader(context)
 
+/** The main app, and the entry point for the Compose render code. */
 @OptIn(ExperimentalResourceApi::class)
 @Composable
 fun App() {

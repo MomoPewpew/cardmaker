@@ -8,6 +8,7 @@ import androidx.compose.runtime.*
 import com.momo.cardmaker.components.PopupState.text
 import com.momo.cardmaker.components.PopupState.title
 
+/** The state holder that is used for showing alerts.. */
 object PopupState {
     var title = mutableStateOf("")
     var text = mutableStateOf("")
@@ -18,6 +19,7 @@ object PopupState {
     }
 }
 
+/** The composable dialog that's used to alert the user of errors. */
 @Composable
 fun Popup() {
     if (text.value.isNotEmpty()) {

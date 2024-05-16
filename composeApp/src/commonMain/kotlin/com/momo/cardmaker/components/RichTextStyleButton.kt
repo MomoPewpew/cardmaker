@@ -9,6 +9,7 @@ import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 
+/** The IconButton with all the relevant settings for the RichTextStyleRow. */
 @Composable
 fun RichTextStyleButton(
     onClick: () -> Unit,

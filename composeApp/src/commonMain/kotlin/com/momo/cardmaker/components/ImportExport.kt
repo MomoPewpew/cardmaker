@@ -25,6 +25,7 @@ enum class ImportMode {
     PINNED_ONLY
 }
 
+/** The state holder that is used to show the import/export composable. */
 object ImportExportState {
     val showWindow = mutableStateOf(false)
     val textFieldValue = mutableStateOf("")
@@ -37,6 +38,7 @@ object ImportExportState {
     }
 }
 
+/** The composable dialog that holds the import and export features. */
 @Composable
 fun ImportExport(textMeasurer: TextMeasurer) {
     if (showWindow.value) {
