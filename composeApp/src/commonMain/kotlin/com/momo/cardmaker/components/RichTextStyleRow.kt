@@ -1,6 +1,5 @@
 package com.momo.cardmaker.components
 
-import FontSizeDropdownMenu
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.height
@@ -27,7 +26,6 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mohamedrejeb.richeditor.model.RichTextState
-import fontList
 
 /** A composable object to render the buttons for formatting a Rich Text parameter. */
 @Composable
@@ -210,7 +208,6 @@ fun RichTextStyleRow(
 
         item {
             FontDropdownMenu(
-                fontList = fontList,
                 onFontSelected = { fontFamily ->
                     if (fontFamily == null) state.removeSpanStyle(SpanStyle(fontFamily = state.currentSpanStyle.fontFamily))
                     else state.addSpanStyle(SpanStyle(fontFamily = fontFamily))

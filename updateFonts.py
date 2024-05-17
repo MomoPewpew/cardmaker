@@ -31,10 +31,10 @@ def get_font_info(fonts_dir, output_dir, output_filename):
       })
 
   # Generate Kotlin data class content
-  data_class_content = f"""
-  data class FontInfo(val filename: String, val family: String)
+  data_class_content = f"""package com.momo.cardmaker\n
+data class FontInfo(val filename: String, val family: String)
 
-  val fontList = listOf(\n"""
+val fontList = listOf(\n"""
 
   for font in font_data:
     data_class_content += f'    FontInfo("fonts/{font["filename"]}", "{font["family"]}"),\n'

@@ -1,6 +1,5 @@
 package com.momo.cardmaker.components
 
-import FontInfo
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.DropdownMenu
@@ -16,6 +15,7 @@ import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import com.momo.cardmaker.components.FontDropdownState.fontFamilyMap
+import com.momo.cardmaker.fontList
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.FontResource
@@ -35,7 +35,6 @@ object FontDropdownState {
 @OptIn(ExperimentalResourceApi::class)
 @Composable
 fun FontDropdownMenu(
-    fontList: List<FontInfo>,
     onFontSelected: (FontFamily?) -> Unit,
     selectedFont: String
 ) {

@@ -1,4 +1,5 @@
-import com.momo.cardmaker.ImageUtils
+package com.momo.cardmaker
+
 import org.jetbrains.skia.Bitmap
 import org.jetbrains.skiko.toBufferedImage
 import java.awt.Frame

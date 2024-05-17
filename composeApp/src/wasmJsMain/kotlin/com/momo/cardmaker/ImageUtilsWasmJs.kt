@@ -1,4 +1,5 @@
-import com.momo.cardmaker.ImageUtils
+package com.momo.cardmaker
+
 import kotlinx.browser.window
 import org.jetbrains.skia.*
 import org.khronos.webgl.Uint16Array

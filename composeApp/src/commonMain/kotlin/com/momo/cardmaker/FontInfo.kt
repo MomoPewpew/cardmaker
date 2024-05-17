@@ -1,7 +1,8 @@
+package com.momo.cardmaker
 
-  data class FontInfo(val filename: String, val family: String)
+data class FontInfo(val filename: String, val family: String)
 
-  val fontList = listOf(
+val fontList = listOf(
     FontInfo("fonts/Abel-Regular.ttf", "Abel"),
     FontInfo("fonts/Anton-Regular.ttf", "Anton"),
     FontInfo("fonts/Archivo-Regular.ttf", "Archivo"),
