@@ -69,3 +69,9 @@ compose.desktop {
 compose.experimental {
     web.application {}
 }
+
+tasks.withType<Jar> {
+    manifest {
+        attributes["Main-Class"] = "com.momo.cardmaker.MainKt"
+    }
+}
