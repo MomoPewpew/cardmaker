@@ -75,3 +75,8 @@ tasks.withType<Jar> {
         attributes["Main-Class"] = "com.momo.cardmaker.MainKt"
     }
 }
+
+tasks.named<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>("shadowJar") {
+    from(kotlin.targets["desktop"].compilations["main"].output.allOutputs)
+    configurations = listOf(project.configurations.getByName("desktopRuntimeClasspath"))
+}
