@@ -139,7 +139,7 @@ fun CardPreview(textMeasurer: TextMeasurer) {
 
 
                     if (moveX) ElementState.selectedElement.value!!.transformations.offsetX.addToConstant(scaleFactor * dragAmount.x)
-                    if (moveY) ElementState.selectedElement.value!!.transformations.offsetY.addToConstant(scaleFactor * -dragAmount.y)
+                    if (moveY) ElementState.selectedElement.value!!.transformations.offsetY.addToConstant(scaleFactor * dragAmount.y)
 
                     if (resizeX != 0) ElementState.selectedElement.value!!.transformations.width.addToConstant(
                         scaleFactor * dragAmount.x * resizeX
@@ -362,25 +362,25 @@ fun getAvailableSpace(transformations: CardElementTransformations): Pair<Float, 
 
     return when (transformations.anchor.value) {
         Anchor.TOP_LEFT -> {
-            Pair(cardWidth - transformations.offsetX.get(), cardHeight + transformations.offsetY.get())
+            Pair(cardWidth - transformations.offsetX.get(), cardHeight - transformations.offsetY.get())
         }
 
         Anchor.TOP_RIGHT -> {
-            Pair(transformations.offsetX.get(), cardHeight + transformations.offsetY.get())
+            Pair(transformations.offsetX.get(), cardHeight - transformations.offsetY.get())
         }
 
         Anchor.BOTTOM_LEFT -> {
-            Pair(cardWidth - transformations.offsetX.get(), -transformations.offsetY.get())
+            Pair(cardWidth - transformations.offsetX.get(), transformations.offsetY.get())
         }
 
         Anchor.BOTTOM_RIGHT -> {
-            Pair(transformations.offsetX.get(), -transformations.offsetY.get())
+            Pair(transformations.offsetX.get(), transformations.offsetY.get())
         }
 
         Anchor.CENTER -> {
             Pair(
                 if (transformations.offsetX.get() * 2 > cardWidth) ((cardWidth - transformations.offsetX.get()) * 2) else (transformations.offsetX.get() * 2),
-                if (-transformations.offsetY.get() * 2 > cardHeight) ((cardHeight + transformations.offsetY.get()) * 2) else (-transformations.offsetY.get() * 2)
+                if (transformations.offsetY.get() * 2 > cardHeight) ((cardHeight - transformations.offsetY.get()) * 2) else (transformations.offsetY.get() * 2)
             )
         }
     }
@@ -408,20 +408,20 @@ fun getOffset(transformations: CardElementTransformations, width: Float, height:
         }
 
         Anchor.BOTTOM_LEFT -> {
-            Pair(0f, -height)
+            Pair(0f, height)
         }
 
         Anchor.BOTTOM_RIGHT -> {
-            Pair(-width, -height)
+            Pair(-width, height)
         }
 
         Anchor.CENTER -> {
-            Pair(-width / 2, -height / 2)
+            Pair(-width / 2, height / 2)
         }
     }
 
     return Offset(
         x = offsetX + anchorOffsetX,
-        y = -offsetY + anchorOffsetY
+        y = offsetY + anchorOffsetY
     )
 }
