@@ -15,10 +15,6 @@ import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import com.momo.cardmaker.components.FontDropdownState.fontFamilyMap
-import com.momo.cardmaker.fontList
-import org.jetbrains.compose.resources.ExperimentalResourceApi
-import org.jetbrains.compose.resources.Font
-import org.jetbrains.compose.resources.FontResource
 
 /** The state manager for the map of FontFamilies. We cache these, since a font family has to be created in a composable context. */
 object FontDropdownState {
@@ -32,19 +28,12 @@ object FontDropdownState {
 }
 
 /** The composable dropdown that's used for font family selection in the RichTextStyleRow. */
-@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun FontDropdownMenu(
-    onFontSelected: (FontFamily?) -> Unit,
+    onFontSelected: (String) -> Unit,
     selectedFont: String
 ) {
     var expanded by remember { mutableStateOf(false) }
-
-    if (fontFamilyMap.size == 5) {
-        fontList.forEach { fontInfo ->
-            fontFamilyMap[fontInfo.family] = FontFamily(Font(resource = FontResource(fontInfo.filename)))
-        }
-    }
 
     Column {
         Row(
@@ -73,7 +62,7 @@ fun FontDropdownMenu(
             fontFamilyMap.keys.sorted().forEach { family ->
                 DropdownMenuItem(onClick = {
                     onFontSelected(
-                        fontFamilyMap[family]
+                        family
                     )
                     expanded = false
                 }) {

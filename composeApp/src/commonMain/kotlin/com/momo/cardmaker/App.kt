@@ -20,6 +20,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
@@ -27,9 +28,7 @@ import androidx.compose.ui.unit.dp
 import coil3.ImageLoader
 import coil3.PlatformContext
 import com.momo.cardmaker.components.*
-import org.jetbrains.compose.resources.DrawableResource
-import org.jetbrains.compose.resources.ExperimentalResourceApi
-import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.*
 import kotlin.math.max
 
 /** This object will direct what should happen when the client clicks a CardElement name or Parameter elements. */
@@ -88,6 +87,13 @@ fun App() {
             primary = Color(0xFF013220)
         )
     ) {
+        if (FontDropdownState.fontFamilyMap.size <= 5) {
+            fontList.forEach { fontInfo ->
+                FontDropdownState.fontFamilyMap[fontInfo.family] =
+                    FontFamily(Font(resource = FontResource(fontInfo.filename)))
+            }
+        }
+
         Box(
             modifier = Modifier
         ) {

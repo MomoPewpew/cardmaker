@@ -12,7 +12,6 @@ import androidx.compose.material.icons.automirrored.outlined.FormatListBulleted
 import androidx.compose.material.icons.filled.Circle
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -25,14 +24,13 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.mohamedrejeb.richeditor.model.RichTextState
+import com.momo.cardmaker.RichTextParameter
 
 /** A composable object to render the buttons for formatting a Rich Text parameter. */
 @Composable
 fun RichTextStyleRow(
     modifier: Modifier = Modifier,
-    state: RichTextState,
-    color: MutableState<Long>
+    parameter: RichTextParameter
 ) {
     LazyRow(
         verticalAlignment = Alignment.CenterVertically,
@@ -41,13 +39,13 @@ fun RichTextStyleRow(
         item {
             RichTextStyleButton(
                 onClick = {
-                    state.addParagraphStyle(
+                    parameter.richTextState.addParagraphStyle(
                         ParagraphStyle(
                             textAlign = TextAlign.Left,
                         )
                     )
                 },
-                isSelected = state.currentParagraphStyle.textAlign == TextAlign.Left,
+                isSelected = parameter.richTextState.currentParagraphStyle.textAlign == TextAlign.Left,
                 icon = Icons.AutoMirrored.Outlined.FormatAlignLeft
             )
         }
@@ -55,13 +53,13 @@ fun RichTextStyleRow(
         item {
             RichTextStyleButton(
                 onClick = {
-                    state.addParagraphStyle(
+                    parameter.richTextState.addParagraphStyle(
                         ParagraphStyle(
                             textAlign = TextAlign.Center
                         )
                     )
                 },
-                isSelected = state.currentParagraphStyle.textAlign == TextAlign.Center,
+                isSelected = parameter.richTextState.currentParagraphStyle.textAlign == TextAlign.Center,
                 icon = Icons.Outlined.FormatAlignCenter
             )
         }
@@ -69,13 +67,13 @@ fun RichTextStyleRow(
         item {
             RichTextStyleButton(
                 onClick = {
-                    state.addParagraphStyle(
+                    parameter.richTextState.addParagraphStyle(
                         ParagraphStyle(
                             textAlign = TextAlign.Right
                         )
                     )
                 },
-                isSelected = state.currentParagraphStyle.textAlign == TextAlign.Right,
+                isSelected = parameter.richTextState.currentParagraphStyle.textAlign == TextAlign.Right,
                 icon = Icons.AutoMirrored.Outlined.FormatAlignRight
             )
         }
@@ -92,13 +90,13 @@ fun RichTextStyleRow(
         item {
             RichTextStyleButton(
                 onClick = {
-                    state.toggleSpanStyle(
+                    parameter.richTextState.toggleSpanStyle(
                         SpanStyle(
                             fontWeight = FontWeight.Bold
                         )
                     )
                 },
-                isSelected = state.currentSpanStyle.fontWeight == FontWeight.Bold,
+                isSelected = parameter.richTextState.currentSpanStyle.fontWeight == FontWeight.Bold,
                 icon = Icons.Outlined.FormatBold
             )
         }
@@ -106,13 +104,13 @@ fun RichTextStyleRow(
         item {
             RichTextStyleButton(
                 onClick = {
-                    state.toggleSpanStyle(
+                    parameter.richTextState.toggleSpanStyle(
                         SpanStyle(
                             fontStyle = FontStyle.Italic
                         )
                     )
                 },
-                isSelected = state.currentSpanStyle.fontStyle == FontStyle.Italic,
+                isSelected = parameter.richTextState.currentSpanStyle.fontStyle == FontStyle.Italic,
                 icon = Icons.Outlined.FormatItalic
             )
         }
@@ -120,13 +118,13 @@ fun RichTextStyleRow(
         item {
             RichTextStyleButton(
                 onClick = {
-                    state.toggleSpanStyle(
+                    parameter.richTextState.toggleSpanStyle(
                         SpanStyle(
                             textDecoration = TextDecoration.Underline
                         )
                     )
                 },
-                isSelected = state.currentSpanStyle.textDecoration?.contains(TextDecoration.Underline) == true,
+                isSelected = parameter.richTextState.currentSpanStyle.textDecoration?.contains(TextDecoration.Underline) == true,
                 icon = Icons.Outlined.FormatUnderlined
             )
         }
@@ -134,13 +132,13 @@ fun RichTextStyleRow(
         item {
             RichTextStyleButton(
                 onClick = {
-                    state.toggleSpanStyle(
+                    parameter.richTextState.toggleSpanStyle(
                         SpanStyle(
                             textDecoration = TextDecoration.LineThrough
                         )
                     )
                 },
-                isSelected = state.currentSpanStyle.textDecoration?.contains(TextDecoration.LineThrough) == true,
+                isSelected = parameter.richTextState.currentSpanStyle.textDecoration?.contains(TextDecoration.LineThrough) == true,
                 icon = Icons.Outlined.FormatStrikethrough
             )
         }
@@ -157,22 +155,22 @@ fun RichTextStyleRow(
         item {
             RichTextStyleButton(
                 onClick = {
-                    state.toggleSpanStyle(
+                    parameter.richTextState.toggleSpanStyle(
                         SpanStyle(
-                            color = Color(color.value)
+                            color = Color(parameter.color.value)
                         )
                     )
                 },
-                isSelected = state.currentSpanStyle.color == Color(color.value),
+                isSelected = parameter.richTextState.currentSpanStyle.color == Color(parameter.color.value),
                 icon = Icons.Filled.Circle,
-                tint = Color(color.value)
+                tint = Color(parameter.color.value)
             )
         }
 
         item {
             RichTextStyleButton(
                 onClick = {
-                    ColorPickerState.pick(color)
+                    ColorPickerState.pick(parameter.color)
                 },
                 isSelected = false,
                 icon = Icons.Outlined.Palette
@@ -191,9 +189,9 @@ fun RichTextStyleRow(
         item {
             FontSizeDropdownMenu(
                 onSizeSelected = { size ->
-                    state.addSpanStyle(SpanStyle(fontSize = size.sp))
+                    parameter.richTextState.addSpanStyle(SpanStyle(fontSize = size.sp))
                 },
-                selectedSize = if (state.currentSpanStyle.fontSize == TextUnit.Unspecified) 14f else state.currentSpanStyle.fontSize.value
+                selectedSize = if (parameter.richTextState.currentSpanStyle.fontSize == TextUnit.Unspecified) 14f else parameter.richTextState.currentSpanStyle.fontSize.value
             )
         }
 
@@ -208,11 +206,10 @@ fun RichTextStyleRow(
 
         item {
             FontDropdownMenu(
-                onFontSelected = { fontFamily ->
-                    if (fontFamily == null) state.removeSpanStyle(SpanStyle(fontFamily = state.currentSpanStyle.fontFamily))
-                    else state.addSpanStyle(SpanStyle(fontFamily = fontFamily))
+                onFontSelected = { familyName ->
+                    parameter.applyFontFamily(familyName)
                 },
-                selectedFont = FontDropdownState.fontFamilyMap.entries.find { it.value == state.currentSpanStyle.fontFamily }?.key
+                selectedFont = FontDropdownState.fontFamilyMap.entries.find { it.value == parameter.richTextState.currentSpanStyle.fontFamily }?.key
                     ?: "Font Selection"
             )
         }
@@ -229,9 +226,9 @@ fun RichTextStyleRow(
         item {
             RichTextStyleButton(
                 onClick = {
-                    state.toggleUnorderedList()
+                    parameter.richTextState.toggleUnorderedList()
                 },
-                isSelected = state.isUnorderedList,
+                isSelected = parameter.richTextState.isUnorderedList,
                 icon = Icons.AutoMirrored.Outlined.FormatListBulleted,
             )
         }
@@ -239,9 +236,9 @@ fun RichTextStyleRow(
         item {
             RichTextStyleButton(
                 onClick = {
-                    state.toggleOrderedList()
+                    parameter.richTextState.toggleOrderedList()
                 },
-                isSelected = state.isOrderedList,
+                isSelected = parameter.richTextState.isOrderedList,
                 icon = Icons.Outlined.FormatListNumbered,
             )
         }

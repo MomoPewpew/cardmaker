@@ -18,6 +18,8 @@ import androidx.compose.ui.graphics.asComposeImageBitmap
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onKeyEvent
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import coil3.annotation.ExperimentalCoilApi
@@ -25,6 +27,7 @@ import coil3.request.ImageRequest
 import com.mohamedrejeb.richeditor.model.RichTextState
 import com.mohamedrejeb.richeditor.ui.material.OutlinedRichTextEditor
 import com.momo.cardmaker.components.ColorPickerState
+import com.momo.cardmaker.components.FontDropdownState.fontFamilyMap
 import com.momo.cardmaker.components.PopupState
 import com.momo.cardmaker.components.RenameState
 import com.momo.cardmaker.components.RichTextStyleRow
@@ -101,6 +104,7 @@ abstract class Parameter<T>(
             put("expression", expression.value)
             put("isPinned", isPinned.value)
             if (this@Parameter is MaskParameter) put("color", color.value)
+            if (this@Parameter is RichTextParameter) put("fontFamilyName", fontFamilyName.value)
         }
     }
 
@@ -359,8 +363,11 @@ abstract class Parameter<T>(
                 else -> null
             }
 
-            if (parameter is MaskParameter) parameter.color.value =
-                json["color"]?.jsonPrimitive?.intOrNull?.toLong() ?: parameter.color.value
+            if (parameter is MaskParameter) {
+                parameter.color.value = json["color"]?.jsonPrimitive?.intOrNull?.toLong() ?: parameter.color.value
+            } else if (parameter is RichTextParameter) {
+                parameter.applyFontFamily(json["fontFamilyName"]?.jsonPrimitive?.content ?: "Default")
+            }
 
             return parameter
         }
@@ -605,7 +612,8 @@ class RichTextParameter(
     isPinnedDefault: Boolean = false
 ) : Parameter<String>(defaultName, defaultExpression, cardElement, isPinnedDefault) {
     val richTextState = RichTextState().setHtml(expression.value)
-    private val color: MutableState<Long> = mutableStateOf(0xFFFF0000)
+    val color: MutableState<Long> = mutableStateOf(0xFFFF0000)
+    val fontFamilyName = mutableStateOf("Default")
 
     @Composable
     override fun buildElements(label: MutableState<String>, isPinnedElements: Boolean) {
@@ -642,10 +650,9 @@ class RichTextParameter(
                     expression.value = html
 
                     RichTextStyleRow(
-                        state = richTextState,
-                        color = color,
                         modifier = Modifier
-                            .fillMaxWidth()
+                            .fillMaxWidth(),
+                        parameter = this@RichTextParameter
                     )
 
                     OutlinedRichTextEditor(
@@ -676,6 +683,20 @@ class RichTextParameter(
 
     override fun get(): String {
         return expression.value
+    }
+
+    fun applyFontFamily(familyName: String) {
+        fontFamilyName.value = familyName
+
+        val fontFamily = fontFamilyMap[familyName]
+
+        val currentSel = TextRange(richTextState.selection.start, richTextState.selection.end)
+
+        richTextState.selection = TextRange(0, richTextState.annotatedString.length)
+        richTextState.addSpanStyle(SpanStyle(fontFamily = fontFamily))
+        fontFamilyName.value = familyName
+
+        richTextState.selection = currentSel
     }
 }
 
