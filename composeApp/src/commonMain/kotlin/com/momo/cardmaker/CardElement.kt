@@ -428,7 +428,7 @@ class ImageElement(
     override fun fromJsonSpecific(json: JsonObject) {
         val imageObject = json["image"]?.jsonObject
         if (imageObject != null) {
-            image = Parameter.fromJson(json, this) as ImageParameter
+            image = Parameter.fromJson(imageObject, this) as ImageParameter
             image.downloadImage()
         }
 
