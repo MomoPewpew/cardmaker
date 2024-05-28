@@ -77,7 +77,7 @@ fun FontDropdownMenu(
                     )
                     expanded = false
                 }) {
-                    Text(text = family)
+                    Text(text = family, fontFamily = fontFamilyMap[family])
                 }
             }
         }
