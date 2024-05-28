@@ -60,7 +60,7 @@ fun FontDropdownMenu(
                 contentDescription = "Font Family Icon"
             )
 
-            Text(text = selectedFont)
+            Text(text = selectedFont, fontFamily = fontFamilyMap[selectedFont])
 
             Icon(Icons.Filled.ArrowDropDown, contentDescription = "Default")
         }
