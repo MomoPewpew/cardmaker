@@ -145,7 +145,7 @@ data class CardElementTransformations(
                 Parameter.fromJson(heightObject, cardElement) as FloatParameter
 
             try {
-                transformations.anchor.value = Anchor.valueOf(json["anchor"]?.jsonPrimitive.toString())
+                transformations.anchor.value = Anchor.valueOf(json["anchor"]?.jsonPrimitive?.content ?: "TOP_LEFT")
             } catch (_: IllegalArgumentException) {
             }
 
