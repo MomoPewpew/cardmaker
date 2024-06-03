@@ -364,7 +364,7 @@ abstract class Parameter<T>(
             }
 
             if (parameter is MaskParameter) {
-                parameter.color.value = json["color"]?.jsonPrimitive?.intOrNull?.toLong() ?: parameter.color.value
+                parameter.color.value = json["color"]?.jsonPrimitive?.longOrNull ?: parameter.color.value
             } else if (parameter is RichTextParameter) {
                 parameter.applyFontFamily(json["fontFamilyName"]?.jsonPrimitive?.content ?: "Default")
             }
