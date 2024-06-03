@@ -408,15 +408,15 @@ fun getOffset(transformations: CardElementTransformations, width: Float, height:
         }
 
         Anchor.BOTTOM_LEFT -> {
-            Pair(0f, height)
+            Pair(0f, -height)
         }
 
         Anchor.BOTTOM_RIGHT -> {
-            Pair(-width, height)
+            Pair(-width, -height)
         }
 
         Anchor.CENTER -> {
-            Pair(-width / 2, height / 2)
+            Pair(-width / 2, -height / 2)
         }
     }
 
