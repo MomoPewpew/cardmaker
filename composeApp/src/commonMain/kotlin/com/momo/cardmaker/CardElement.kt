@@ -104,7 +104,6 @@ abstract class CardElement(
             // Clickable name text
             Column(
                 modifier = Modifier
-                    .weight(weight = 9f)
             ) {
                 Box {
                     Row {
@@ -140,8 +139,9 @@ abstract class CardElement(
             // Element buttons
             Column(
                 modifier = Modifier
-                    .weight(5f)
                     .align(Alignment.CenterVertically)
+                    .fillMaxWidth(),
+                horizontalAlignment = Alignment.End
             ) {
                 LazyRow(
                     modifier = Modifier
