@@ -77,7 +77,7 @@ val context = PlatformContext.INSTANCE
 val imageLoader = ImageLoader(context)
 
 /** The main app, and the entry point for the Compose render code. */
-@OptIn(ExperimentalResourceApi::class)
+@OptIn(InternalResourceApi::class)
 @Composable
 fun App() {
     val textMeasurer = rememberTextMeasurer()
@@ -90,7 +90,21 @@ fun App() {
         if (FontDropdownState.fontFamilyMap.size <= 5) {
             fontList.forEach { fontInfo ->
                 FontDropdownState.fontFamilyMap[fontInfo.family] =
-                    FontFamily(Font(resource = FontResource(fontInfo.filename)))
+                    FontFamily(
+                        Font(
+                            resource = FontResource(
+                                id = fontInfo.family,
+                                setOf(
+                                    ResourceItem(
+                                        qualifiers = setOf(),
+                                        path = fontInfo.filename,
+                                        offset = -1,
+                                        size = -1
+                                    )
+                                )
+                            )
+                        )
+                    )
             }
         }
 
@@ -99,7 +113,19 @@ fun App() {
         ) {
             // Background Image
             Image(
-                painterResource(DrawableResource("background.jpg")),
+                painterResource(
+                    DrawableResource(
+                        id = "background",
+                        items = setOf(
+                            ResourceItem(
+                                qualifiers = setOf(),
+                                path = "background.jpg",
+                                offset = -1,
+                                size = -1
+                            )
+                        )
+                    )
+                ),
                 contentDescription = "backgroundImage",
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop
