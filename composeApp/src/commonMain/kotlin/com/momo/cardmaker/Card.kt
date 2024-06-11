@@ -61,7 +61,7 @@ data class Card(
      */
     fun addElement(element: CardElement) {
         val elements = cardElements.value.toMutableList()
-        elements.add(element)
+        elements.add(0, element)
 
         cardElements.value = elements
     }
