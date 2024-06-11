@@ -39,7 +39,7 @@ abstract class CardElement(
     var realHeight = 0.0f
 
     val name = mutableStateOf("")
-    private var folded = false
+    private var folded = mutableStateOf(false)
 
     init {
         rename(defaultName)
@@ -92,7 +92,6 @@ abstract class CardElement(
      * */
     @Composable
     fun buildElements() {
-        var foldedRemember by remember { mutableStateOf(folded) }
         Row(modifier = Modifier
             .padding(horizontal = 30.dp)
             .clickable { ElementState.toggleSelect(this@CardElement) }
@@ -113,8 +112,8 @@ abstract class CardElement(
                             modifier = Modifier
                                 .align(Alignment.CenterVertically)
                                 .padding(top = 8.dp),
-                            imageVector = if (folded) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore,
-                            contentDescription = if (folded) "Folded" else "Expanded"
+                            imageVector = if (folded.value) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore,
+                            contentDescription = if (folded.value) "Folded" else "Expanded"
                         )
                         Text(
                             text = name.value,
@@ -131,8 +130,7 @@ abstract class CardElement(
                                 RenameState.rename(this@CardElement)
                                 ClickState.off()
                             } else {
-                                folded = !folded
-                                foldedRemember = folded
+                                folded.value = !folded.value
                             }
                         }
                     )
@@ -290,7 +288,7 @@ abstract class CardElement(
                     )
                 )
         ) {
-            if (!foldedRemember) {
+            if (!folded.value) {
                 Column(modifier = Modifier.fillMaxWidth()) {
                     buildSpecificElements()
                     transformations.buildElements()
