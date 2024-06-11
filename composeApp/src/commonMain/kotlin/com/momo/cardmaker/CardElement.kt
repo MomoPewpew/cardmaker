@@ -34,6 +34,7 @@ abstract class CardElement(
     val card: Card = CardState.card.value
 ) {
     var transformations = CardElementTransformations(cardElement = this)
+    var stacking: CardElementStacking? = null
 
     var realWidth = 0.0f
     var realHeight = 0.0f
@@ -58,6 +59,7 @@ abstract class CardElement(
             }
             put("name", name.value)
             put("transformations", transformations.toJson())
+            stacking?.toJson()?.let { put("stacking", it) }
         }
     }
 
@@ -92,6 +94,7 @@ abstract class CardElement(
      * */
     @Composable
     fun buildElements() {
+        var hasStacking by remember { mutableStateOf(stacking != null) }
         Row(modifier = Modifier
             .padding(horizontal = 30.dp)
             .clickable { ElementState.toggleSelect(this@CardElement) }
@@ -179,6 +182,29 @@ abstract class CardElement(
                                     .background(Color(0xFF393B3D))
                             )
                         }
+                    }
+
+                    item {
+                        IconButton(modifier = Modifier,
+                            enabled = !hasStacking,
+                            onClick = {
+                                hasStacking = true
+                                stacking = CardElementStacking(cardElement = this@CardElement)
+                            }) {
+                            Icon(
+                                imageVector = Icons.Outlined.ViewColumn,
+                                contentDescription = "Add Stacking"
+                            )
+                        }
+                    }
+
+                    item {
+                        Box(
+                            Modifier
+                                .height(24.dp)
+                                .width(1.dp)
+                                .background(Color(0xFF393B3D))
+                        )
                     }
 
                     item {
@@ -304,6 +330,32 @@ abstract class CardElement(
                 Column(modifier = Modifier.fillMaxWidth()) {
                     buildSpecificElements()
                     transformations.buildElements()
+                    if (hasStacking) {
+                        stacking?.let {
+                            Row {
+                                Text(
+                                    modifier = Modifier.padding(start = 48.dp, bottom = 8.dp),
+                                    text = "Stacking",
+                                    style = MaterialTheme.typography.h4
+                                )
+
+                                Column(modifier = Modifier.fillMaxWidth().padding(end = 16.dp)) {
+                                    IconButton(
+                                        modifier = Modifier
+                                            .align(Alignment.End),
+                                        onClick = {
+                                            stacking = null
+                                            hasStacking = false
+                                        },
+                                    ) {
+                                        Icon(imageVector = Icons.Filled.Delete, contentDescription = "Delete Stacking")
+                                    }
+                                }
+                            }
+
+                            it.buildElements()
+                        }
+                    }
                 }
             }
         }
@@ -317,6 +369,7 @@ abstract class CardElement(
     @Composable
     open fun buildPinnedElements() {
         transformations.buildPinnedElements()
+        stacking?.buildPinnedElements()
     }
 
     /** Get the value of one of this card's properties by name. Used in expression replacement.
@@ -356,6 +409,11 @@ abstract class CardElement(
 
             if (transformationsObject != null) cardElement.transformations =
                 CardElementTransformations.fromJson(transformationsObject, cardElement)
+
+            val stackingObject = json["stacking"]?.jsonObject
+
+            if (stackingObject != null) cardElement.stacking =
+                CardElementStacking.fromJson(stackingObject, cardElement)
 
             cardElement.fromJsonSpecific(json)
 
