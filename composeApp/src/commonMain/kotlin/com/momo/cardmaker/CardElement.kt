@@ -140,7 +140,7 @@ abstract class CardElement(
             // Element buttons
             Column(
                 modifier = Modifier
-                    .weight(4f)
+                    .weight(5f)
                     .align(Alignment.CenterVertically)
             ) {
                 LazyRow(
@@ -257,6 +257,18 @@ abstract class CardElement(
                                 CardState.card.value.moveElementDown(this@CardElement)
                             }) {
                             Icon(imageVector = Icons.Filled.ArrowDownward, contentDescription = "Move Down")
+                        }
+                    }
+
+                    item {
+                        IconButton(modifier = Modifier,
+                            onClick = {
+                                this@CardElement.card.duplicateElement(this@CardElement)
+                            }) {
+                            Icon(
+                                imageVector = Icons.Outlined.ContentCopy,
+                                contentDescription = "Duplicate"
+                            )
                         }
                     }
 

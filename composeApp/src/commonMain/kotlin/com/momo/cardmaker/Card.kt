@@ -80,6 +80,21 @@ data class Card(
     }
 
     /**
+     * Duplicate an existing CardElement.
+     * @param element The CardElement that should be duplicated.
+     */
+    fun duplicateElement(element: CardElement) {
+        val elements = cardElements.value.toMutableList()
+
+        val index = elements.indexOf(element)
+
+        CardElement.fromJson(element.toJson(), this)?.let {
+            elements.add(index, it)
+            cardElements.value = elements
+        }
+    }
+
+    /**
      * Reorganizes this Cards element list in a way that triggers recomposition.
      * @param element The element that should be moved up in the list.
      */
