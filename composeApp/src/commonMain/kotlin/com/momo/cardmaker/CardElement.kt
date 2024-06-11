@@ -359,6 +359,8 @@ abstract class CardElement(
 
             cardElement.fromJsonSpecific(json)
 
+            cardElement.folded.value = true
+
             return cardElement
         }
     }
