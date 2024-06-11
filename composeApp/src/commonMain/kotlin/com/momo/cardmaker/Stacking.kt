@@ -33,7 +33,7 @@ data class CardElementStacking(
     )
 ) {
     /**
-     * Serialize this transformation set to a Json object.
+     * Serialize this stacking data set to a Json object.
      * @return The serialized Json object.
      * */
     fun toJson(): JsonObject {
@@ -109,10 +109,10 @@ data class CardElementStacking(
 
     companion object {
         /**
-         * Create a new transformation set from a serialized Json object.
-         * @param json The object that holds the serialized transformation values.
-         * @param cardElement The card element that will hold the new transformation values.
-         * @return A new CardElementTransformations object made from the serialized Json object.
+         * Create a new stacking data set from a serialized Json object.
+         * @param json The object that holds the serialized stacking values.
+         * @param cardElement The card element that will hold the new stacking values.
+         * @return A new CardElementStacking object made from the serialized Json object.
          * */
         fun fromJson(json: JsonObject, cardElement: CardElement): CardElementStacking {
             val stacking = CardElementStacking(cardElement)
