@@ -89,7 +89,6 @@ fun App() {
         )
     ) {
         if (FontDropdownState.fontFamilyMap.size - 5 < fontList.size) {
-            println(1)
             LaunchedEffect(Unit) {
                 fontList.forEach { fontInfo ->
                     if (!FontDropdownState.fontFamilyMap.containsKey(fontInfo.family)) {
