@@ -382,6 +382,18 @@ abstract class CardElement(
             "offsetY" -> transformations.offsetY.get()
             "width" -> realWidth
             "height" -> realHeight
+            "horizontalStackingIterations" -> {
+                stacking?.horizontalIterations?.get()?.toFloat() ?: 1f
+            }
+            "horizontalStackingInterval" -> {
+                stacking?.horizontalInterval?.get() ?: 0f
+            }
+            "verticalStackingIterations" -> {
+                stacking?.verticalIterations?.get()?.toFloat() ?: 1f
+            }
+            "verticalStackingInterval" -> {
+                stacking?.verticalInterval?.get() ?: 0f
+            }
             else -> null
         }
     }

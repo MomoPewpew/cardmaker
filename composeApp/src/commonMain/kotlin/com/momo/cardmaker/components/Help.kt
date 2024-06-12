@@ -89,10 +89,10 @@ fun HelpWindow() {
                                 )
                                 Text(
                                     text = "The transformation values support mathematical expressions, as well as references to other transformation values.\n\n" +
-                                            "For example, of you want to have the Y-offset of an image be dependent on the height of a text field, you can set the Y-offset of that image to\n\n" +
+                                            "For example, if you want to have the Y-offset of an image be dependent on the height of a text field, you can set the Y-offset of that image to\n\n" +
                                             "{Lore Text.height} + 100\n\n" +
                                             "where 'Lore Text' in this example is the name of that text element.\n\n" +
-                                            "Supported reference are 'offsetX', 'offsetY', 'width' and 'height'. If the width or height of the referenced element is set to 0 then the automatically determined dimension is referenced instead.\n\n" +
+                                            "Supported reference are 'offsetX', 'offsetY', 'width', 'height' 'horizontalStackingIterations', 'horizontalStackingInterval', 'verticalStackingIterations' and 'verticalStackingInterval'. If the width or height of the referenced element is set to 0 then the automatically determined dimension is referenced instead.\n\n" +
                                             "If you want to know all of the supported mathematical expressions then please check out the documentation for \n" +
                                             "https://github.com/notKamui/Keval"
                                 )
