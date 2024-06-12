@@ -22,6 +22,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.platform.Font
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -87,24 +88,20 @@ fun App() {
             primary = Color(0xFF013220)
         )
     ) {
-        if (FontDropdownState.fontFamilyMap.size <= 5) {
-            fontList.forEach { fontInfo ->
-                FontDropdownState.fontFamilyMap[fontInfo.family] =
-                    FontFamily(
-                        Font(
-                            resource = FontResource(
-                                id = fontInfo.family,
-                                setOf(
-                                    ResourceItem(
-                                        qualifiers = setOf(),
-                                        path = fontInfo.filename,
-                                        offset = -1,
-                                        size = -1
-                                    )
+        if (FontDropdownState.fontFamilyMap.size - 5 < fontList.size) {
+            println(1)
+            LaunchedEffect(Unit) {
+                fontList.forEach { fontInfo ->
+                    if (!FontDropdownState.fontFamilyMap.containsKey(fontInfo.family)) {
+                        FontDropdownState.fontFamilyMap[fontInfo.family] =
+                            FontFamily(
+                                Font(
+                                    identity = fontInfo.family,
+                                    data = readResourceBytes(fontInfo.filename)
                                 )
                             )
-                        )
-                    )
+                    }
+                }
             }
         }
 
