@@ -66,11 +66,6 @@ object ClickState {
     }
 }
 
-/** The state holder that holds the Card object. */
-object CardState {
-    var card = mutableStateOf(Card())
-}
-
 var showBorder = mutableStateOf(true)
 var imageUtils: ImageUtils? = null
 

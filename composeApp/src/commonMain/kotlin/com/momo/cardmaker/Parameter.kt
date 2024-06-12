@@ -308,6 +308,19 @@ abstract class Parameter<T>(
         }
     }
 
+    /**
+     * Override this parameter with the supplied parameter if they are both pinned and both have the same name.
+     * @param parameter
+     * @return Whether the two parameters were considered similar.
+     * */
+    fun overrideIfSimilar(parameter: Parameter<T>): Boolean {
+        if (isPinned.value && parameter.isPinned.value && name.value == parameter.name.value) {
+            expression.value = parameter.expression.value
+            return true
+        }
+        return false
+    }
+
     companion object {
         /**
          * Create a new Parameter from a serialized Json object.

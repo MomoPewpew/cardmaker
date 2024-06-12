@@ -2,11 +2,17 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>cardmaker</title>
+    <title>CardMaker</title>
     <script type="application/javascript" src="skiko.js"></script>
     <script type="application/javascript" src="composeApp.js"></script>
 </head>
 <body>
+<script>
+    function getUrlParam(param) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(param);
+    }
+</script>
 <canvas id="ComposeTarget"></canvas>
 </body>
 </html>

@@ -16,8 +16,8 @@ import com.momo.cardmaker.*
 import com.momo.cardmaker.components.ImportExportState.importMode
 import com.momo.cardmaker.components.ImportExportState.showWindow
 import com.momo.cardmaker.components.ImportExportState.textFieldValue
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.jsonObject
+import com.momo.cardmaker.components.ImportExportState.url
+import io.ktor.util.*
 
 enum class ImportMode {
     NONE,
@@ -29,11 +29,13 @@ enum class ImportMode {
 object ImportExportState {
     val showWindow = mutableStateOf(false)
     val textFieldValue = mutableStateOf("")
+    var url = ""
     val importMode = mutableStateOf(ImportMode.NONE)
 
     fun show() {
         showWindow.value = true
         textFieldValue.value = CardState.card.value.toJson().toString()
+        url = "https://momopewpew.github.io/cardmaker-Site/?data=${textFieldValue.value.encodeBase64()}"
         importMode.value = ImportMode.NONE
     }
 }
@@ -103,63 +105,22 @@ fun ImportExport(textMeasurer: TextMeasurer) {
                         }
                     )
 
+                    TextField(
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp, vertical = 4.dp)
+                            .fillMaxWidth()
+                            .height(56.dp),
+                        value = url,
+                        maxLines = 1,
+                        onValueChange = {}
+                    )
+
                     Button(
                         modifier = Modifier
                             .padding(start = 16.dp, end = 16.dp, bottom = 8.dp)
                             .fillMaxWidth(),
                         onClick = {
-                            if (importMode.value != ImportMode.NONE && textFieldValue.value.isNotEmpty()) {
-                                val json = try {
-                                    Json.parseToJsonElement(textFieldValue.value).jsonObject
-                                } catch (_: Exception) {
-                                    PopupState.popup("Json Parse Error", "Your json string was improperly formatted.")
-                                    return@Button
-                                }
-
-                                when (importMode.value) {
-                                    ImportMode.REGULAR -> {
-                                        CardState.card.value = Card.fromJson(json)
-                                    }
-
-                                    ImportMode.PINNED_ONLY -> {
-                                        val card = Card.fromJson(json)
-
-                                        CardState.card.value.cardElements.value.forEach { cardElement ->
-                                            val importElement =
-                                                card.cardElements.value.find { it.name.value == cardElement.name.value && it::class == cardElement::class }
-
-                                            if (importElement == null) return@forEach
-
-                                            cardElement.transformations.offsetX.overrideIfSimilar(importElement.transformations.offsetX)
-                                            cardElement.transformations.offsetY.overrideIfSimilar(importElement.transformations.offsetY)
-                                            cardElement.transformations.width.overrideIfSimilar(importElement.transformations.width)
-                                            cardElement.transformations.height.overrideIfSimilar(importElement.transformations.height)
-
-                                            when (cardElement) {
-                                                is RichTextElement -> {
-                                                    importElement as RichTextElement
-                                                    cardElement.text.overrideIfSimilar(importElement.text)
-                                                }
-
-                                                is ImageElement -> {
-                                                    importElement as ImageElement
-                                                    cardElement.image.overrideIfSimilar(importElement.image)
-                                                    for (i in 0..<cardElement.masks.value.size) {
-                                                        val importMask =
-                                                            importElement.masks.value.getOrNull(i) ?: continue
-
-                                                        if (cardElement.masks.value[i].overrideIfSimilar(importMask)) cardElement.masks.value[i].color.value =
-                                                            importMask.color.value
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-
-                                    else -> {}
-                                }
-                            }
-
+                            CardState.import(importMode = importMode.value, textFieldValue.value)
                             showWindow.value = false
                         }
                     ) {
@@ -169,12 +130,4 @@ fun ImportExport(textMeasurer: TextMeasurer) {
             }
         }
     }
-}
-
-private fun <T> Parameter<T>.overrideIfSimilar(parameter: Parameter<T>): Boolean {
-    if (isPinned.value && parameter.isPinned.value && name.value == parameter.name.value) {
-        expression.value = parameter.expression.value
-        return true
-    }
-    return false
 }

@@ -15,12 +15,69 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
-import com.momo.cardmaker.components.ElementState
-import com.momo.cardmaker.components.getAvailableSpace
-import com.momo.cardmaker.components.getOffset
+import com.momo.cardmaker.components.*
 import kotlinx.serialization.json.*
 import org.jetbrains.skia.Bitmap
 import kotlin.math.abs
+
+/** The state holder that holds the Card object. */
+object CardState {
+    var card = mutableStateOf(Card())
+
+    fun import(importMode: ImportMode, jsonString: String) {
+        if (importMode != ImportMode.NONE && jsonString.isNotEmpty()) {
+            val json = try {
+                Json.parseToJsonElement(jsonString).jsonObject
+            } catch (_: Exception) {
+                PopupState.popup("Json Parse Error", "Your json string was improperly formatted.")
+                return
+            }
+
+            when (importMode) {
+                ImportMode.REGULAR -> {
+                    card.value = Card.fromJson(json)
+                }
+
+                ImportMode.PINNED_ONLY -> {
+                    val card = Card.fromJson(json)
+
+                    CardState.card.value.cardElements.value.forEach { cardElement ->
+                        val importElement =
+                            card.cardElements.value.find { it.name.value == cardElement.name.value && it::class == cardElement::class }
+
+                        if (importElement == null) return@forEach
+
+                        cardElement.transformations.offsetX.overrideIfSimilar(importElement.transformations.offsetX)
+                        cardElement.transformations.offsetY.overrideIfSimilar(importElement.transformations.offsetY)
+                        cardElement.transformations.width.overrideIfSimilar(importElement.transformations.width)
+                        cardElement.transformations.height.overrideIfSimilar(importElement.transformations.height)
+
+                        when (cardElement) {
+                            is RichTextElement -> {
+                                importElement as RichTextElement
+                                cardElement.text.overrideIfSimilar(importElement.text)
+                            }
+
+                            is ImageElement -> {
+                                importElement as ImageElement
+                                cardElement.image.overrideIfSimilar(importElement.image)
+                                for (i in 0..<cardElement.masks.value.size) {
+                                    val importMask =
+                                        importElement.masks.value.getOrNull(i) ?: continue
+
+                                    if (cardElement.masks.value[i].overrideIfSimilar(importMask)) cardElement.masks.value[i].color.value =
+                                        importMask.color.value
+                                }
+                            }
+                        }
+                    }
+                }
+
+                else -> {}
+            }
+        }
+    }
+}
 
 /**
  * A Card that represents the layout of the created image.
