@@ -157,149 +157,173 @@ fun CardPreview(textMeasurer: TextMeasurer) {
         ) {
             CardState.card.value.cardElements.value.asReversed().forEach { cardElement ->
                 val (maxAvailableWidth, maxAvailableHeight) = getAvailableSpace(cardElement.transformations)
-                var elementWidth = 0.0f
-                var elementHeight = 0.0f
 
-                when (cardElement) {
-                    is RichTextElement -> {
-                        val text = cardElement.text.richTextState.annotatedString
-                        val style = TextStyle.Default
+                val horizontalStackingIterations =
+                    (cardElement.stacking?.horizontalIterations?.get() ?: 1).coerceAtLeast(0)
+                val horizontalStackingInterval = cardElement.stacking?.horizontalInterval?.get() ?: 0F
+                val verticalStackingIterations =
+                    (cardElement.stacking?.verticalIterations?.get() ?: 1).coerceAtLeast(0)
+                val verticalStackingInterval = cardElement.stacking?.verticalInterval?.get() ?: 0F
 
-                        elementWidth = abs(cardElement.transformations.width.get().coerceIn(-30000f, 30000f))
+                for (column in 0..<horizontalStackingIterations) {
+                    for (row in 0..<verticalStackingIterations) {
+                        var elementWidth = 0.0f
+                        var elementHeight = 0.0f
 
-                        if (elementWidth == 0f) elementWidth = maxAvailableWidth
+                        when (cardElement) {
+                            is RichTextElement -> {
+                                val text = cardElement.text.richTextState.annotatedString
+                                val style = TextStyle.Default
 
-                        // Find line break spots for wrapping
-                        val lineBreaks = mutableListOf<Int>()
+                                elementWidth = abs(cardElement.transformations.width.get().coerceIn(-30000f, 30000f))
 
-                        var currentStartIndex = 0
-                        while (currentStartIndex < text.length) {
-                            var lastIndex = text.length
-                            var spacesOnly = true
+                                if (elementWidth == 0f) elementWidth = maxAvailableWidth
 
-                            while (textMeasurer.measure(
-                                    text.subSequence(currentStartIndex, lastIndex),
-                                    style
-                                ).size.width > elementWidth
-                            ) {
-                                if (spacesOnly) {
-                                    val lastSpaceIndex = text.subSequence(currentStartIndex, lastIndex)
-                                        .lastIndexOf(" ") + currentStartIndex
-                                    if (lastSpaceIndex > currentStartIndex) {
-                                        lastIndex = lastSpaceIndex
-                                    } else {
-                                        lastIndex = text.length
-                                        spacesOnly = false
+                                // Find line break spots for wrapping
+                                val lineBreaks = mutableListOf<Int>()
+
+                                var currentStartIndex = 0
+                                while (currentStartIndex < text.length) {
+                                    var lastIndex = text.length
+                                    var spacesOnly = true
+
+                                    while (textMeasurer.measure(
+                                            text.subSequence(currentStartIndex, lastIndex),
+                                            style
+                                        ).size.width > elementWidth
+                                    ) {
+                                        if (spacesOnly) {
+                                            val lastSpaceIndex = text.subSequence(currentStartIndex, lastIndex)
+                                                .lastIndexOf(" ") + currentStartIndex
+                                            if (lastSpaceIndex > currentStartIndex) {
+                                                lastIndex = lastSpaceIndex
+                                            } else {
+                                                lastIndex = text.length
+                                                spacesOnly = false
+                                            }
+                                        } else {
+                                            if (lastIndex > currentStartIndex + 1) lastIndex--
+                                            else break
+                                        }
                                     }
-                                } else {
-                                    if (lastIndex > currentStartIndex + 1) lastIndex--
-                                    else break
+
+                                    lineBreaks.add(lastIndex)
+                                    currentStartIndex = lastIndex
                                 }
-                            }
 
-                            lineBreaks.add(lastIndex)
-                            currentStartIndex = lastIndex
-                        }
+                                // Apply the found line breaks
+                                val wrappedText = buildAnnotatedString {
+                                    var startIndex = 0
+                                    for (breakIndex in lineBreaks) {
+                                        if (text.subSequence(startIndex, breakIndex).text.startsWith(" ")) startIndex++
 
-                        // Apply the found line breaks
-                        val wrappedText = buildAnnotatedString {
-                            var startIndex = 0
-                            for (breakIndex in lineBreaks) {
-                                if (text.subSequence(startIndex, breakIndex).text.startsWith(" ")) startIndex++
-
-                                append(text.subSequence(startIndex, breakIndex))
-                                startIndex = breakIndex
-                            }
-                            if (startIndex < text.length) {
-                                if (text.subSequence(startIndex, text.length).text.startsWith(" ")) startIndex++
-
-                                append(text.subSequence(startIndex, text.length))
-                            }
-                        }
-
-                        elementHeight = abs(cardElement.transformations.height.get().coerceIn(-30000f, 30000f))
-                        if (elementHeight == 0f) elementHeight =
-                            textMeasurer.measure(wrappedText, style).size.height.toFloat()
-
-                        if (cardElement.transformations.width.get() == 0f) elementWidth =
-                            textMeasurer.measure(wrappedText, style).size.width.toFloat()
-
-                        val topLeft = getOffset(
-                            cardElement.transformations,
-                            elementWidth,
-                            elementHeight
-                        )
-
-                        drawText(
-                            textMeasurer = textMeasurer,
-                            text = wrappedText,
-                            style = style,
-                            topLeft = topLeft,
-                            size = Size(elementWidth, elementHeight)
-                        )
-                    }
-
-                    is ImageElement -> {
-                        if (cardElement.image.imageBitmap.value != null) {
-                            val imageWidth = cardElement.image.imageBitmap.value!!.width.toFloat()
-                            val imageHeight = cardElement.image.imageBitmap.value!!.height.toFloat()
-
-                            elementWidth = cardElement.transformations.width.get()
-                            elementHeight = cardElement.transformations.height.get()
-
-                            if (elementWidth == 0f) {
-                                if (elementHeight == 0f) {
-                                    val widthRatio = maxAvailableWidth / imageWidth
-                                    val heightRatio = maxAvailableHeight / imageHeight
-
-                                    if (widthRatio > heightRatio) {
-                                        elementWidth = imageWidth * heightRatio
-                                        elementHeight = imageHeight * heightRatio
-                                    } else {
-                                        elementWidth = imageWidth * widthRatio
-                                        elementHeight = imageHeight * widthRatio
+                                        append(text.subSequence(startIndex, breakIndex))
+                                        startIndex = breakIndex
                                     }
-                                } else {
-                                    elementWidth = imageWidth * (elementHeight / imageHeight)
+                                    if (startIndex < text.length) {
+                                        if (text.subSequence(startIndex, text.length).text.startsWith(" ")) startIndex++
+
+                                        append(text.subSequence(startIndex, text.length))
+                                    }
                                 }
-                            } else if (elementHeight == 0f) {
-                                elementHeight = imageHeight * (elementWidth / imageWidth)
-                            }
 
-                            val topLeft = getOffset(
-                                cardElement.transformations,
-                                elementWidth,
-                                elementHeight
-                            )
+                                elementHeight = abs(cardElement.transformations.height.get().coerceIn(-30000f, 30000f))
+                                if (elementHeight == 0f) elementHeight =
+                                    textMeasurer.measure(wrappedText, style).size.height.toFloat()
 
-                            scale(
-                                scaleX = (elementWidth / imageWidth),
-                                scaleY = (elementHeight / imageHeight),
-                                pivot = topLeft
-                            ) {
-                                drawImage(
-                                    image = cardElement.image.imageBitmap.value!!,
-                                    topLeft = topLeft
+                                if (cardElement.transformations.width.get() == 0f) elementWidth =
+                                    textMeasurer.measure(wrappedText, style).size.width.toFloat()
+
+                                val topLeft = getOffset(
+                                    cardElement.transformations,
+                                    elementWidth,
+                                    elementHeight
                                 )
-                                for (mask in cardElement.masks.value) {
-                                    if (mask.imageBitmap.value == null) continue
 
-                                    drawImage(
-                                        image = mask.imageBitmap.value!!,
-                                        topLeft = topLeft,
-                                        colorFilter = ColorFilter.tint(color = Color(mask.color.value)),
-                                        blendMode = BlendMode.Color
+                                val topLeftStacked = Offset(
+                                    topLeft.x + column * horizontalStackingInterval,
+                                    topLeft.y + row * verticalStackingInterval
+                                )
+
+                                drawText(
+                                    textMeasurer = textMeasurer,
+                                    text = wrappedText,
+                                    style = style,
+                                    topLeft = topLeftStacked,
+                                    size = Size(elementWidth, elementHeight)
+                                )
+                            }
+
+                            is ImageElement -> {
+                                if (cardElement.image.imageBitmap.value != null) {
+                                    val imageWidth = cardElement.image.imageBitmap.value!!.width.toFloat()
+                                    val imageHeight = cardElement.image.imageBitmap.value!!.height.toFloat()
+
+                                    elementWidth = cardElement.transformations.width.get()
+                                    elementHeight = cardElement.transformations.height.get()
+
+                                    if (elementWidth == 0f) {
+                                        if (elementHeight == 0f) {
+                                            val widthRatio = maxAvailableWidth / imageWidth
+                                            val heightRatio = maxAvailableHeight / imageHeight
+
+                                            if (widthRatio > heightRatio) {
+                                                elementWidth = imageWidth * heightRatio
+                                                elementHeight = imageHeight * heightRatio
+                                            } else {
+                                                elementWidth = imageWidth * widthRatio
+                                                elementHeight = imageHeight * widthRatio
+                                            }
+                                        } else {
+                                            elementWidth = imageWidth * (elementHeight / imageHeight)
+                                        }
+                                    } else if (elementHeight == 0f) {
+                                        elementHeight = imageHeight * (elementWidth / imageWidth)
+                                    }
+
+                                    val topLeft = getOffset(
+                                        cardElement.transformations,
+                                        elementWidth,
+                                        elementHeight
                                     )
+
+                                    val topLeftStacked = Offset(
+                                        topLeft.x + column * horizontalStackingInterval,
+                                        topLeft.y + row * verticalStackingInterval
+                                    )
+
+                                    scale(
+                                        scaleX = (elementWidth / imageWidth),
+                                        scaleY = (elementHeight / imageHeight),
+                                        pivot = topLeftStacked
+                                    ) {
+                                        drawImage(
+                                            image = cardElement.image.imageBitmap.value!!,
+                                            topLeft = topLeftStacked
+                                        )
+                                        for (mask in cardElement.masks.value) {
+                                            if (mask.imageBitmap.value == null) continue
+
+                                            drawImage(
+                                                image = mask.imageBitmap.value!!,
+                                                topLeft = topLeftStacked,
+                                                colorFilter = ColorFilter.tint(color = Color(mask.color.value)),
+                                                blendMode = BlendMode.Color
+                                            )
+                                        }
+                                    }
                                 }
                             }
+
+                            else -> {}
+                        }
+
+                        if (column == 0 && row == 0) {
+                            cardElement.realWidth = elementWidth
+                            cardElement.realHeight = elementHeight
                         }
                     }
-
-                    else -> {}
                 }
-
-                cardElement.realWidth = elementWidth
-                cardElement.realHeight = elementHeight
             }
 
             // Bleed border
