@@ -12,6 +12,11 @@
         const urlParams = new URLSearchParams(window.location.search);
         return urlParams.get(param);
     }
+    function getCurrentUrl() {
+        let fullUrl = window.location.href;
+        let cleanUrl = fullUrl.split('?')[0];
+        return cleanUrl;
+    }
 </script>
 <canvas id="ComposeTarget"></canvas>
 </body>

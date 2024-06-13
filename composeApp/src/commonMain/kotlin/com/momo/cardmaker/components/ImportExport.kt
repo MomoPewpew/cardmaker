@@ -35,7 +35,7 @@ object ImportExportState {
     fun show() {
         showWindow.value = true
         textFieldValue.value = CardState.card.value.toJson().toString()
-        url = "https://momopewpew.github.io/cardmaker-Site/?data=${textFieldValue.value.encodeBase64()}"
+        url = "$hostName?data=${textFieldValue.value.encodeBase64()}"
         importMode.value = ImportMode.NONE
     }
 }

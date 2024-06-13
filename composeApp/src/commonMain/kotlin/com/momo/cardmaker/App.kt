@@ -68,6 +68,7 @@ object ClickState {
 
 var showBorder = mutableStateOf(true)
 var imageUtils: ImageUtils? = null
+var hostName = "http://158.101.223.244/cardmaker/"
 
 val context = PlatformContext.INSTANCE
 val imageLoader = ImageLoader(context)
