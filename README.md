@@ -4,4 +4,4 @@ The intended use for the image editor is to develop paramaterized templates for 
 
 This project currently houses a copy of [Keval](https://github.com/notKamui/Keval). This is a temporary solution while I try to find an expression evaluation library that can be imported in Kotlin Multiplatform.
 
-A web-hosted version of this application can be seen [here](https://momopewpew.github.io/cardmaker-Site/)
+A web-hosted version of this application can be seen [here](https://momopewpew.github.io/cardmaker-Site/](http://158.101.223.244/cardmaker/)
