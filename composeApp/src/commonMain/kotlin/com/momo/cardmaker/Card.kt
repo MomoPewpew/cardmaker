@@ -55,7 +55,9 @@ object CardState {
                         when (cardElement) {
                             is RichTextElement -> {
                                 importElement as RichTextElement
-                                cardElement.text.overrideIfSimilar(importElement.text)
+                                if (cardElement.text.overrideIfSimilar(importElement.text)) {
+                                    cardElement.text.richTextState.setHtml(importElement.text.get())
+                                }
                             }
 
                             is ImageElement -> {
