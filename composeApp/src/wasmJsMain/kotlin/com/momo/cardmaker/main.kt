@@ -9,7 +9,7 @@ import io.ktor.util.*
 fun main() {
     imageUtils = ImageUtilsWasmJs
 
-    val data = getUrlParam("data")
+    val data = getUrlParam("data")?.replace(" ", "+")
 
     if (data != null) {
         val decodedData = data.decodeBase64String()
